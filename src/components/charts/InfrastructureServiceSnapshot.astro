@@ -1,0 +1,72 @@
+---
+import type { Brand } from '../../lib/data';
+
+export interface Props {
+  brand: Brand;
+}
+
+const { brand } = Astro.props;
+---
+
+<section class="observatory-panel rounded-xl p-5 sm:p-6 my-6" aria-label={`${brand.brandName} Infrastructure Service Snapshot`}>
+  <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-700/70">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full" style={`background-color: ${brand.accentColor};`}></span>
+        <span class="font-mono text-[11px] uppercase tracking-wider text-slate-400">Infrastructure Service Snapshot</span>
+      </div>
+      <h3 class="text-base sm:text-lg font-bold text-white mt-1">{brand.brandName} · 核心技术参数与情报状态快照</h3>
+    </div>
+    <span class="px-2.5 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-[11px] text-teal-300">
+      {brand.dataStatus}
+    </span>
+  </div>
+
+  <div class="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 text-xs">
+    <div class="observatory-subpanel rounded-lg p-3">
+      <span class="block text-[11px] text-slate-400">运营年份</span>
+      <strong class="block font-mono text-sm text-white mt-1">{brand.foundedYear ? `${brand.foundedYear} 年` : '待核实'}</strong>
+    </div>
+    <div class="observatory-subpanel rounded-lg p-3">
+      <span class="block text-[11px] text-slate-400">接入模式</span>
+      <strong class="block text-sm text-white mt-1">
+        {brand.thirdPartyClientSupport === false
+          ? '仅专属客户端'
+          : brand.thirdPartyClientSupport === true
+            ? brand.officialClient
+              ? '自研 + 第三方订阅'
+              : '第三方订阅'
+            : '待核实'}
+      </strong>
+    </div>
+    <div class="observatory-subpanel rounded-lg p-3">
+      <span class="block text-[11px] text-slate-400">线路架构</span>
+      <strong class="block text-sm text-white mt-1">{brand.networkTypes.slice(0, 2).join(' + ')}</strong>
+    </div>
+    <div class="observatory-subpanel rounded-lg p-3">
+      <span class="block text-[11px] text-slate-400">协议支持</span>
+      <strong class="block font-mono text-sm text-white mt-1">{brand.protocols[0]}</strong>
+    </div>
+    <div class="observatory-subpanel rounded-lg p-3">
+      <span class="block text-[11px] text-slate-400">设备连接限制</span>
+      <strong class="block text-sm text-white mt-1">{brand.deviceLimit}</strong>
+    </div>
+    <div class="observatory-subpanel rounded-lg p-3">
+      <span class="block text-[11px] text-slate-400">速率上限说明</span>
+      <strong class="block text-sm text-white mt-1">{brand.speedLimit}</strong>
+    </div>
+    <div class="observatory-subpanel rounded-lg p-3">
+      <span class="block text-[11px] text-slate-400">流量倍率</span>
+      <strong class="block text-sm text-white mt-1">{brand.trafficMultiplier}</strong>
+    </div>
+    <div class="observatory-subpanel rounded-lg p-3">
+      <span class="block text-[11px] text-slate-400">当前风险状态</span>
+      <strong class="block text-sm text-amber-300 mt-1">{brand.operatingStatus}</strong>
+    </div>
+  </div>
+
+  <div class="mt-4 pt-3 border-t border-slate-700/70 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
+    <span>实体 ID：<code class="font-mono text-slate-300">{brand.brandId}</code> · 核实日期：<span class="font-mono">{brand.verifiedAt}</span></span>
+    <span class="font-mono text-slate-500 select-none">机场情报 · jichangqingbao.biz</span>
+  </div>
+</section>

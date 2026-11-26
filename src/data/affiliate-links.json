@@ -1,0 +1,319 @@
+{
+  "disclosureDefault": "含推广链接，通过链接注册可能为本站带来佣金，不影响用户支付价格。",
+  "linkAttributes": {
+    "target": "_blank",
+    "rel": "nofollow sponsored noopener"
+  },
+  "links": {
+    "guangsuyun": {
+      "brandName": "光速云",
+      "affiliateUrl": "https://sahude.gsyvipaff.com/#/?code=keqgvT5Y",
+      "affiliateStatus": "active",
+      "couponCode": "AMM",
+      "couponDiscount": "新人优惠券（具体折扣以官网结算为准）",
+      "couponRestrictions": "定制版/年付轻量版等部分特价套餐不参与常规周期折扣",
+      "linkNote": "核心合作推广品牌统一注册入口",
+      "verifiedAt": "2026-10-19"
+    },
+    "muguang": {
+      "brandName": "暮光加速",
+      "affiliateUrl": "https://varnexa.twilightaff.com/#/?code=D1LHglg3",
+      "affiliateStatus": "active",
+      "couponCode": "muguang5555",
+      "couponDiscount": "待核实",
+      "couponRestrictions": "介绍文本与头部记录存在优惠码差异，以下单页为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "feimao": {
+      "brandName": "飞猫云",
+      "affiliateUrl": "https://guangs.flycataff.com/#/?code=6uq0Xe9y",
+      "affiliateStatus": "active",
+      "couponCode": "flycat888",
+      "couponDiscount": "汇总表标注 8 折",
+      "couponRestrictions": "具体适用套餐以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "weifeng": {
+      "brandName": "微风网络",
+      "affiliateUrl": "https://edp01.breezenetaff.com/#/?code=t3huofyI",
+      "affiliateStatus": "active",
+      "couponCode": "flat888",
+      "couponDiscount": "汇总表标注 9 折",
+      "couponRestrictions": "具体适用套餐以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "dalaoyun": {
+      "brandName": "大佬云",
+      "affiliateUrl": "https://qwerty.dalaoyunaff.com/#/?code=jCPLmoWN",
+      "affiliateStatus": "active",
+      "couponCode": "dly888",
+      "couponDiscount": "季付及以上 7 折（品牌资料标注）",
+      "couponRestrictions": "适用周期与优惠码叠加规则以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "xingdaomeng": {
+      "brandName": "星岛梦",
+      "affiliateUrl": "https://guangs.xingdaomeng.com/#/?code=1TynBYnR",
+      "affiliateStatus": "active",
+      "couponCode": "nmw888",
+      "couponDiscount": "待核实",
+      "couponRestrictions": "具体折扣与限制以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "yinxingren": {
+      "brandName": "隐形人",
+      "affiliateUrl": "https://yinxingren1.invisibleaff.com/#/?code=kcyEeoJT",
+      "affiliateStatus": "active",
+      "couponCode": "moon80 / yxr888",
+      "couponDiscount": "moon80 标注 8 折（yxr888 未标注折扣）",
+      "couponRestrictions": "存在两个来源优惠码记录，待核实当前有效码",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "ermao": {
+      "brandName": "二猫云",
+      "affiliateUrl": "https://guangs.2maoyunaff.cc/#/?code=7mjvgGbW",
+      "affiliateStatus": "active",
+      "couponCode": "ermao5555",
+      "couponDiscount": "待核实",
+      "couponRestrictions": "具体折扣以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "wuyou": {
+      "brandName": "无忧链接",
+      "affiliateUrl": "https://wep01.worryfreeaff.com/#/?code=4ZoSbLdL",
+      "affiliateStatus": "active",
+      "couponCode": "wuyou666",
+      "couponDiscount": "待核实",
+      "couponRestrictions": "具体折扣以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "weitu": {
+      "brandName": "唯兔云",
+      "affiliateUrl": "https://guangs.v2yunvipaff.com/#/?code=xIutqOBA",
+      "affiliateStatus": "active",
+      "couponCode": "weitu666",
+      "couponDiscount": "待核实",
+      "couponRestrictions": "具体折扣以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "firefly": {
+      "brandName": "Firefly",
+      "affiliateUrl": "https://vip02.fireflyaff.com/#/?code=2n7VURre",
+      "affiliateStatus": "active",
+      "couponCode": "firefly",
+      "couponDiscount": "新用户 8 折",
+      "couponRestrictions": "年付版不适用；历史记录另有备选代码 jTp9wSgZ",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "yuzhou": {
+      "brandName": "宇宙云",
+      "affiliateUrl": "https://wzjc.yuzoucloud.cc/#/?code=yrThwMP1",
+      "affiliateStatus": "needs-verification",
+      "couponCode": "YUZHOU553",
+      "couponDiscount": "历史资料称新用户 8 折",
+      "couponRestrictions": "较早期历史资料，适用条件待核实",
+      "linkNote": "当前详细套餐与链接有效性待进一步核实",
+      "verifiedAt": "2026-10-19"
+    },
+    "u1s1": {
+      "brandName": "U1S1",
+      "affiliateUrl": "https://guangs.vipaff.cc/#/?code=xhX5X22f",
+      "affiliateStatus": "active",
+      "couponCode": "akaka",
+      "couponDiscount": "待核实",
+      "couponRestrictions": "公开优惠信息有限，以下单页为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "lingmao": {
+      "brandName": "灵猫网络",
+      "affiliateUrl": "https://vip01.civetnet.com/#/?code=8MIAyxak",
+      "affiliateStatus": "active",
+      "couponCode": "lingmao / lmao888",
+      "couponDiscount": "lingmao 标注 8 折",
+      "couponRestrictions": "年付小包不适用；存在两个优惠码记录待核实",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "jilian": {
+      "brandName": "极连云",
+      "affiliateUrl": "https://guangs.jlyvipaff.com/#/?code=VM1rKGUu",
+      "affiliateStatus": "active",
+      "couponCode": "ji8888",
+      "couponDiscount": "待核实",
+      "couponRestrictions": "具体折扣以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "guangnian": {
+      "brandName": "光年梯",
+      "affiliateUrl": "https://guangs.gntaff.com/#/?code=X1FoxjGE",
+      "affiliateStatus": "active",
+      "couponCode": "gnt6666",
+      "couponDiscount": "待核实",
+      "couponRestrictions": "具体折扣以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "yifan": {
+      "brandName": "一翻云",
+      "affiliateUrl": "https://guangs.1flyunaff.cc/#/register?code=Yr7FhB7r",
+      "affiliateStatus": "active",
+      "couponCode": "1FLYYUN / yfy6666",
+      "couponDiscount": "1FLYYUN 标注 9 折",
+      "couponRestrictions": "存在两个优惠码记录待核实",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "sogo": {
+      "brandName": "SOGO 云",
+      "affiliateUrl": "https://guangs.sogoyunaff.cc/#/?code=327Vs0w7",
+      "affiliateStatus": "active",
+      "couponCode": "SOGO10000 / sss777",
+      "couponDiscount": "SOGO10000 标注 9 折",
+      "couponRestrictions": "存在两个优惠码记录待核实",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "kexin": {
+      "brandName": "可信云",
+      "affiliateUrl": "https://guangs.kosingaff.com/#/register?code=UYDtNlCY",
+      "affiliateStatus": "active",
+      "couponCode": "kkk333",
+      "couponDiscount": "待核实",
+      "couponRestrictions": "具体折扣以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "sujie": {
+      "brandName": "速界",
+      "affiliateUrl": "https://guangs.speedworldaff.cc/#/register?code=xgXzEfZB",
+      "affiliateStatus": "active",
+      "couponCode": "sss1111",
+      "couponDiscount": "待核实",
+      "couponRestrictions": "具体折扣以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "shanyue": {
+      "brandName": "闪跃",
+      "affiliateUrl": "https://vip02.flashleapaff.com/#/?code=3lgzm9mm",
+      "affiliateStatus": "active",
+      "couponCode": "shanyue",
+      "couponDiscount": "8 折",
+      "couponRestrictions": "仅限闪动 / 飞跃 / 瞬移 / 跃迁，年付版不适用",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "quanqiu": {
+      "brandName": "全球云",
+      "affiliateUrl": "https://guangs.gcvipaff.com/#/?code=Ov2nvU9C",
+      "affiliateStatus": "active",
+      "couponCode": "qq88 / qqy7777",
+      "couponDiscount": "qq88 标注 8 折",
+      "couponRestrictions": "存在两个优惠码记录待核实",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "shandianshu": {
+      "brandName": "闪电鼠",
+      "affiliateUrl": "https://qwerty.shandianshuaff.com/#/?code=rUE75iYh",
+      "affiliateStatus": "active",
+      "couponCode": "sd88",
+      "couponDiscount": "季付及以上 7 折（品牌资料标注）",
+      "couponRestrictions": "具体叠加规则以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "yunjiexian": {
+      "brandName": "云界线",
+      "affiliateUrl": "https://qwerty.yunjiexianaff.com/?code=aycnwNUi",
+      "affiliateStatus": "format-anomaly",
+      "couponCode": "yjx888",
+      "couponDiscount": "季付及以上 7 折（品牌资料标注）",
+      "couponRestrictions": "链接缺少 #/ 哈希前缀；汇总表另有 code=HBaZ91c6",
+      "linkNote": "联盟链接格式与同类品牌不同（缺少 #），访问前请确认页面可正常打开",
+      "verifiedAt": "2026-10-19"
+    },
+    "liulianyun": {
+      "brandName": "榴莲云",
+      "affiliateUrl": "https://qwerty.liulianyunaff.com#/?code=hS5pvbfE",
+      "affiliateStatus": "active",
+      "couponCode": "ll88",
+      "couponDiscount": "季付及以上 7 折（品牌资料标注）",
+      "couponRestrictions": "域名与 #/? 之间无斜杠，建议核实跳转",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "shenxing": {
+      "brandName": "神行加速",
+      "affiliateUrl": "https://qwerty.shenxingaff.com/#/?code=gawDQqVE",
+      "affiliateStatus": "active",
+      "couponCode": "xs0077",
+      "couponDiscount": "新用户 7 折（品牌资料标注）",
+      "couponRestrictions": "具体适用套餐以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "huanqiuti": {
+      "brandName": "环球梯",
+      "affiliateUrl": "https://qwerty.huanqiutiaff.com/?code=9I4KRNPH",
+      "affiliateStatus": "format-anomaly",
+      "couponCode": "HQ66",
+      "couponDiscount": "季付及以上 7 折（品牌资料标注）",
+      "couponRestrictions": "链接缺少 #/ 哈希前缀",
+      "linkNote": "联盟链接格式与其他品牌不同（缺少 #），注册前建议确认可正常打开",
+      "verifiedAt": "2026-10-19"
+    },
+    "tiziyun": {
+      "brandName": "梯子云",
+      "affiliateUrl": "https://tiziyun3.ladderaff.com/#/?code=7EmnpHs0",
+      "affiliateStatus": "active",
+      "couponCode": "tiziyun",
+      "couponDiscount": "待核实",
+      "couponRestrictions": "具体折扣以官网为准",
+      "linkNote": "",
+      "verifiedAt": "2026-10-19"
+    },
+    "lingdong": {
+      "brandName": "灵动云",
+      "affiliateUrl": "https://varnexa.lingdongaff.com/#/?code=wZvEhEoI",
+      "affiliateStatus": "historical-unverified",
+      "couponCode": "待核实",
+      "couponDiscount": "尚未核实",
+      "couponRestrictions": "保存自 2026-08-09 历史记录，不保证当前有效",
+      "linkNote": "历史品牌入口，当前有效性待核实",
+      "verifiedAt": "2026-08-09"
+    },
+    "langwang": {
+      "brandName": "浪网",
+      "affiliateUrl": "https://varnexa.wavenetaff.com/#/?code=xwAM4tTd",
+      "affiliateStatus": "historical-unverified",
+      "couponCode": "待核实",
+      "couponDiscount": "尚未核实",
+      "couponRestrictions": "保存自 2026-08-09 历史记录，不保证当前有效",
+      "linkNote": "历史品牌入口，当前有效性待核实",
+      "verifiedAt": "2026-08-09"
+    },
+    "edgenova": {
+      "brandName": "边缘节点 EdgeNova",
+      "affiliateUrl": "https://work.edgenovaaff.cc/#/register?code=cl3iB5YG",
+      "affiliateStatus": "historical-unverified",
+      "couponCode": "TH888",
+      "couponDiscount": "8 折（历史资料记录）",
+      "couponRestrictions": "保存自 2026-08-09 历史记录，当前有效性待核实",
+      "linkNote": "历史品牌入口，当前有效性待核实",
+      "verifiedAt": "2026-08-09"
+    }
+  }
+}

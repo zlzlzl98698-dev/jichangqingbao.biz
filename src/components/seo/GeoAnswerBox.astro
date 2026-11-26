@@ -1,0 +1,25 @@
+---
+import { formatSourceLabel } from '../../lib/data';
+
+export interface Props {
+  label?: string;
+  answer: string;
+  verifiedAt?: string;
+  source?: string;
+}
+
+const { label = '核心结论 · Answer-First', answer, verifiedAt, source } = Astro.props;
+const displaySource = formatSourceLabel(source);
+---
+
+<aside class="my-5 rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs border-l-4 border-l-[#0b192c]">
+  <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+    <span class="text-xs font-mono uppercase tracking-wider font-bold text-[#0b192c]">{label}</span>
+    {verifiedAt && (
+      <span class="text-[11px] font-mono text-slate-500">
+        核实日期：{verifiedAt}{displaySource ? ` · 来源：${displaySource}` : ''}
+      </span>
+    )}
+  </div>
+  <p class="text-sm sm:text-base text-slate-800 leading-relaxed font-medium">{answer}</p>
+</aside>

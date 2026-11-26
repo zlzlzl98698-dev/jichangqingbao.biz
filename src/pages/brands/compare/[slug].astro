@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../../components/seo/AnchorToc.astro';
+import FaqSection from '../../../components/seo/FaqSection.astro';
+import AffiliateCta from '../../../components/brands/AffiliateCta.astro';
+import { getBrandBySlug, getEntryPlan, SITE_META } from '../../../lib/data';
+import { COMPARE_PAIRS } from './index.astro';
+import { BRAND_COMPARISON_DETAILS } from '../../../data/brand-comparisons';
+
+export async function getStaticPaths() {
+  return COMPARE_PAIRS.map((p) => ({
+    params: { slug: p.slug },
+    props: { pair: p },
+  }));
+}
+
+const { pair } = Astro.props;
+const bA = getBrandBySlug(pair.a)!;
+const bB = getBrandBySlug(pair.b)!;
+const eA = getEntryPlan(bA);
+const eB = getEntryPlan(bB);
+const detail = BRAND_COMPARISON_DETAILS[pair.slug];
+
+const tocItems = [
+  { id: 'cmp-matrix', label: '核心同口径参数对照表' },
+  { id: 'cmp-pricing', label: '价格门槛与流量单价比较' },
+  { id: 'cmp-tech', label: '线路架构与客户端兼容性差异' },
+  { id: 'cmp-audience', label: '分别适合哪类用户与限制说明' },
+  { id: 'cmp-cta', label: '各自评测档案与注册入口' },
+  ...(detail?.faqs.length ? [{ id: 'faq-heading', label: `对比常见问题（${detail.faqs.length} 问）` }] : []),
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: `${bA.brandName} vs ${bB.brandName} 横向对比评测`,
+  description: `同口径对比 ${bA.brandName} 与 ${bB.brandName} 在价格、流量单价、协议兼容性、客户端自由度与实测证据上的真实区别。`,
+  inLanguage: 'zh-CN',
+  datePublished: '2026-10-19',
+  dateModified: SITE_META.lastUpdated,
+  author: { '@type': 'Organization', name: SITE_META.name },
+  publisher: { '@id': `${SITE_META.url}/#organization` },
+};
+---
+
+<BaseLayout
+  title={`${bA.brandName} vs ${bB.brandName} 对比评测：价格、协议与订阅兼容性 | 机场情报`}
+  description={`横向对比 ${bA.brandName} 与 ${bB.brandName} 的运营时间、月付/年付门槛、线路协议、第三方客户端支持、资料限制与各自适用人群。`}
+  ogType="article"
+  publishedAt="2026-10-19"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[articleSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '机场品牌库', href: '/brands/' }, { label: '品牌对比', href: '/brands/compare/' }, { label: `${bA.brandName} vs ${bB.brandName}` }]} />
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <article class="lg:col-span-8 min-w-0">
+        <header class="pb-5 border-b border-slate-200">
+          <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Head-to-Head Comparison</span>
+          <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">{bA.brandName} vs {bB.brandName} 核心指标与选型对比</h1>
+          <p class="text-sm text-slate-600 mt-1.5">{pair.focus} · 更新日期：{SITE_META.lastUpdated}</p>
+        </header>
+
+        <GeoAnswerBox
+          label="简明比较结论（Answer-First）"
+          answer={detail ? detail.verdict : `${bA.brandName} 与 ${bB.brandName} 各有侧重，建议对照下方同口径参数决定。`}
+          verifiedAt={SITE_META.verifiedSnapshotDate}
+          source="品牌实体数据库与字段冲突核查台账"
+        />
+
+        <section id="cmp-matrix" class="editorial-card rounded-xl overflow-hidden my-6 scroll-mt-24">
+          <div class="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between gap-2">
+            <h2 class="text-base font-bold text-[#0b192c]">一、同口径核心参数横向对比表</h2>
+            <span class="font-mono text-[11px] text-slate-500">STRICT PARITY</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs sm:text-sm">
+              <thead>
+                <tr class="bg-slate-50/70 border-b border-slate-200">
+                  <th class="py-3 px-4 w-1/4">对比维度</th>
+                  <th class="py-3 px-4 w-[37.5%] text-[#0b192c]"><a href={`/brands/${bA.slug}/`} class="underline">{bA.brandName}</a></th>
+                  <th class="py-3 px-4 w-[37.5%] text-[#0b192c]"><a href={`/brands/${bB.slug}/`} class="underline">{bB.brandName}</a></th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr><td class="py-2.5 px-4 font-semibold">运营年份</td><td class="py-2.5 px-4 font-mono">{bA.foundedYear ? `${bA.foundedYear} 年` : '待核实'}</td><td class="py-2.5 px-4 font-mono">{bB.foundedYear ? `${bB.foundedYear} 年` : '待核实'}</td></tr>
+                <tr><td class="py-2.5 px-4 font-semibold">年付折算起步</td><td class="py-2.5 px-4 font-mono">{eA.cheapestAnnual ? `¥${eA.cheapestAnnual.monthlyEquivalent}/月 (${eA.cheapestAnnual.trafficGb ?? '?'}GB)` : '无/待核实'}</td><td class="py-2.5 px-4 font-mono">{eB.cheapestAnnual ? `¥${eB.cheapestAnnual.monthlyEquivalent}/月 (${eB.cheapestAnnual.trafficGb ?? '?'}GB)` : '无/待核实'}</td></tr>
+                <tr><td class="py-2.5 px-4 font-semibold">常规月付门槛</td><td class="py-2.5 px-4 font-mono">{eA.cheapestMonthly ? `¥${eA.cheapestMonthly.price}/月 (${eA.cheapestMonthly.trafficGb ?? '?'}GB)` : '无记录'}</td><td class="py-2.5 px-4 font-mono">{eB.cheapestMonthly ? `¥${eB.cheapestMonthly.price}/月 (${eB.cheapestMonthly.trafficGb ?? '?'}GB)` : '无记录'}</td></tr>
+                <tr><td class="py-2.5 px-4 font-semibold">不限时套餐</td><td class="py-2.5 px-4">{eA.hasNoExpiry ? '提供' : '未收录'}</td><td class="py-2.5 px-4">{eB.hasNoExpiry ? '提供' : '未收录'}</td></tr>
+                <tr><td class="py-2.5 px-4 font-semibold">线路与协议</td><td class="py-2.5 px-4">{bA.networkTypes.join('/')} · {bA.protocols.join('/')}</td><td class="py-2.5 px-4">{bB.networkTypes.join('/')} · {bB.protocols.join('/')}</td></tr>
+                <tr><td class="py-2.5 px-4 font-semibold">第三方订阅支持</td><td class="py-2.5 px-4">{bA.thirdPartyClientSupport === true ? '支持 Clash/小火箭' : bA.thirdPartyClientSupport === false ? '仅官方专属端' : '待核实'}</td><td class="py-2.5 px-4">{bB.thirdPartyClientSupport === true ? '支持 Clash/小火箭' : bB.thirdPartyClientSupport === false ? '仅官方专属端' : '待核实'}</td></tr>
+                <tr><td class="py-2.5 px-4 font-semibold">设备限制</td><td class="py-2.5 px-4">{bA.deviceLimit}</td><td class="py-2.5 px-4">{bB.deviceLimit}</td></tr>
+                <tr><td class="py-2.5 px-4 font-semibold">优惠码记录</td><td class="py-2.5 px-4 font-mono">{bA.couponCode || '无/待核实'}</td><td class="py-2.5 px-4 font-mono">{bB.couponCode || '无/待核实'}</td></tr>
+                <tr><td class="py-2.5 px-4 font-semibold">实测截图证据</td><td class="py-2.5 px-4 font-mono">{bA.testImages.length} 张</td><td class="py-2.5 px-4 font-mono">{bB.testImages.length} 张</td></tr>
+                <tr><td class="py-2.5 px-4 font-semibold">数据定性</td><td class="py-2.5 px-4">{bA.dataStatus}</td><td class="py-2.5 px-4">{bB.dataStatus}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {detail && (
+          <div class="space-y-6">
+            <section id="cmp-pricing" class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+              <h2 class="text-lg font-bold text-[#0b192c] mb-2">二、价格门槛、流量容量与单位成本比较</h2>
+              <p class="text-sm text-slate-700 leading-relaxed">{detail.priceAnalysis}</p>
+            </section>
+
+            <section id="cmp-tech" class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+              <h2 class="text-lg font-bold text-[#0b192c] mb-2">三、线路协议特征与客户端使用自由度差异</h2>
+              <p class="text-sm text-slate-700 leading-relaxed">{detail.networkClientDiff}</p>
+            </section>
+
+            <section id="cmp-audience" class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24 space-y-4">
+              <h2 class="text-lg font-bold text-[#0b192c]">四、使用场景分流与各自适合人群</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+                <div class="rounded-lg border border-teal-200 bg-teal-50/40 p-4">
+                  <strong class="block text-teal-900 mb-1">优先选 {bA.brandName} 的场景</strong>
+                  <p class="text-slate-700 leading-relaxed">{detail.fitA}</p>
+                </div>
+                <div class="rounded-lg border border-sky-200 bg-sky-50/40 p-4">
+                  <strong class="block text-sky-900 mb-1">优先选 {bB.brandName} 的场景</strong>
+                  <p class="text-slate-700 leading-relaxed">{detail.fitB}</p>
+                </div>
+              </div>
+              <div class="rounded-lg border border-amber-200 bg-amber-50/50 p-4 text-xs sm:text-sm text-amber-950">
+                <strong class="block mb-1">资料透明度与测试局限提示</strong>
+                <p class="leading-relaxed">{detail.dataCaveats}</p>
+              </div>
+            </section>
+          </div>
+        )}
+
+        <section id="cmp-cta" class="my-8 scroll-mt-24 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h2 class="text-lg font-bold text-[#0b192c]">五、两家品牌完整评测入口与合作注册导航</h2>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <a href={`/brands/${bA.slug}/`} class="px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-[#0b192c] font-semibold">阅读 {bA.brandName} 全维度评测 →</a>
+              <a href={`/brands/${bB.slug}/`} class="px-3 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-[#0b192c] font-semibold">阅读 {bB.brandName} 全维度评测 →</a>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <AffiliateCta brand={bA} />
+            <AffiliateCta brand={bB} />
+          </div>
+        </section>
+
+        {detail && detail.faqs.length > 0 && (
+          <FaqSection title={`${bA.brandName} vs ${bB.brandName} 常见问题（FAQ）`} items={detail.faqs} includeSchema={true} />
+        )}
+      </article>
+
+      <aside class="lg:col-span-4 space-y-5 lg:sticky lg:top-24">
+        <AnchorToc title="对比页目录" items={tocItems} />
+
+        <div class="editorial-card rounded-xl p-4 sm:p-5 text-xs space-y-2.5">
+          <h2 class="text-sm font-bold text-[#0b192c] pb-2 border-b border-slate-100">更多横向对比与替代库</h2>
+          <ul class="space-y-2">
+            <li><a href="/brands/compare/" class="font-semibold text-teal-800 hover:underline">返回 10 组品牌对比总中心 →</a></li>
+            <li><a href="/intelligence/alternatives/" class="font-semibold text-[#0b192c] hover:underline">同价位与同架构平替矩阵 →</a></li>
+            <li><a href="/pricing/" class="font-semibold text-[#0b192c] hover:underline">查看 154 条实时套餐报价表 →</a></li>
+            <li><a href="/intelligence/changelog/" class="font-semibold text-[#0b192c] hover:underline">核对 18 项数据字段冲突台账 →</a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

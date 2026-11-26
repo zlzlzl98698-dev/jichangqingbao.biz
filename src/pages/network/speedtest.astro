@@ -1,0 +1,164 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import { brands, resolveEvidenceImage, SITE_META } from '../../lib/data';
+
+const screenshotRecords = brands.flatMap((b) =>
+  b.testImages.map((img) => ({
+    brandName: b.brandName,
+    brandSlug: b.slug,
+    accentColor: b.accentColor,
+    ...img,
+  }))
+);
+
+const batchSummary = [
+  { batch: '2026-07-18 / 07-19', tool: '50 节点流媒体及测速快照', scope: '无忧链接（07-18）、微风网络（07-19）', note: '早期流媒体与基础延迟归档（注：无忧于 2026-10 已转专属端）' },
+  { batch: '2026-08-11 发布整理版', tool: 'MAI-TEST-BOT 2.0.0-dev（珠海联通 5Gbps / 32线程）等', scope: '覆盖光速云、唯兔云、极连云等 15 家主流与新站截图', note: '采集跨凌晨至晚间多个时段；可信云日期为同批次推断（CF-012）' },
+  { batch: '2026-08-19 光速云专测', tool: 'MiaoKo（电信 2G / 移动 1G / 联通 3G 三网）', scope: '光速云 62/62 节点三网速率及 Disney+/Netflix/OpenAI/Gemini 解锁', note: '站内三网同日验证粒度最完整的单一档案' },
+  { batch: '2026-10-19 基础节点表', tool: '文字延迟参照清单', scope: '光速云（港21-27ms / 新42-46ms / 日53-57ms / 美134-180ms）', note: '明确标注“非晚高峰”，仅作物理路由参照，不用于横向排榜' },
+];
+
+const speedtestFaqs = [
+  { q: '为什么 2026-08-11 批次的测速图不能拿来排成“第一名到第十五名总速榜”？', a: '因为同一整理包内的各张图分别抓拍于凌晨、日间与傍晚等不同时段，且测试工具版本与不同地区的本地带宽上限不一。保留原图与时段说明供同条件下横向参考，比做假排行榜更严谨。' },
+  { q: '截图里少数节点速度显示 `0B/s` 或 Timeout，为什么你们不裁掉？', a: '刻意保持未裁切原始快照完整性是本站实测方法论的核心准则：让用户看清某家品牌在某时段到底有多少可用绿色节点、多少失活或零速节点。' },
+  { q: '什么是 CF-012 记录的可信云测试时间推断说明？', a: '可信云 2026-08-11 截图原图边缘时间文本被部分遮挡，根据该整理包同日同环境批次上下文归档推断日期并特别标注待复核（CF-012），绝不隐藏信息缺口。' },
+  { q: '如何区分 MAI-TEST-BOT 测速图和 MiaoKo 测速图重点看什么？', a: 'MAI-TEST-BOT 主要输出总下行峰值、平均速率与基础 RTT；MiaoKo 则会在右侧额外列出 OpenAI、Gemini、Netflix、Disney+ 与 YouTube 的实测节点可用列。' },
+  { q: '我家里是 300Mbps 移动宽带，在 5Gbps 机房跑出的结果能直接照搬到我家吗？', a: '不能按峰值数字直接照搬。高配服务器测得的是机场通道上限带宽，而家庭真实体感还要受你本地路由器规格、所在省移动国际入口拥塞与晚高峰调度影响。' },
+  { q: '怎样正确利用测速证据库挑选试错品牌？', a: '优先筛选拥有 2026-08 近期截图且 0B/s 节点占比较低、又保留了第三方订阅和 15–25 元单月月付的品牌（如光速云、唯兔云、极连云、光年梯、一翻云），先试测一个月。' },
+];
+
+const tocItems = [
+  { id: 'st-batches', label: '四大测试批次与环境变量清单' },
+  { id: 'st-gallery', label: `全部 ${screenshotRecords.length} 份原始截图档案库` },
+  { id: 'st-method', label: '读图避坑三项核心规则' },
+  { id: 'faq-heading', label: '测速档案常见问题（6 问）' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `网络测速与历史性能证据库（${screenshotRecords.length} 份原始截图）`,
+  url: `${SITE_META.url}/network/speedtest/`,
+  description: '完整归档 2026-07 至 2026-10 四大测试批次原始截图与三网对照记录，坚持未裁剪原图与不跨条件排榜原则。',
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+---
+
+<BaseLayout
+  title="网络测速与性能分析（历史实测截图证据库）| 机场情报"
+  description="完整收录 2026-07-18/19、2026-08-11（MAI-TEST-BOT 15家收录品牌）及 2026-08-19（光速云三网 MiaoKo）只读原始测速截图及方法局限说明。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '线路与节点', href: '/network/' }, { label: '网络测速与性能分析' }]} />
+
+    <header class="pb-5 border-b border-slate-200">
+      <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Observatory Evidence Archive</span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">网络测速与历史性能证据库（{screenshotRecords.length} 份原始截图）</h1>
+    </header>
+
+    <GeoAnswerBox
+      answer="本页汇总本站全部只读原始节点测速截图证据，所有原始文件均未覆盖、未裁掉时间戳且完整保留 0B/KB 异常低速节点。2026-08-11 批次涵盖不同时段（凌晨至晚间），可信云日期为同批次推断且标为待复核；2026-10-19 列表则为非晚高峰参考记录。以上证据均不构成全站横向速度排行榜。"
+      verifiedAt={SITE_META.verifiedSnapshotDate}
+      source="speedtest-manifest.json、光速云测试图解锁图、微风/无忧原始截图"
+    />
+
+    <!-- Batch Summary Table -->
+    <section id="st-batches" class="my-6 scroll-mt-24">
+      <h2 class="text-lg font-bold text-[#0b192c] mb-3">一、四大测试批次与环境变量对照说明</h2>
+      <div class="editorial-card rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4">采集批次</th>
+                <th class="py-3 px-3">测试后端与工具</th>
+                <th class="py-3 px-3">覆盖品牌与范围</th>
+                <th class="py-3 px-4">方法局限与备注</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {batchSummary.map((b) => (
+                <tr class="hover:bg-slate-50/70 align-top">
+                  <td class="py-2.5 px-4 font-mono font-bold text-[#0b192c] whitespace-nowrap">{b.batch}</td>
+                  <td class="py-2.5 px-3 text-slate-700">{b.tool}</td>
+                  <td class="py-2.5 px-3 text-slate-700">{b.scope}</td>
+                  <td class="py-2.5 px-4 text-slate-600">{b.note}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="st-gallery" class="observatory-panel rounded-2xl p-5 sm:p-6 my-6 scroll-mt-24">
+      <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-700/70 mb-5">
+        <div>
+          <span class="font-mono text-xs text-teal-300">Performance Monitoring Archive</span>
+          <h2 class="text-lg font-bold text-white mt-0.5">二、原始测速截图全量索引</h2>
+        </div>
+        <span class="font-mono text-[11px] text-slate-400 select-none">机场情报 · jichangqingbao.biz</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {screenshotRecords.map((rec) => {
+          const imgMeta = resolveEvidenceImage(rec.file);
+          return (
+            <figure class="observatory-subpanel rounded-xl p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <a href={`/brands/${rec.brandSlug}/`} class="text-sm font-bold text-white hover:underline flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full" style={`background-color: ${rec.accentColor};`}></span>
+                    {rec.brandName}
+                  </a>
+                  <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-slate-800 text-teal-300">{rec.protocol}</span>
+                </div>
+                <p class="font-mono text-[11px] text-slate-400 mb-2">{rec.testedAt} · {rec.dataStatus}</p>
+                {imgMeta && (
+                  <Image
+                    src={imgMeta}
+                    alt={`${rec.brandName} ${rec.testedAt} 节点测速截图，包含节点地区、协议、延迟和速度结果。`}
+                    class="w-full h-56 object-cover object-top rounded border border-slate-700"
+                    loading="lazy"
+                  />
+                )}
+              </div>
+              <figcaption class="mt-3 text-xs text-slate-300 leading-relaxed">
+                <span class="block text-[11px] text-slate-400 font-mono mb-1">{rec.backend}</span>
+                {rec.caption}
+                <a href={`/brands/${rec.brandSlug}/`} class="block mt-1.5 text-teal-300 hover:underline font-medium">
+                  查看 {rec.brandName} 完整档案 →
+                </a>
+              </figcaption>
+            </figure>
+          );
+        })}
+      </div>
+    </section>
+
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <aside class="lg:col-span-4 lg:sticky lg:top-24">
+        <AnchorToc title="测速证据指南目录" items={tocItems} />
+      </aside>
+      <div class="lg:col-span-8 space-y-6">
+        <section id="st-method" class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24 space-y-3 text-sm text-slate-700 leading-relaxed">
+          <h2 class="text-lg font-bold text-[#0b192c]">三、阅读测速截图必查的三条方法论防错准则</h2>
+          <p class="font-medium text-teal-800 bg-teal-50/60 border-l-2 border-teal-600 pl-3 py-1.5 rounded-r">
+            不要被单一“900Mbps”大数字迷惑；重点检查并发线宽、正常绿卡率与测试具体钟点。
+          </p>
+          <p>看测速图的核心顺序应当是：1) 核对顶部信息栏写的测试服务器总出口（例如 1Gbps 移动 vs 5Gbps 联通天然存在 5 倍总速率上限差）；2) 统计全表成功跑出速率的节点占比，大量 0B/s 或超时比少数几颗高速节点更有警示价值；3) 将 MAI-TEST-BOT 纯下载图与 MiaoKo 解锁图分开评估，不在速度图里臆断 AI 或流媒体解锁情况。</p>
+        </section>
+
+        <FaqSection title="测速证据库常见问题（FAQ）" items={speedtestFaqs} includeSchema={true} />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

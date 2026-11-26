@@ -1,0 +1,44 @@
+---
+import { SITE_META } from '../../lib/data';
+
+export interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+export interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+const fullItems: BreadcrumbItem[] = [{ label: '首页', href: '/' }, ...items];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: fullItems.map((item, idx) => ({
+    '@type': 'ListItem',
+    position: idx + 1,
+    name: item.label,
+    ...(item.href ? { item: new URL(item.href, SITE_META.url).toString() } : {}),
+  })),
+};
+---
+
+<nav aria-label="面包屑导航" class="mb-5 text-xs text-slate-500">
+  <ol class="flex flex-wrap items-center gap-1.5">
+    {fullItems.map((item, idx) => (
+      <li class="flex items-center gap-1.5">
+        {idx > 0 && <span aria-hidden="true" class="text-slate-300">/</span>}
+        {item.href && idx < fullItems.length - 1 ? (
+          <a href={item.href} class="hover:text-[#0b192c] hover:underline transition-colors">
+            {item.label}
+          </a>
+        ) : (
+          <span class="font-medium text-slate-700" aria-current="page">{item.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />

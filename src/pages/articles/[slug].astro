@@ -1,0 +1,256 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import BrandCard from '../../components/brands/BrandCard.astro';
+import { formatSourceLabel, getBrandBySlug, SITE_META } from '../../lib/data';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('articles', (e) => !e.data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+const allArticles = await getCollection('articles', (e) => !e.data.draft);
+
+const relatedArticleObjs = entry.data.relatedSlugs
+  .map((slug) => allArticles.find((a) => a.id === slug))
+  .filter((a): a is NonNullable<typeof a> => Boolean(a));
+
+const siblingArticles = allArticles
+  .filter((a) => a.id !== entry.id && a.data.parentTopic === entry.data.parentTopic)
+  .slice(0, 4);
+
+const relatedBrandObjs = entry.data.relatedBrands
+  .map((s) => getBrandBySlug(s))
+  .filter((b): b is NonNullable<typeof b> => Boolean(b));
+
+const tocItems = [
+  ...headings.filter((h) => h.depth === 2).map((h) => ({ id: h.slug, label: h.text })),
+  ...(entry.data.faq.length > 0 ? [{ id: 'faq-heading', label: `常见问题（${entry.data.faq.length} 问）` }] : []),
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': entry.data.schemaType,
+  headline: entry.data.h1,
+  description: entry.data.description,
+  inLanguage: 'zh-CN',
+  datePublished: entry.data.date,
+  dateModified: entry.data.updated,
+  author: {
+    '@type': 'Organization',
+    name: entry.data.author,
+  },
+  publisher: {
+    '@id': `${SITE_META.url}/#organization`,
+  },
+  keywords: [entry.data.primaryKeyword, ...entry.data.secondaryKeywords].join(', '),
+};
+
+function getContextualCta(intent: string) {
+  switch (intent) {
+    case 'diagnostics':
+      return {
+        eyebrow: 'Diagnostics & Recovery',
+        title: '若已排除本地网络与系统时间问题仍未恢复',
+        desc: '可前往故障分诊中心查阅其他联动症状，或前往风险情报库核实品牌是否记录异常。',
+        primaryLabel: '返回故障诊断中心',
+        primaryHref: '/diagnostics/',
+        secondaryLabel: '查品牌风险状态',
+        secondaryHref: '/intelligence/outages/',
+      };
+    case 'guide':
+      return {
+        eyebrow: 'Next Guide Step',
+        title: '完成本操作后出现疑问或需搭配软件？',
+        desc: '对照全平台客户端兼容清单确认机场支持状态，或直接查询常见排障步骤。',
+        primaryLabel: '查客户端百科',
+        primaryHref: '/clients/',
+        secondaryLabel: '常见连接排障',
+        secondaryHref: '/diagnostics/',
+      };
+    case 'network':
+      return {
+        eyebrow: 'Observatory Evidence',
+        title: '核对 39 份原始测速截图与线路参数',
+        desc: '按运营商和时段交叉验证通道吞吐，不被非晚高峰跑分数字误导。',
+        primaryLabel: '看测速证据库',
+        primaryHref: '/network/speedtest/',
+        secondaryLabel: 'IEPL 选型说明',
+        secondaryHref: '/network/iepl/recommendations/',
+      };
+    case 'risk':
+      return {
+        eyebrow: 'Risk & Migration',
+        title: '核查品牌冲突审计或查找平替方案',
+        desc: '基于客户端自由度与预算区间筛选稳健备选，严守低成本试错底线。',
+        primaryLabel: '查同价位替代矩阵',
+        primaryHref: '/intelligence/alternatives/',
+        secondaryLabel: '18 项冲突审计',
+        secondaryHref: '/intelligence/changelog/',
+      };
+    case 'pricing':
+      return {
+        eyebrow: 'Pricing Calculator',
+        title: '对比 154 条全周期报价与单 GB 成本',
+        desc: '按月付/年付/不限时真实实付金额过滤，结合品牌评测决定首单试水对象。',
+        primaryLabel: '打开价格数据库',
+        primaryHref: '/pricing/',
+        secondaryLabel: '查看优惠码汇总',
+        secondaryHref: '/pricing/coupons/',
+      };
+    default:
+      return {
+        eyebrow: 'Brand Verification',
+        title: '进入品牌横向对比与独立评测档案',
+        desc: '对照 31 家品牌运营年份、订阅兼容、测速原图与冲突限制再做选择。',
+        primaryLabel: '查 31 家品牌档案',
+        primaryHref: '/brands/',
+        secondaryLabel: '双品牌横向对比',
+        secondaryHref: '/brands/compare/',
+      };
+  }
+}
+
+const ctxCta = getContextualCta(entry.data.conversionIntent);
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  ogType="article"
+  publishedAt={entry.data.date}
+  updatedAt={entry.data.updated}
+  schemas={[schema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs
+      items={[
+        { label: entry.data.pillarLabel, href: entry.data.pillarHref },
+        { label: entry.data.parentTopicLabel, href: entry.data.parentTopic },
+        { label: entry.data.h1 },
+      ]}
+    />
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <article class="lg:col-span-8 min-w-0">
+        <header class="pb-5 border-b border-slate-200">
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">
+              {entry.data.parentCluster}
+            </span>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono text-[11px]">
+              {entry.data.searchIntent}
+            </span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] leading-tight">{entry.data.h1}</h1>
+          <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 font-mono">
+            <span>发布：{entry.data.date}</span>
+            <span>更新：{entry.data.updated}</span>
+            <span>核实基线：{entry.data.verifiedAt}</span>
+            <span>作者：{entry.data.author}</span>
+          </div>
+        </header>
+
+        <GeoAnswerBox
+          label="直接回答与核心前提（Answer-First）"
+          answer={entry.data.answerFirst}
+          verifiedAt={entry.data.verifiedAt}
+          source={entry.data.sources}
+        />
+
+        <div class="prose-intel my-6">
+          <Content />
+        </div>
+
+        {(relatedArticleObjs.length > 0 || siblingArticles.length > 0) && (
+          <section class="my-8 editorial-card rounded-xl p-5">
+            <h2 class="text-base font-bold text-[#0b192c] mb-3">同主题延伸阅读与上下游衔接</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              {[...relatedArticleObjs, ...siblingArticles]
+                .filter((v, idx, arr) => arr.findIndex((x) => x.id === v.id) === idx)
+                .slice(0, 6)
+                .map((rel) => (
+                  <a href={`/articles/${rel.id}/`} class="p-3 rounded-lg border border-slate-200 bg-slate-50/70 hover:border-teal-600 transition-colors block">
+                    <span class="font-mono text-[10px] text-teal-700 block">{rel.data.parentTopicLabel}</span>
+                    <strong class="text-sm text-[#0b192c] mt-0.5 block">{rel.data.h1}</strong>
+                    <span class="text-slate-500 mt-1 block line-clamp-2">{rel.data.description}</span>
+                  </a>
+                ))}
+            </div>
+          </section>
+        )}
+
+        {relatedBrandObjs.length > 0 && (
+          <section class="my-8">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <h2 class="text-lg font-bold text-[#0b192c]">本文涉及或可供参考的品牌档案</h2>
+              <a href="/brands/" class="text-xs font-semibold text-teal-700 hover:underline">查看全部 31 家 →</a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {relatedBrandObjs.map((b) => (
+                <BrandCard brand={b} showPriorityBadge={true} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {entry.data.faq.length > 0 && <FaqSection items={entry.data.faq} includeSchema={true} />}
+
+        <footer class="mt-8 rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600 space-y-1">
+          <p><strong>适用范围与受众：</strong>{entry.data.audience}</p>
+          <p><strong>参考来源与基线：</strong>{formatSourceLabel(entry.data.sources)}（核实日：{entry.data.verifiedAt}）</p>
+          <p>
+            <strong>上级归属：</strong>
+            <a href={entry.data.parentTopic} class="text-[#0b192c] underline font-medium">{entry.data.parentTopicLabel}</a>
+            {' · '}
+            <a href={entry.data.pillarHref} class="text-[#0b192c] underline">{entry.data.pillarLabel}</a>
+            {' · '}
+            <a href="/corrections/" class="underline">内容纠错</a>
+          </p>
+        </footer>
+      </article>
+
+      <aside class="lg:col-span-4 space-y-5 lg:sticky lg:top-24">
+        <AnchorToc title="本文结构目录" items={tocItems} />
+
+        <div class="editorial-card rounded-xl p-4 sm:p-5 text-xs space-y-2">
+          <h2 class="text-sm font-bold text-[#0b192c] pb-2 border-b border-slate-100">上级专题枢纽</h2>
+          <p class="text-slate-600">
+            本文隶属 <strong class="text-[#0b192c]">{entry.data.parentTopicLabel}</strong> 专题下“{entry.data.parentCluster}”长尾集群。
+          </p>
+          <div class="pt-1 flex flex-wrap gap-2">
+            <a href={entry.data.parentTopic} class="px-2.5 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-[#0b192c] font-semibold">
+              返回 {entry.data.parentTopicLabel} →
+            </a>
+            <a href="/articles/" class="px-2.5 py-1.5 rounded border border-slate-200 text-slate-700 hover:bg-slate-50">
+              全部长尾文章库
+            </a>
+          </div>
+        </div>
+
+        <div class="observatory-panel rounded-xl p-4 sm:p-5">
+          <span class="font-mono text-[10px] uppercase tracking-wider text-teal-300">{ctxCta.eyebrow}</span>
+          <h3 class="text-sm font-bold text-white mt-1">{ctxCta.title}</h3>
+          <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">{ctxCta.desc}</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <a href={ctxCta.primaryHref} class="px-3 py-1.5 rounded bg-teal-600 text-white text-xs font-semibold hover:bg-teal-500">
+              {ctxCta.primaryLabel}
+            </a>
+            <a href={ctxCta.secondaryHref} class="px-3 py-1.5 rounded border border-slate-600 text-slate-200 text-xs hover:bg-slate-800">
+              {ctxCta.secondaryLabel}
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

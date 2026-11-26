@@ -1,0 +1,93 @@
+---
+import TopicPageTemplate, { type TopicTable } from '../../components/seo/TopicPageTemplate.astro';
+import { STREAMING_AI_TOPICS } from '../../data/topics-technical';
+import { STREAMING_AI_ENRICHMENTS } from '../../data/secondary/batch2-streaming-ai';
+import { mergeTopicEnrichment } from '../../data/secondary/enrich';
+import { getBrandBySlug, getBrandsSortedByPriority } from '../../lib/data';
+
+export async function getStaticPaths() {
+  return STREAMING_AI_TOPICS.map((t) => ({
+    params: { topic: t.slug },
+    props: { entry: t },
+  }));
+}
+
+const { entry: rawEntry } = Astro.props;
+
+function buildDynamicTables(slug: string): TopicTable[] {
+  const all = getBrandsSortedByPriority();
+  const aiMap: Record<string, keyof (typeof all)[number]['aiAvailability']> = {
+    chatgpt: 'ChatGPT',
+    claude: 'Claude',
+    gemini: 'Gemini',
+  };
+  const streamMap: Record<string, keyof (typeof all)[number]['streamingAvailability']> = {
+    netflix: 'Netflix',
+    'disney-plus': 'Disney+',
+    youtube: 'YouTube',
+    tiktok: 'TikTok',
+  };
+
+  if (aiMap[slug]) {
+    const key = aiMap[slug];
+    const rows = all
+      .filter((b) => !b.aiAvailability[key].startsWith('未测试'))
+      .slice(0, 14)
+      .map((b) => [
+        b.brandName,
+        b.aiAvailability[key],
+        b.thirdPartyClientSupport === true ? '支持 Clash/小火箭（可配分流）' : '仅专属端/待核实',
+        b.testImages.some((i) => i.caption.includes('MiaoKo') || i.caption.includes('御三家')) ? '有截图归档' : '无同平台截图',
+      ]);
+    return [{
+      title: `站内收录品牌 ${key} 可用性与证据定性对照表`,
+      subtitle: '严格区分实测截图与品牌方宣称',
+      columns: ['品牌', `${key} 资料状态`, '分流策略支持', '截图证据'],
+      rows,
+    }];
+  }
+
+  if (streamMap[slug]) {
+    const key = streamMap[slug];
+    const rows = all
+      .filter((b) => !b.streamingAvailability[key].startsWith('未测试'))
+      .slice(0, 14)
+      .map((b) => [
+        b.brandName,
+        b.streamingAvailability[key],
+        b.thirdPartyClientSupport === true ? '支持订阅策略组' : '仅专属端/待核实',
+        b.testImages.length > 0 ? `${b.testImages.length} 份测试图` : '暂无',
+      ]);
+    return [{
+      title: `站内收录品牌 ${key} 状态与测试资料对照表`,
+      subtitle: '汇总自机场情报品牌实测矩阵',
+      columns: ['品牌', `${key} 状态`, '客户端分流自由度', '测试档案'],
+      rows,
+    }];
+  }
+
+  return [];
+}
+
+const entry = mergeTopicEnrichment(rawEntry, STREAMING_AI_ENRICHMENTS[rawEntry.slug], buildDynamicTables(rawEntry.slug));
+const relatedBrands = (entry.brandSlugs ?? [])
+  .map((s) => getBrandBySlug(s))
+  .filter((b): b is NonNullable<typeof b> => Boolean(b));
+---
+
+<TopicPageTemplate
+  title={entry.title}
+  description={entry.description}
+  h1={entry.h1}
+  eyebrow={entry.eyebrow}
+  answerFirst={entry.answerFirst}
+  breadcrumbs={[{ label: 'AI 与流媒体', href: '/streaming-ai/' }, { label: entry.h1 }]}
+  sections={entry.sections}
+  tables={entry.tables}
+  steps={entry.steps}
+  clusters={entry.clusters}
+  cta={entry.cta}
+  relatedBrands={relatedBrands}
+  faqs={entry.faqs}
+  relatedLinks={entry.relatedLinks}
+/>

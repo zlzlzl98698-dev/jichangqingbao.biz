@@ -1,0 +1,36 @@
+---
+import TopicPageTemplate from '../components/seo/TopicPageTemplate.astro';
+import { dataConflicts } from '../lib/data';
+---
+
+<TopicPageTemplate
+  title="内容纠错与资料核查反馈 | 机场情报"
+  description="如发现机场情报站内套餐价格变更、优惠码失效、订阅方式调整或数据错误，欢迎依据本页核查流程提交纠错。"
+  h1="内容纠错与资料核查反馈"
+  eyebrow="Governance · Corrections"
+  answerFirst={`机场情报已公开审计并记录了 ${dataConflicts.length} 项跨来源字段冲突。任何品牌变更、链接失效、客户端模式调整或测速环境勘误，经原始截图或官网公告核实后，均会同步更新对应字段的 verifiedAt 日期并在更新日志中公示。`}
+  breadcrumbs={[{ label: '内容纠错' }]}
+  sections={[
+    {
+      heading: '一、哪些情况适合提交纠错',
+      lead: '我们重点核实影响用户付费决策与客户端使用的关键事实变动。',
+      bullets: [
+        '品牌套餐下架、涨价或年付/不限时流量配额变更。',
+        '原先支持 Clash/Shadowrocket 第三方订阅的品牌改为仅限专属客户端（或反之）。',
+        '推广链接或官方入口无法打开、域名变更或优惠码失效。',
+        '品牌方公开披露新的退款规则或服务异常/恢复公告。',
+      ],
+    },
+    {
+      heading: '二、纠错审核与证据要求',
+      lead: '不采信无证据的匿名主观差评或竞品攻击信息。',
+      paragraphs: [
+        '提交状态异常或停运线索时，需附带清晰的时间戳、官网公告截图或可复现的连接错误日志，本站核实后再行更新品牌风险状态，避免误伤正常维护中的服务。',
+      ],
+    },
+  ]}
+  relatedLinks={[
+    { label: '查看完整冲突审计与更新日志', href: '/intelligence/changelog/' },
+    { label: '编辑政策与数据分级', href: '/editorial-policy/' },
+  ]}
+/>

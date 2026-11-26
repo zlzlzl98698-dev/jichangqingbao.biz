@@ -1,0 +1,75 @@
+---
+import type { Brand } from '../../lib/data';
+
+export interface Props {
+  brand: Brand;
+}
+
+const { brand } = Astro.props;
+const lineSummary = brand.networkTypes.join(' / ');
+const regionSample = brand.regions.slice(0, 6).join(' · ');
+---
+
+<section class="observatory-panel rounded-xl p-5 sm:p-6 my-6" aria-label={`${brand.brandName} Network Path Observatory`}>
+  <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-700/70">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full" style={`background-color: ${brand.accentColor};`}></span>
+        <span class="font-mono text-[11px] uppercase tracking-wider text-slate-400">Network Path Observatory</span>
+      </div>
+      <h3 class="text-base sm:text-lg font-bold text-white mt-1">{brand.brandName} · 线路路径原理示意图</h3>
+    </div>
+    <span class="px-2.5 py-0.5 rounded bg-amber-950/70 border border-amber-700/60 text-amber-200 font-mono text-[11px]">
+      原理示意图（非物理机房拓扑证据）
+    </span>
+  </div>
+
+  <div class="mt-5 grid grid-cols-1 md:grid-cols-4 gap-3 items-stretch">
+    <div class="observatory-subpanel rounded-lg p-3.5 flex flex-col justify-between">
+      <span class="text-[10px] font-mono uppercase text-slate-400">01 / CLIENT ENDPOINT</span>
+      <div class="my-2">
+        <p class="text-sm font-bold text-white">用户终端设备</p>
+        <p class="text-xs text-slate-300 mt-1">
+          {brand.thirdPartyClientSupport === false
+            ? '仅限官方专属客户端'
+            : brand.officialClient
+              ? '自研客户端 / 第三方订阅'
+              : '第三方通用客户端订阅'}
+        </p>
+      </div>
+      <span class="font-mono text-[11px] text-teal-300">协议：{brand.protocols.join(' / ')}</span>
+    </div>
+
+    <div class="observatory-subpanel rounded-lg p-3.5 flex flex-col justify-between border-l-2" style={`border-left-color: ${brand.accentColor};`}>
+      <span class="text-[10px] font-mono uppercase text-slate-400">02 / INGRESS & TRANSIT</span>
+      <div class="my-2">
+        <p class="text-sm font-bold text-white">资料标注接入架构</p>
+        <p class="text-xs text-slate-300 mt-1">{lineSummary}</p>
+      </div>
+      <span class="font-mono text-[11px] text-slate-400">入口节点依具体套餐与实测批次为准</span>
+    </div>
+
+    <div class="observatory-subpanel rounded-lg p-3.5 flex flex-col justify-between">
+      <span class="text-[10px] font-mono uppercase text-slate-400">03 / EGRESS REGIONS</span>
+      <div class="my-2">
+        <p class="text-sm font-bold text-white">已知节点地区</p>
+        <p class="text-xs text-slate-300 mt-1">{regionSample}</p>
+      </div>
+      <span class="font-mono text-[11px] text-slate-400">节点数：{brand.nodeCount}</span>
+    </div>
+
+    <div class="observatory-subpanel rounded-lg p-3.5 flex flex-col justify-between">
+      <span class="text-[10px] font-mono uppercase text-slate-400">04 / TARGET SERVICES</span>
+      <div class="my-2">
+        <p class="text-sm font-bold text-white">目标访问服务</p>
+        <p class="text-xs text-slate-300 mt-1">海外网页 / 流媒体 / AI 生产力工具</p>
+      </div>
+      <span class="font-mono text-[11px] text-slate-400">受落地 IP 声誉与区域规则限制</span>
+    </div>
+  </div>
+
+  <div class="mt-4 pt-3 border-t border-slate-700/70 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
+    <span>声明：本图基于品牌公开描述与技术常识绘制的逻辑路径示意，不代表物理机房、ASN 跳数或真实上游供应链审计。</span>
+    <span class="font-mono text-slate-500 select-none">机场情报 · jichangqingbao.biz</span>
+  </div>
+</section>

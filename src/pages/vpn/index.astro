@@ -1,0 +1,210 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import BrandCard from '../../components/brands/BrandCard.astro';
+import { getBrandBySlug, SITE_META } from '../../lib/data';
+import { VPN_PILLAR_SECTIONS, VPN_PILLAR_FAQS } from '../../data/pillars/vpn';
+
+const sampleBrands = ['guangsuyun', 'muguang', 'weitu', 'tiziyun']
+  .map((s) => getBrandBySlug(s))
+  .filter((b): b is NonNullable<typeof b> => Boolean(b));
+
+const subLinks = [
+  { label: 'VPN 推荐分析', href: '/vpn/recommend/' },
+  { label: '免费 VPN 风险', href: '/vpn/free/' },
+  { label: '手机 VPN 指南', href: '/vpn/mobile/' },
+  { label: '安卓 VPN 分流', href: '/vpn/android/' },
+  { label: 'iPhone VPN', href: '/vpn/iphone/' },
+  { label: 'Windows VPN', href: '/vpn/windows/' },
+  { label: 'VPN 软件评测', href: '/vpn/reviews/' },
+  { label: '游戏加速器', href: '/vpn/game-accelerator/' },
+  { label: 'VPN 与代理区别', href: '/vpn/vs-proxy/' },
+];
+
+const comparisonRows = [
+  {
+    type: '现代规则机场代理',
+    tech: 'Shadowsocks / Trojan / VLESS / Hysteria 2 + Mihomo / sing-box',
+    routing: '支持域名、GeoIP、进程级精确分流（国内直连 / 境外按区走节点）',
+    speed: '国内中转或 IEPL/IPLC 专线低延迟高吞吐',
+    cost: '月付 ¥15–¥30 或轻量年付折合 ¥5.6–¥10/月起',
+    fit: 'AI 办公（ChatGPT/Claude/Gemini）、流媒体与日常跨境浏览',
+  },
+  {
+    type: '传统商用全局 VPN',
+    tech: 'OpenVPN / IKEv2 / WireGuard / 企业 SSL VPN',
+    routing: '默认全局隧道接管（整机全部流量走单一国家出口）',
+    speed: '直连国际商业段易受跨境 QoS 干扰或晚高峰丢包',
+    cost: '海外订阅约 ¥30–¥80/月，企业内网由单位配发',
+    fit: '公共 Wi-Fi 全局加密、外派接入公司内网合规通道',
+  },
+  {
+    type: '网游加速器',
+    tech: '进程白名单捕获 + 游戏专有 UDP 中继与 NAT 优化',
+    routing: '仅接管已入库的游戏客户端进程与联机大厅服务器',
+    speed: '极低 UDP 抖动与丢包重传，不支持网页或通用终端',
+    cost: '通常按月/年按主机或 PC 端会员计费',
+    fit: 'Steam / PS5 / Switch / 外服端游低延迟联机，不可替代代理',
+  },
+  {
+    type: '专属客户端机场',
+    tech: '品牌自研 App（内嵌节点调度与专线协议，无订阅链接）',
+    routing: '账号登录后内置一键开关或简化分流策略',
+    speed: '站内 8 家明确限制仅专属端（如飞猫云、无忧链接等）',
+    cost: '月付 ¥14.9–¥28 或年付 ¥99–¥199 不等',
+    fit: '不想折腾 Clash / Shadowrocket YAML 配置的新手用户',
+  },
+];
+
+const tocItems = [
+  { id: 'vpn-four-way', label: '四类跨境连接方案技术对照表' },
+  ...VPN_PILLAR_SECTIONS.map((s) => ({ id: s.id, label: s.heading })),
+  { id: 'vpn-samples', label: '开放订阅与专属客户端对照样本' },
+  { id: 'faq-heading', label: 'VPN 与加速器常见问题（8 问）' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'VPN 与代理服务区别及跨平台加速器选型总览',
+  url: `${SITE_META.url}/vpn/`,
+  description: '系统解析传统 VPN、现代规则代理机场、品牌专属客户端与网游加速器在协议栈、分流精度、移动端/Windows 兼容性与安全风险上的差异。',
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+---
+
+<BaseLayout
+  title="VPN 与加速器专题：VPN 与代理机场区别、手机端与游戏加速器 | 机场情报"
+  description="系统解析传统 VPN、现代代理机场（VLESS/Trojan/Shadowsocks）、专属客户端与网游加速器在网络层级、分流精度、安全权限及跨平台使用上的差异。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: 'VPN 与加速器' }]} />
+
+    <header class="pb-5 border-b border-slate-200">
+      <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Pillar 04 · VPN & Accelerators</span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">
+        VPN 与代理服务区别及跨平台加速器选型总览
+      </h1>
+      <p class="mt-2 text-sm text-slate-600 max-w-3xl leading-relaxed">
+        厘清“传统商用 VPN”“规则分流代理机场”“专属客户端”与“网游加速器”四条截然不同的技术路线，避免下错免费假包或混装多款虚拟网卡导致断网。
+      </p>
+      <div class="mt-4 flex flex-wrap gap-2 text-xs">
+        {subLinks.map((l) => (
+          <a href={l.href} class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">{l.label}</a>
+        ))}
+      </div>
+    </header>
+
+    <GeoAnswerBox
+      answer="传统商用 VPN（如基于 OpenVPN/WireGuard 的全局加密通道）与国内用户常说的“机场代理”（基于 VLESS/Trojan/Shadowsocks/Hysteria 2 与 Clash/sing-box 分流规则）并非同一技术方案：机场代理在国内外分流、按需路由、抗 QoS 专线接入与月均价格上通常更契合日常浏览、AI 办公与流媒体需求；而纯网游加速器则专注特定游戏 UDP 转发，无法替代通用代理。"
+      verifiedAt={SITE_META.verifiedSnapshotDate}
+      source="第三方代理客户端.txt、32家机场品牌清单.txt"
+    />
+
+    <!-- Four-Way Technical Comparison Table -->
+    <section id="vpn-four-way" class="mt-6">
+      <div class="flex items-baseline justify-between gap-4 mb-3">
+        <h2 class="text-lg font-bold text-[#0b192c]">一、四类网络加速方案核心技术维度对照</h2>
+        <span class="font-mono text-[11px] text-slate-400">ARCHITECTURE MATRIX</span>
+      </div>
+      <div class="editorial-card rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4">方案类型</th>
+                <th class="py-3 px-3">核心协议/形态</th>
+                <th class="py-3 px-3">分流能力</th>
+                <th class="py-3 px-3">速度与延迟特点</th>
+                <th class="py-3 px-3">典型成本口径</th>
+                <th class="py-3 px-4">适用人群与场景</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {comparisonRows.map((row) => (
+                <tr class="hover:bg-slate-50/70 align-top">
+                  <td class="py-3 px-4 font-bold text-[#0b192c] whitespace-nowrap">{row.type}</td>
+                  <td class="py-3 px-3 text-slate-700 min-w-[160px]">{row.tech}</td>
+                  <td class="py-3 px-3 text-slate-700 min-w-[170px]">{row.routing}</td>
+                  <td class="py-3 px-3 text-slate-700 min-w-[160px]">{row.speed}</td>
+                  <td class="py-3 px-3 font-mono text-slate-700 min-w-[140px]">{row.cost}</td>
+                  <td class="py-3 px-4 text-teal-800 font-medium min-w-[170px]">{row.fit}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Editorial Layout + Anchor TOC -->
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+        <AnchorToc title="VPN 与加速器分析目录" items={tocItems} />
+        <div class="editorial-card rounded-xl p-4 sm:p-5 text-xs text-slate-600 space-y-2">
+          <p class="font-bold text-[#0b192c] text-sm">设备与客户端延展阅读</p>
+          <p>如果你已经确定采用“开放订阅机场 + 开源客户端”路径，下一步建议直接查看六大系统的官方客户端清单与安装指引。</p>
+          <div class="pt-2 flex flex-wrap gap-2">
+            <a href="/clients/" class="px-2.5 py-1.5 rounded bg-[#0b192c] text-white font-medium">第三方客户端百科</a>
+            <a href="/guides/tun-mode/" class="px-2.5 py-1.5 rounded border border-slate-300 text-[#0b192c] font-medium">TUN 模式详解</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="lg:col-span-8 space-y-6">
+        {VPN_PILLAR_SECTIONS.map((sec) => (
+          <section id={sec.id} class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+            <h2 class="text-lg sm:text-xl font-bold text-[#0b192c]">{sec.heading}</h2>
+            <p class="mt-2 text-sm font-medium text-teal-800 bg-teal-50/60 border-l-2 border-teal-600 pl-3 py-1.5 rounded-r">
+              {sec.lead}
+            </p>
+            <div class="mt-3 space-y-2.5 text-sm text-slate-700 leading-relaxed">
+              {(sec.paragraphs ?? []).map((p) => (
+                <p>{p}</p>
+              ))}
+            </div>
+            {sec.bullets && sec.bullets.length > 0 && (
+              <ul class="mt-4 space-y-2 text-xs sm:text-sm text-slate-700 bg-slate-50 rounded-lg p-4 border border-slate-100">
+                {sec.bullets.map((b) => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-teal-700 font-bold shrink-0">•</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+
+        <section id="vpn-samples" class="scroll-mt-24">
+          <h2 class="text-lg font-bold text-[#0b192c] mb-3">代表性替代方案档案样本</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {sampleBrands.map((b) => (
+              <BrandCard brand={b} />
+            ))}
+          </div>
+        </section>
+
+        <FaqSection title="VPN 与加速器常见问题（FAQ）" items={VPN_PILLAR_FAQS} includeSchema={true} />
+
+        <section class="rounded-xl bg-[#0b192c] text-slate-100 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="font-mono text-[11px] text-teal-300 uppercase">Platform & Client Next Step</span>
+            <h2 class="text-base sm:text-lg font-bold text-white mt-0.5">选定技术路线后，核对设备端软件与安全分流</h2>
+            <p class="text-xs text-slate-300 mt-1">对比 Windows、Android、iOS 十大开源客户端与防假包下载来源。</p>
+          </div>
+          <div class="flex flex-wrap gap-2 shrink-0 text-xs">
+            <a href="/clients/" class="px-3.5 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-[#0b192c] font-bold">查客户端百科</a>
+            <a href="/vpn/free/" class="px-3.5 py-2 rounded-lg border border-slate-500 hover:border-white text-white font-medium">免费 VPN 避坑</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

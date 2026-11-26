@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/navigation/Breadcrumbs.astro';
+---
+
+<BaseLayout
+  title="全站情报检索 | 机场情报 (jichangqingbao.biz)"
+  description="通过 Pagefind 静态全文索引检索机场情报收录的 31 家品牌档案、套餐价格、客户端百科、故障排查与情报记录。"
+  noindex={true}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '全站检索' }]} />
+    <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mb-2">全站情报检索</h1>
+    <p class="text-sm text-slate-600 mb-6">
+      支持检索全部品牌名称、别名、套餐价格、优惠码、协议、错误症状及客户端指南（由 Pagefind 静态索引驱动）。
+    </p>
+
+    <div class="editorial-card rounded-xl p-5">
+      <div id="pagefind-search-container"></div>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <script is:inline src="/pagefind/pagefind-ui.js"></script>
+  <script is:inline>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof PagefindUI !== 'undefined') {
+        const ui = new PagefindUI({
+          element: '#pagefind-search-container',
+          showSubResults: true,
+          showImages: false,
+          translations: {
+            placeholder: '输入关键词，如：光速云、IEPL、Clash Verge、节点超时…',
+            zero_results: '未检索到匹配 “[SEARCH_TERM]” 的内容，请尝试缩短关键词或前往品牌数据库筛选。',
+          },
+        });
+        const q = new URLSearchParams(window.location.search).get('q');
+        if (q) {
+          ui.triggerSearch(q);
+        }
+      } else {
+        document.getElementById('pagefind-search-container').innerHTML =
+          '<p class="text-sm text-slate-600">本地开发预览模式或尚未生成 Pagefind 索引，请运行完整构建后使用全文检索，或直接访问 <a href="/brands/" class="underline font-semibold">31 品牌数据库</a>。</p>';
+      }
+    });
+  </script>
+</BaseLayout>

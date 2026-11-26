@@ -1,0 +1,851 @@
+[
+  {
+    "brandId": "brand-01-guangsuyun",
+    "brandName": "光速云",
+    "brandSlug": "guangsuyun",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰（基础参考记录）",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 22,
+        "downloadMbps": 529
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 41,
+        "downloadMbps": 114
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 46,
+        "downloadMbps": 387
+      },
+      {
+        "region": "日本",
+        "latencyMs": 57,
+        "downloadMbps": 135
+      },
+      {
+        "region": "美国",
+        "latencyMs": 143,
+        "downloadMbps": 18
+      }
+    ]
+  },
+  {
+    "brandId": "brand-01-guangsuyun",
+    "brandName": "光速云",
+    "brandSlug": "guangsuyun",
+    "recordType": "screenshot",
+    "file": "speedtests/光速云-节点测速实测.png",
+    "testedAt": "2026-08-11 14:32:56 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 日间测速截图快照，仅代表当时节点延迟与吞吐表现。"
+  },
+  {
+    "brandId": "brand-01-guangsuyun",
+    "brandName": "光速云",
+    "brandSlug": "guangsuyun",
+    "recordType": "screenshot",
+    "file": "lightspeed/photo_2026-08-19_12-13-01.jpg",
+    "testedAt": "2026-08-19",
+    "backend": "MiaoKo（SC-长沙电信@2Gbps，6线程，62/62）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "长沙电信 2Gbps 环境 62 节点速度与 Disney+/Netflix/YouTube/OpenAI/Gemini 解锁截图。"
+  },
+  {
+    "brandId": "brand-01-guangsuyun",
+    "brandName": "光速云",
+    "brandSlug": "guangsuyun",
+    "recordType": "screenshot",
+    "file": "lightspeed/photo_2026-08-19_12-13-50.jpg",
+    "testedAt": "2026-08-19",
+    "backend": "MiaoKo（SC-广西移动@2Gbps，6线程，62/62）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "广西移动 2Gbps 环境 62 节点速度与流媒体/AI 解锁截图。"
+  },
+  {
+    "brandId": "brand-01-guangsuyun",
+    "brandName": "光速云",
+    "brandSlug": "guangsuyun",
+    "recordType": "screenshot",
+    "file": "lightspeed/photo_2026-08-19_12-13-58.jpg",
+    "testedAt": "2026-08-19",
+    "backend": "MiaoKo（河北联通@2Gbps，6线程，62/62）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "河北联通 2Gbps 环境 62 节点速度与流媒体/AI 解锁截图。"
+  },
+  {
+    "brandId": "brand-01-guangsuyun",
+    "brandName": "光速云",
+    "brandSlug": "guangsuyun",
+    "recordType": "screenshot",
+    "file": "lightspeed/photo_2026-08-19_12-18-40.jpg",
+    "testedAt": "2026-08-19",
+    "backend": "MiaoKo 4.7.0（珠海联通 9Gbps 单线程，70/70）",
+    "protocol": "VLESS / AnyTLS",
+    "dataStatus": "独立实测",
+    "caption": "70 节点基础流媒体、TikTok、OpenAI 与 Steam 货币区实测截图。"
+  },
+  {
+    "brandId": "brand-01-guangsuyun",
+    "brandName": "光速云",
+    "brandSlug": "guangsuyun",
+    "recordType": "screenshot",
+    "file": "lightspeed/photo_2026-08-19_12-20-10.jpg",
+    "testedAt": "2026-08-19",
+    "backend": "MiaoKo 4.7.0（珠海联通 9Gbps 单线程，70/70）",
+    "protocol": "VLESS",
+    "dataStatus": "独立实测",
+    "caption": "70 节点单线程订阅测速与 UDP NAT（FullCone/RestrictedCone/Unknown）截图，含美国02异常低速记录。"
+  },
+  {
+    "brandId": "brand-02-muguang",
+    "brandName": "暮光加速",
+    "brandSlug": "muguang",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 26,
+        "downloadMbps": 509
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 40,
+        "downloadMbps": 107
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 43,
+        "downloadMbps": 419
+      },
+      {
+        "region": "日本",
+        "latencyMs": 53,
+        "downloadMbps": 150
+      },
+      {
+        "region": "美国",
+        "latencyMs": 160,
+        "downloadMbps": 19
+      }
+    ]
+  },
+  {
+    "brandId": "brand-03-feimao",
+    "brandName": "飞猫云",
+    "brandSlug": "feimao",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 21,
+        "downloadMbps": 526
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 41,
+        "downloadMbps": 116
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 45,
+        "downloadMbps": 413
+      },
+      {
+        "region": "日本",
+        "latencyMs": 54,
+        "downloadMbps": 138
+      },
+      {
+        "region": "美国",
+        "latencyMs": 178,
+        "downloadMbps": 14
+      }
+    ]
+  },
+  {
+    "brandId": "brand-03-feimao",
+    "brandName": "飞猫云",
+    "brandSlug": "feimao",
+    "recordType": "screenshot",
+    "file": "speedtests/飞猫云-节点测速实测.png",
+    "testedAt": "2026-08-11 08:52:30 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 早间测速截图快照。"
+  },
+  {
+    "brandId": "brand-04-weifeng",
+    "brandName": "微风网络",
+    "brandSlug": "weifeng",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 25,
+        "downloadMbps": 546
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 40,
+        "downloadMbps": 115
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 43,
+        "downloadMbps": 384
+      },
+      {
+        "region": "日本",
+        "latencyMs": 54,
+        "downloadMbps": 131
+      },
+      {
+        "region": "美国",
+        "latencyMs": 167,
+        "downloadMbps": 17
+      }
+    ]
+  },
+  {
+    "brandId": "brand-04-weifeng",
+    "brandName": "微风网络",
+    "brandSlug": "weifeng",
+    "recordType": "screenshot",
+    "file": "speedtests/微风-节点测速实测.png",
+    "testedAt": "2026-07-19 18:38:20 CST",
+    "backend": "MiaoKo 4.7.0（珠海联通 9Gbps 32线程，50/50）",
+    "protocol": "VLESS",
+    "dataStatus": "独立实测",
+    "caption": "2026-07-19 晚间 50 节点订阅速度与 UDP 类型实测图（含台湾02 0.00B 与日本05 8.00KB 异常点）。"
+  },
+  {
+    "brandId": "brand-06-xingdaomeng",
+    "brandName": "星岛梦",
+    "brandSlug": "xingdaomeng",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 27,
+        "downloadMbps": 504
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 41,
+        "downloadMbps": 103
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 44,
+        "downloadMbps": 411
+      },
+      {
+        "region": "日本",
+        "latencyMs": 57,
+        "downloadMbps": 136
+      },
+      {
+        "region": "美国",
+        "latencyMs": 177,
+        "downloadMbps": 18
+      }
+    ]
+  },
+  {
+    "brandId": "brand-06-xingdaomeng",
+    "brandName": "星岛梦",
+    "brandSlug": "xingdaomeng",
+    "recordType": "screenshot",
+    "file": "speedtests/星岛梦-节点测速实测.png",
+    "testedAt": "2026-08-11 01:48:13 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 凌晨测速截图快照。"
+  },
+  {
+    "brandId": "brand-08-ermao",
+    "brandName": "二猫云",
+    "brandSlug": "ermao",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 22,
+        "downloadMbps": 481
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 41,
+        "downloadMbps": 118
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 46,
+        "downloadMbps": 407
+      },
+      {
+        "region": "日本",
+        "latencyMs": 53,
+        "downloadMbps": 143
+      },
+      {
+        "region": "美国",
+        "latencyMs": 134,
+        "downloadMbps": 17
+      }
+    ]
+  },
+  {
+    "brandId": "brand-08-ermao",
+    "brandName": "二猫云",
+    "brandSlug": "ermao",
+    "recordType": "screenshot",
+    "file": "speedtests/二猫云-节点测速实测.png",
+    "testedAt": "2026-08-11 10:45:27 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 上午测速截图快照。"
+  },
+  {
+    "brandId": "brand-09-wuyou",
+    "brandName": "无忧链接",
+    "brandSlug": "wuyou",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 23,
+        "downloadMbps": 531
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 41,
+        "downloadMbps": 107
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 42,
+        "downloadMbps": 418
+      },
+      {
+        "region": "日本",
+        "latencyMs": 55,
+        "downloadMbps": 147
+      },
+      {
+        "region": "美国",
+        "latencyMs": 145,
+        "downloadMbps": 17
+      }
+    ]
+  },
+  {
+    "brandId": "brand-09-wuyou",
+    "brandName": "无忧链接",
+    "brandSlug": "wuyou",
+    "recordType": "screenshot",
+    "file": "speedtests/无忧链接.jpg",
+    "testedAt": "2026-07-18 21:40:48 CST",
+    "backend": "MiaoKo 4.7.0（珠海联通 9Gbps 32线程，50/50）",
+    "protocol": "VLESS",
+    "dataStatus": "独立实测",
+    "caption": "2026-07-18 晚间 50 节点测速图（含新加坡02 17.59KB 异常低速记录）。"
+  },
+  {
+    "brandId": "brand-09-wuyou",
+    "brandName": "无忧链接",
+    "brandSlug": "wuyou",
+    "recordType": "screenshot",
+    "file": "speedtests/无忧链接2.jpg",
+    "testedAt": "2026-07-18 21:47:23 CST",
+    "backend": "MiaoKo 4.7.0（珠海联通 9Gbps 32线程，50/50）",
+    "protocol": "VLESS",
+    "dataStatus": "独立实测",
+    "caption": "2026-07-18 晚间御三家（YouTube/Netflix/Disney+）解锁截图，香港01显示 YouTube 送中。"
+  },
+  {
+    "brandId": "brand-10-weitu",
+    "brandName": "唯兔云",
+    "brandSlug": "weitu",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 27,
+        "downloadMbps": 500
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 37,
+        "downloadMbps": 100
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 44,
+        "downloadMbps": 414
+      },
+      {
+        "region": "日本",
+        "latencyMs": 56,
+        "downloadMbps": 147
+      },
+      {
+        "region": "美国",
+        "latencyMs": 179,
+        "downloadMbps": 17
+      }
+    ]
+  },
+  {
+    "brandId": "brand-10-weitu",
+    "brandName": "唯兔云",
+    "brandSlug": "weitu",
+    "recordType": "screenshot",
+    "file": "speedtests/唯兔云-节点测速实测.png",
+    "testedAt": "2026-08-11 13:55:08 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 午后测速截图快照。"
+  },
+  {
+    "brandId": "brand-11-firefly",
+    "brandName": "Firefly",
+    "brandSlug": "firefly",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 27,
+        "downloadMbps": 547
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 39,
+        "downloadMbps": 135
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 42,
+        "downloadMbps": 445
+      },
+      {
+        "region": "日本",
+        "latencyMs": 57,
+        "downloadMbps": 147
+      },
+      {
+        "region": "美国",
+        "latencyMs": 143,
+        "downloadMbps": 30
+      }
+    ]
+  },
+  {
+    "brandId": "brand-12-yuzhou",
+    "brandName": "宇宙云",
+    "brandSlug": "yuzhou",
+    "recordType": "screenshot",
+    "file": "speedtests/宇宙云-节点测速实测.png",
+    "testedAt": "2026-08-11 21:04:24 CST",
+    "backend": "主端 4.3.3（696）/ 喵速 4.7.0（A11-32）珠海联通 9Gbps",
+    "protocol": "VLESS",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 晚间 VLESS 测速截图快照；主清单文本曾误标暂无实测，已记录冲突。"
+  },
+  {
+    "brandId": "brand-13-u1s1",
+    "brandName": "U1S1",
+    "brandSlug": "u1s1",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 24,
+        "downloadMbps": 538
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 39,
+        "downloadMbps": 107
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 46,
+        "downloadMbps": 414
+      },
+      {
+        "region": "日本",
+        "latencyMs": 57,
+        "downloadMbps": 133
+      },
+      {
+        "region": "美国",
+        "latencyMs": 134,
+        "downloadMbps": 20
+      }
+    ]
+  },
+  {
+    "brandId": "brand-13-u1s1",
+    "brandName": "U1S1",
+    "brandSlug": "u1s1",
+    "recordType": "screenshot",
+    "file": "speedtests/U1S1-节点测速实测.png",
+    "testedAt": "2026-08-11 22:33:29 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 晚间测速截图快照。"
+  },
+  {
+    "brandId": "brand-14-lingmao",
+    "brandName": "灵猫网络",
+    "brandSlug": "lingmao",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 22,
+        "downloadMbps": 492
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 40,
+        "downloadMbps": 109
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 46,
+        "downloadMbps": 409
+      },
+      {
+        "region": "日本",
+        "latencyMs": 57,
+        "downloadMbps": 147
+      },
+      {
+        "region": "美国",
+        "latencyMs": 164,
+        "downloadMbps": 19
+      }
+    ]
+  },
+  {
+    "brandId": "brand-14-lingmao",
+    "brandName": "灵猫网络",
+    "brandSlug": "lingmao",
+    "recordType": "screenshot",
+    "file": "speedtests/灵猫网络-节点测速实测.png",
+    "testedAt": "2026-08-11 18:45:40 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 傍晚测速截图快照。"
+  },
+  {
+    "brandId": "brand-15-jilian",
+    "brandName": "极连云",
+    "brandSlug": "jilian",
+    "recordType": "screenshot",
+    "file": "speedtests/极连云-节点测速实测.png",
+    "testedAt": "2026-08-11 22:46:50 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 晚间测速截图快照。"
+  },
+  {
+    "brandId": "brand-16-guangnian",
+    "brandName": "光年梯",
+    "brandSlug": "guangnian",
+    "recordType": "screenshot",
+    "file": "speedtests/光年梯-节点测速实测.png",
+    "testedAt": "2026-08-11 14:38:04 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 午后测速截图快照。"
+  },
+  {
+    "brandId": "brand-17-yifan",
+    "brandName": "一翻云",
+    "brandSlug": "yifan",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 23,
+        "downloadMbps": 477
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 40,
+        "downloadMbps": 117
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 42,
+        "downloadMbps": 390
+      },
+      {
+        "region": "日本",
+        "latencyMs": 53,
+        "downloadMbps": 136
+      },
+      {
+        "region": "美国",
+        "latencyMs": 180,
+        "downloadMbps": 20
+      }
+    ]
+  },
+  {
+    "brandId": "brand-17-yifan",
+    "brandName": "一翻云",
+    "brandSlug": "yifan",
+    "recordType": "screenshot",
+    "file": "speedtests/一翻云-节点测速实测.png",
+    "testedAt": "2026-08-11 00:21:30 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 凌晨测速截图快照。"
+  },
+  {
+    "brandId": "brand-18-sogo",
+    "brandName": "SOGO 云",
+    "brandSlug": "sogo",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 26,
+        "downloadMbps": 488
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 39,
+        "downloadMbps": 118
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 43,
+        "downloadMbps": 401
+      },
+      {
+        "region": "日本",
+        "latencyMs": 57,
+        "downloadMbps": 137
+      },
+      {
+        "region": "美国",
+        "latencyMs": 140,
+        "downloadMbps": 17
+      }
+    ]
+  },
+  {
+    "brandId": "brand-18-sogo",
+    "brandName": "SOGO 云",
+    "brandSlug": "sogo",
+    "recordType": "screenshot",
+    "file": "speedtests/SOGO云-节点测速实测.png",
+    "testedAt": "2026-08-11 18:57:59 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 傍晚测速截图快照。"
+  },
+  {
+    "brandId": "brand-19-kexin",
+    "brandName": "可信云",
+    "brandSlug": "kexin",
+    "recordType": "screenshot",
+    "file": "speedtests/可信云-节点测速实测.png",
+    "testedAt": "2026-08-11 15:32:35 CST（日期由批次推断）",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "待核实",
+    "caption": "截图仅见 15:32:35 时间，完整日期由 2026-08-11 压缩包批次推断，发布核查需复核原始测试记录。"
+  },
+  {
+    "brandId": "brand-20-sujie",
+    "brandName": "速界",
+    "brandSlug": "sujie",
+    "recordType": "screenshot",
+    "file": "speedtests/速界-节点测速实测.png",
+    "testedAt": "2026-08-11 15:39:36 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 午后测速截图快照。"
+  },
+  {
+    "brandId": "brand-21-shanyue",
+    "brandName": "闪跃",
+    "brandSlug": "shanyue",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 23,
+        "downloadMbps": 548
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 38,
+        "downloadMbps": 110
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 44,
+        "downloadMbps": 383
+      },
+      {
+        "region": "日本",
+        "latencyMs": 53,
+        "downloadMbps": 144
+      },
+      {
+        "region": "美国",
+        "latencyMs": 143,
+        "downloadMbps": 18
+      }
+    ]
+  },
+  {
+    "brandId": "brand-22-quanqiu",
+    "brandName": "全球云",
+    "brandSlug": "quanqiu",
+    "recordType": "table",
+    "testDate": "2026-10-19",
+    "condition": "原文标注非晚高峰",
+    "source": "32家机场品牌清单.txt",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "香港",
+        "latencyMs": 25,
+        "downloadMbps": 489
+      },
+      {
+        "region": "台湾",
+        "latencyMs": 37,
+        "downloadMbps": 117
+      },
+      {
+        "region": "新加坡",
+        "latencyMs": 45,
+        "downloadMbps": 430
+      },
+      {
+        "region": "日本",
+        "latencyMs": 55,
+        "downloadMbps": 133
+      },
+      {
+        "region": "美国",
+        "latencyMs": 138,
+        "downloadMbps": 18
+      }
+    ]
+  },
+  {
+    "brandId": "brand-22-quanqiu",
+    "brandName": "全球云",
+    "brandSlug": "quanqiu",
+    "recordType": "screenshot",
+    "file": "speedtests/全球云-节点测速实测.png",
+    "testedAt": "2026-08-11 15:50:43 CST",
+    "backend": "MAI-TEST-BOT 2.0.0-dev（珠海联通5Gbps，32线程）",
+    "protocol": "Shadowsocks",
+    "dataStatus": "独立实测",
+    "caption": "2026-08-11 午后测速截图快照。"
+  },
+  {
+    "brandId": "brand-29-lingdong",
+    "brandName": "灵动云",
+    "brandSlug": "lingdong",
+    "recordType": "table",
+    "testDate": "2026-07-20/21",
+    "condition": "珠海联通 9Gbps，60 测速 / 60 解锁摘要",
+    "source": "32家机场品牌清单.txt（2026-08-09 品牌库记录）",
+    "dataStatus": "历史测试资料",
+    "metrics": [
+      {
+        "region": "综合速度（摘要）",
+        "latencyMs": null,
+        "downloadMbps": null,
+        "summary": "20–80MB/s，HTTPS 延迟偏高；OpenAI 基本全解锁；TikTok 多失败、美国01整节点失败"
+      }
+    ]
+  }
+]

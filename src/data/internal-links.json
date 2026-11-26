@@ -1,0 +1,11 @@
+{
+  "hubMatrix": [
+    { "from": "/recommend/", "to": ["/brands/guangsuyun/", "/brands/", "/pricing/value/", "/intelligence/"], "purpose": "商业推荐承接至旗舰评测、全量数据库与风险提示" },
+    { "from": "/pricing/", "to": ["/pricing/cheap/", "/pricing/no-expiry/", "/pricing/value/", "/brands/guangsuyun/"], "purpose": "按预算与计费模式导入品牌套餐详情" },
+    { "from": "/clients/", "to": ["/guides/clash-verge/", "/guides/subscription/", "/brands/", "/diagnostics/subscription-failed/"], "purpose": "客户端档案导入安装配置教程与兼容品牌筛选" },
+    { "from": "/diagnostics/", "to": ["/guides/dns/", "/guides/tun-mode/", "/network/iepl/", "/intelligence/outages/"], "purpose": "故障排查导入底层配置教程与服务异常核查" },
+    { "from": "/network/", "to": ["/network/speedtest/", "/network/iepl/recommendations/", "/streaming-ai/", "/brands/"], "purpose": "线路科普导入实测档案与对应线路品牌选择" },
+    { "from": "/intelligence/", "to": ["/intelligence/changelog/", "/intelligence/alternatives/", "/brands/", "/diagnostics/"], "purpose": "风险预警导入更新日志、平替方案与技术排查" },
+    { "from": "/streaming-ai/", "to": ["/brands/guangsuyun/", "/brands/sujie/", "/network/native-ip/", "/diagnostics/ai-blocked/"], "purpose": "AI 与流媒体需求导入实测证据与兼容品牌" }
+  ]
+}

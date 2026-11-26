@@ -1,0 +1,239 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import { getBrandsSortedByPriority, SITE_META } from '../../lib/data';
+import { STREAMING_AI_PILLAR_SECTIONS, STREAMING_AI_PILLAR_FAQS } from '../../data/pillars/streaming-ai';
+
+const allBrands = getBrandsSortedByPriority();
+const subLinks = [
+  { label: 'ChatGPT 机场', href: '/streaming-ai/chatgpt/' },
+  { label: 'Claude 机场', href: '/streaming-ai/claude/' },
+  { label: 'Gemini 机场', href: '/streaming-ai/gemini/' },
+  { label: 'AI 网络环境', href: '/streaming-ai/ai-environment/' },
+  { label: 'Netflix 解锁', href: '/streaming-ai/netflix/' },
+  { label: 'Disney+ 解锁', href: '/streaming-ai/disney-plus/' },
+  { label: 'YouTube 加速', href: '/streaming-ai/youtube/' },
+  { label: 'TikTok 网络', href: '/streaming-ai/tiktok/' },
+  { label: 'Spotify', href: '/streaming-ai/spotify/' },
+  { label: '可用性检测工具', href: '/streaming-ai/checker/' },
+];
+
+const evidenceBrands = [
+  {
+    brand: '光速云',
+    slug: 'guangsuyun',
+    date: '2026-08-19',
+    tool: 'MiaoKo（SC-长沙电信@2Gbps，6线程，62/62）',
+    scope: 'Disney+、Netflix、YouTube、OpenAI（ChatGPT）、Gemini 等 5 张原始截图',
+    status: '独立实测归档',
+  },
+  {
+    brand: '无忧链接',
+    slug: 'wuyou',
+    date: '2026-07-18 21:40–21:47 CST',
+    tool: '流媒体与 AI 解锁实测截图（2 张）',
+    scope: 'Netflix、Disney+、YouTube 与 ChatGPT/Gemini 御三家实测记录（注：2026-10起仅专属客户端）',
+    status: '历史实测归档',
+  },
+  {
+    brand: '灵动云',
+    slug: 'lingdong',
+    date: '2026-07-20 / 07-21',
+    tool: '流媒体与 AI 解锁报告摘要',
+    scope: 'ChatGPT 全支持；Gemini 美日新台澳韩英及部分港节点；Netflix 非自制剧全解锁',
+    status: '历史测试资料',
+  },
+];
+
+const tocItems = [
+  { id: 'sai-matrix', label: '31 品牌 AI 与流媒体总矩阵' },
+  { id: 'sai-evidence-table', label: '含实测截图/报告的品牌证据摘要' },
+  ...STREAMING_AI_PILLAR_SECTIONS.map((s) => ({ id: s.id, label: s.heading })),
+  { id: 'faq-heading', label: 'AI 与流媒体常见问题（8 问）' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'AI 与流媒体可用性总矩阵（31 家品牌对照）',
+  url: `${SITE_META.url}/streaming-ai/`,
+  description: '汇总 31 家机场品牌对 ChatGPT、Claude、Gemini、Netflix、Disney+、YouTube 与 TikTok 的可用性状态，严格区分独立实测截图与品牌方宣传。',
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+
+function shortBadge(val: string) {
+  if (val.startsWith('支持')) return { text: '实测/支持', cls: 'bg-teal-950/70 text-teal-300 border-teal-700/60' };
+  if (val.startsWith('部分支持')) return { text: '部分/视节点', cls: 'bg-amber-950/60 text-amber-300 border-amber-700/60' };
+  if (val.startsWith('品牌方宣称')) return { text: '品牌方宣称', cls: 'bg-slate-800 text-sky-300 border-slate-700' };
+  if (val.startsWith('不支持')) return { text: '不支持/失败', cls: 'bg-red-950/70 text-red-300 border-red-700/60' };
+  if (val.startsWith('待核实')) return { text: '待核实', cls: 'bg-slate-800 text-amber-200 border-slate-700' };
+  return { text: '未测试', cls: 'bg-slate-900 text-slate-400 border-slate-800' };
+}
+---
+
+<BaseLayout
+  title="AI 与流媒体可用性总矩阵（31 品牌实测对照）| 机场情报"
+  description="汇总 31 家机场品牌对 ChatGPT、Claude、Gemini、Netflix、Disney+、YouTube 与 TikTok 的可用性状态，严格区分独立实测截图与品牌方宣传声明。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: 'AI 与流媒体可用性矩阵' }]} />
+
+    <header class="pb-5 border-b border-slate-200">
+      <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Pillar 06 · AI & Streaming Matrix</span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">AI 与流媒体可用性总矩阵（31 家品牌对照）</h1>
+      <div class="mt-3 flex flex-wrap gap-2 text-xs">
+        {subLinks.map((l) => (
+          <a href={l.href} class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">{l.label}</a>
+        ))}
+      </div>
+    </header>
+
+    <GeoAnswerBox
+      answer="2026-08-11 测速包仅记录速度与 RTT，不证明解锁能力；目前站内拥有流媒体或 AI 解锁实测截图证据的品牌为光速云（2026-08-19 5张 MiaoKo 截图）、无忧链接（2026-07-18 御三家截图）与灵动云（2026-07-20/21 解锁摘要）。其余品牌列表中明确标为“品牌方宣称”者均出自商家资料而非本站独立长周期实测。"
+      verifiedAt={SITE_META.verifiedSnapshotDate}
+      source="光速云测试图解锁图、无忧链接2.jpg、32家机场品牌清单.txt"
+    />
+
+    <section id="sai-matrix" class="observatory-panel rounded-2xl p-4 sm:p-6 my-6 scroll-mt-24">
+      <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-700/70">
+        <div>
+          <span class="font-mono text-[11px] uppercase tracking-wider text-teal-300">Service Availability Matrix</span>
+          <h2 class="text-lg font-bold text-white mt-0.5">全站 31 品牌 AI 与流媒体状态对照表</h2>
+        </div>
+        <span class="font-mono text-[11px] text-slate-400 select-none">机场情报 · jichangqingbao.biz</span>
+      </div>
+
+      <div class="overflow-x-auto mt-4">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="border-b border-slate-700 text-slate-300 font-mono">
+              <th class="py-2.5 px-3">品牌</th>
+              <th class="py-2.5 px-2">ChatGPT</th>
+              <th class="py-2.5 px-2">Claude</th>
+              <th class="py-2.5 px-2">Gemini</th>
+              <th class="py-2.5 px-2">Netflix</th>
+              <th class="py-2.5 px-2">Disney+</th>
+              <th class="py-2.5 px-2">YouTube</th>
+              <th class="py-2.5 px-2">TikTok</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/80">
+            {allBrands.map((b) => {
+              const cells = [
+                b.aiAvailability.ChatGPT,
+                b.aiAvailability.Claude,
+                b.aiAvailability.Gemini,
+                b.streamingAvailability.Netflix,
+                b.streamingAvailability['Disney+'],
+                b.streamingAvailability.YouTube,
+                b.streamingAvailability.TikTok,
+              ];
+              return (
+                <tr class="hover:bg-slate-800/40">
+                  <td class="py-2.5 px-3 font-semibold text-white whitespace-nowrap">
+                    <a href={`/brands/${b.slug}/`} class="hover:underline">{b.brandName}</a>
+                  </td>
+                  {cells.map((val) => {
+                    const st = shortBadge(val);
+                    return (
+                      <td class="py-2 px-2 whitespace-nowrap">
+                        <span title={val} class={`inline-block px-2 py-0.5 rounded border text-[10px] font-mono ${st.cls}`}>
+                          {st.text}
+                        </span>
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Evidence Summary Table -->
+    <section id="sai-evidence-table" class="my-8 scroll-mt-24">
+      <div class="flex items-baseline justify-between gap-4 mb-3">
+        <h2 class="text-lg font-bold text-[#0b192c]">站内可追溯 AI 与流媒体实测证据汇总（3 家）</h2>
+        <span class="font-mono text-[11px] text-slate-400">VERIFIED ARCHIVES</span>
+      </div>
+      <div class="editorial-card rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4">品牌</th>
+                <th class="py-3 px-3">采样时间</th>
+                <th class="py-3 px-3">测试方式 / 节点规模</th>
+                <th class="py-3 px-3">覆盖检测项</th>
+                <th class="py-3 px-4">证据定性</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {evidenceBrands.map((ev) => (
+                <tr class="hover:bg-slate-50/70">
+                  <td class="py-2.5 px-4 font-bold text-[#0b192c] whitespace-nowrap">
+                    <a href={`/brands/${ev.slug}/`} class="hover:underline">{ev.brand}</a>
+                  </td>
+                  <td class="py-2.5 px-3 font-mono whitespace-nowrap">{ev.date}</td>
+                  <td class="py-2.5 px-3 text-slate-700">{ev.tool}</td>
+                  <td class="py-2.5 px-3 text-slate-700">{ev.scope}</td>
+                  <td class="py-2.5 px-4 font-medium text-teal-800 whitespace-nowrap">{ev.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep Editorial Sections + Anchor TOC -->
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+        <AnchorToc title="AI 与流媒体分析目录" items={tocItems} />
+        <div class="editorial-card rounded-xl p-4 sm:p-5 text-xs text-slate-600 space-y-2">
+          <p class="font-bold text-[#0b192c] text-sm">按平台查看专项指南</p>
+          <p>如果你主要用大模型写代码，请重点看 ChatGPT/Claude 分流策略；若以 4K 观影为主，再配合网络测试页核对单线程带宽。</p>
+          <div class="pt-2 flex flex-wrap gap-2">
+            <a href="/streaming-ai/checker/" class="px-2.5 py-1.5 rounded bg-[#0b192c] text-white font-medium">查看可用性检测</a>
+            <a href="/guides/routing-rules/" class="px-2.5 py-1.5 rounded border border-slate-300 text-[#0b192c] font-medium">分流规则教程</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="lg:col-span-8 space-y-6">
+        {STREAMING_AI_PILLAR_SECTIONS.map((sec) => (
+          <section id={sec.id} class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+            <h2 class="text-lg sm:text-xl font-bold text-[#0b192c]">{sec.heading}</h2>
+            <p class="mt-2 text-sm font-medium text-teal-800 bg-teal-50/60 border-l-2 border-teal-600 pl-3 py-1.5 rounded-r">
+              {sec.lead}
+            </p>
+            <div class="mt-3 space-y-2.5 text-sm text-slate-700 leading-relaxed">
+              {(sec.paragraphs ?? []).map((p) => (
+                <p>{p}</p>
+              ))}
+            </div>
+            {sec.bullets && sec.bullets.length > 0 && (
+              <ul class="mt-4 space-y-2 text-xs sm:text-sm text-slate-700 bg-slate-50 rounded-lg p-4 border border-slate-100">
+                {sec.bullets.map((b) => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-teal-700 font-bold shrink-0">•</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+
+        <FaqSection title="AI 与流媒体常见问题（FAQ）" items={STREAMING_AI_PILLAR_FAQS} includeSchema={true} />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

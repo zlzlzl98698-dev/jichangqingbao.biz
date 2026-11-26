@@ -1,0 +1,73 @@
+---
+import { Image } from 'astro:assets';
+import brandAvatar from '../../assets/brand-avatar.webp';
+import { PRIMARY_NAV, FOOTER_GOVERNANCE_LINKS } from '../../data/navigation';
+import { SITE_META, brands, plans } from '../../lib/data';
+---
+
+<footer class="mt-16 border-t border-slate-200 bg-[#0b192c] text-slate-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-10 border-b border-slate-800">
+      <div>
+        <div class="flex items-center gap-2.5 mb-3">
+          <Image
+            src={brandAvatar}
+            alt="机场情报品牌头像"
+            width={56}
+            height={56}
+            class="w-8 h-8 rounded-lg border border-slate-700 bg-white object-cover"
+            loading="lazy"
+          />
+          <span class="text-base font-bold text-white">{SITE_META.name} · {SITE_META.englishName}</span>
+        </div>
+        <p class="text-xs leading-relaxed text-slate-400">
+          专注中文网络服务信息核查与技术情报的独立数据库平台。本站收录 {brands.length} 个独立品牌实体与 {plans.length} 条套餐记录，严格区分独立实测、历史资料、品牌方提供与商业推广顺序。
+        </p>
+        <p class="text-[11px] font-mono text-slate-500 mt-3">
+          Domain: {SITE_META.domain} | Snapshot: {SITE_META.verifiedSnapshotDate}
+        </p>
+      </div>
+
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-white mb-3">三大内容体系</h3>
+        <ul class="space-y-2 text-xs text-slate-400">
+          <li><a href="/guides/" class="hover:text-white transition-colors">教程与知识体系（订阅 / 客户端 / 排障）</a></li>
+          <li><a href="/brands/" class="hover:text-white transition-colors">品牌评测与情报体系（31 品牌 / 风险档案）</a></li>
+          <li><a href="/recommend/" class="hover:text-white transition-colors">商业决策体系（选型推荐 / 套餐价格）</a></li>
+          <li><a href="/brands/guangsuyun/" class="hover:text-teal-300 transition-colors">核心合作品牌：光速云旗舰档案</a></li>
+          <li><a href="/network/speedtest/" class="hover:text-white transition-colors">历史测速证据库与方法局限</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-white mb-3">十大核心专题</h3>
+        <div class="grid grid-cols-2 gap-1.5 text-xs text-slate-400">
+          {PRIMARY_NAV.map((cat) => (
+            <a href={cat.href} class="hover:text-white transition-colors">{cat.label}</a>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-white mb-3">治理规范与站点地图</h3>
+        <div class="grid grid-cols-2 gap-1.5 text-xs text-slate-400">
+          {FOOTER_GOVERNANCE_LINKS.map((link) => (
+            <a href={link.href} class="hover:text-white transition-colors">{link.label}</a>
+          ))}
+        </div>
+        <div class="mt-4 p-2.5 rounded border border-slate-700 bg-slate-900/60 text-[11px] text-slate-400 leading-relaxed">
+          商业披露：部分品牌注册入口含推广链接，通过链接注册可能为本站带来佣金，不影响用户支付价格。商业排序不修改任何技术测试与风险评级。
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-500">
+      <p>© 2026 {SITE_META.name} ({SITE_META.domain}). 数据均标注来源与核实日期，历史测试仅代表当时条件快照。</p>
+      <div class="flex items-center gap-4">
+        <a href="/rss.xml" class="hover:text-slate-300">RSS 订阅</a>
+        <a href="/sitemap-index.xml" class="hover:text-slate-300">XML Sitemap</a>
+        <a href="/search/" class="hover:text-slate-300">Pagefind 全文搜索</a>
+      </div>
+    </div>
+  </div>
+</footer>

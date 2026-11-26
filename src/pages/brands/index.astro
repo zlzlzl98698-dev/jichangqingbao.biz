@@ -1,0 +1,199 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import BrandDatabaseExplorer from '../../components/brands/BrandDatabaseExplorer.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import { getBrandsSortedByPriority, SITE_META } from '../../lib/data';
+import { BRANDS_PILLAR_SECTIONS, BRANDS_PILLAR_FAQS } from '../../data/pillars/brands';
+
+const allBrands = getBrandsSortedByPriority();
+
+const cohortRows = [
+  {
+    label: '2018–2020 年老牌阵营',
+    items: allBrands.filter((b) => b.foundedYear && b.foundedYear <= 2020),
+  },
+  {
+    label: '2021–2023 年中生代阵营',
+    items: allBrands.filter((b) => b.foundedYear && b.foundedYear >= 2021 && b.foundedYear <= 2023),
+  },
+  {
+    label: '2024–2025 年新晋阵营',
+    items: allBrands.filter((b) => b.foundedYear && b.foundedYear >= 2024),
+  },
+  {
+    label: '成立年份待核实',
+    items: allBrands.filter((b) => !b.foundedYear),
+  },
+];
+
+const tocItems = [
+  { id: 'brands-explorer-sec', label: '31 家品牌多维筛选库' },
+  { id: 'brands-cohort-matrix', label: '运营年代与客户端模式统计表' },
+  ...BRANDS_PILLAR_SECTIONS.map((s) => ({ id: s.id, label: s.heading })),
+  { id: 'faq-heading', label: '品牌档案常见问题（8 问）' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '机场品牌数据库与实体档案大全（31 家独立品牌）',
+  url: `${SITE_META.url}/brands/`,
+  description: '覆盖 31 家独立机场品牌的运营年份、套餐档案、官方入口辨识、实测证据状态、字段冲突披露与双品牌横向对比索引。',
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: '机场情报 31 家机场品牌数据库',
+  numberOfItems: allBrands.length,
+  itemListElement: allBrands.map((b, idx) => ({
+    '@type': 'ListItem',
+    position: idx + 1,
+    name: b.brandName,
+    url: `${SITE_META.url}/brands/${b.slug}/`,
+  })),
+};
+---
+
+<BaseLayout
+  title="机场品牌数据库（31家独立实体档案与多维筛选）| 机场情报"
+  description="收录 31 家独立机场品牌实体的完整档案库，支持按名称别名、运营年份、月付/年付/不限时价格、线路协议、专属客户端模式及实测状态实时筛选。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema, itemListSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '机场品牌数据库' }]} />
+
+    <header class="pb-6 border-b border-slate-200">
+      <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Pillar 03 · Brand Intelligence Database</span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">机场品牌数据库与档案大全（{allBrands.length} 家独立品牌）</h1>
+      <p class="text-sm text-slate-600 mt-2 max-w-3xl">
+        已对原始资料完成去重与实体合并（例如将 Firefly 与 Firefly 萤火虫合并为统一实体），不因原文件名称标注“32家”而虚构凑数。
+      </p>
+      <div class="mt-3 flex flex-wrap gap-2 text-xs">
+        <a href="/brands/reviews/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">品牌深度评测</a>
+        <a href="/brands/official-links/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">官网与注册入口</a>
+        <a href="/brands/plans/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">品牌套餐档案</a>
+        <a href="/brands/history/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">品牌运营历史</a>
+        <a href="/brands/compare/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">双品牌对比</a>
+        <a href="/brands/deals/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">品牌优惠清单</a>
+        <a href="/brands/alternatives/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">品牌替代方案</a>
+      </div>
+    </header>
+
+    <GeoAnswerBox
+      answer="本站品牌数据库收录 31 个独立机场实体：前 11 位按合作展示优先级排列（光速云为核心合作品牌），灵动云、浪网与边缘节点 EdgeNova 作为补充记录靠后展示。所有品牌的实测截图、字段冲突、优惠码差异及专属客户端限制均按原始资料如实呈现。"
+      verifiedAt={SITE_META.verifiedSnapshotDate}
+      source="32家机场品牌清单.txt、speedtest-manifest.json、光速云品牌信息.txt"
+    />
+
+    <section id="brands-explorer-sec" class="mt-4">
+      <BrandDatabaseExplorer brands={allBrands} />
+    </section>
+
+    <!-- Cohort Summary Table -->
+    <section id="brands-cohort-matrix" class="mt-10">
+      <div class="flex items-baseline justify-between gap-4 mb-3">
+        <h2 class="text-lg font-bold text-[#0b192c]">31 家品牌年代分布与客户端模式统计表</h2>
+        <span class="font-mono text-[11px] text-slate-400">COHORT SUMMARY</span>
+      </div>
+      <div class="editorial-card rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4">运营年代分组</th>
+                <th class="py-3 px-3">品牌数</th>
+                <th class="py-3 px-3">第三方订阅</th>
+                <th class="py-3 px-3">仅专属端/待核实</th>
+                <th class="py-3 px-4">代表品牌</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {cohortRows.map((row) => (
+                <tr class="hover:bg-slate-50/70">
+                  <td class="py-2.5 px-4 font-semibold text-[#0b192c] whitespace-nowrap">{row.label}</td>
+                  <td class="py-2.5 px-3 font-mono">{row.items.length} 家</td>
+                  <td class="py-2.5 px-3 font-mono text-teal-700">
+                    {row.items.filter((b) => b.thirdPartyClientSupport === true).length} 家
+                  </td>
+                  <td class="py-2.5 px-3 font-mono text-amber-700">
+                    {row.items.filter((b) => b.thirdPartyClientSupport !== true).length} 家
+                  </td>
+                  <td class="py-2.5 px-4 text-slate-600">
+                    {row.items.slice(0, 6).map((b, i) => (
+                      <>
+                        {i > 0 && ' · '}
+                        <a href={`/brands/${b.slug}/`} class="hover:underline text-[#0b192c]">{b.brandName}</a>
+                      </>
+                    ))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep Editorial + Anchor TOC -->
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+        <AnchorToc title="品牌档案方法论目录" items={tocItems} />
+        <div class="editorial-card rounded-xl p-4 sm:p-5 text-xs text-slate-600 space-y-2">
+          <p class="font-bold text-[#0b192c] text-sm">为什么不做虚构凑数？</p>
+          <p>原始清单文件名为“32家”，但其中“Firefly”与“Firefly 萤火虫”指向同一运营主体。实体合并后共 31 家独立品牌，同时保留全部别名以兼容站内全文检索。</p>
+          <div class="pt-2 flex flex-wrap gap-2">
+            <a href="/brands/reviews/" class="px-2.5 py-1.5 rounded bg-[#0b192c] text-white font-medium">查看深度评测</a>
+            <a href="/intelligence/risk-profiles/" class="px-2.5 py-1.5 rounded border border-slate-300 text-[#0b192c] font-medium">风险档案与冲突</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="lg:col-span-8 space-y-6">
+        {BRANDS_PILLAR_SECTIONS.map((sec) => (
+          <section id={sec.id} class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+            <h2 class="text-lg sm:text-xl font-bold text-[#0b192c]">{sec.heading}</h2>
+            <p class="mt-2 text-sm font-medium text-teal-800 bg-teal-50/60 border-l-2 border-teal-600 pl-3 py-1.5 rounded-r">
+              {sec.lead}
+            </p>
+            <div class="mt-3 space-y-2.5 text-sm text-slate-700 leading-relaxed">
+              {(sec.paragraphs ?? []).map((p) => (
+                <p>{p}</p>
+              ))}
+            </div>
+            {sec.bullets && sec.bullets.length > 0 && (
+              <ul class="mt-4 space-y-2 text-xs sm:text-sm text-slate-700 bg-slate-50 rounded-lg p-4 border border-slate-100">
+                {sec.bullets.map((b) => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-teal-700 font-bold shrink-0">•</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+
+        <FaqSection title="机场品牌库常见问题（FAQ）" items={BRANDS_PILLAR_FAQS} includeSchema={true} />
+
+        <section class="rounded-xl bg-[#0b192c] text-slate-100 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="font-mono text-[11px] text-teal-300 uppercase">Entity Verification</span>
+            <h2 class="text-base sm:text-lg font-bold text-white mt-0.5">进入单品牌对比或风险冲突审计</h2>
+            <p class="text-xs text-slate-300 mt-1">支持热门品牌横向参数对比、历史价格变动追踪及 18 项字段冲突核查。</p>
+          </div>
+          <div class="flex flex-wrap gap-2 shrink-0 text-xs">
+            <a href="/brands/compare/" class="px-3.5 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-[#0b192c] font-bold">双品牌对比</a>
+            <a href="/intelligence/risk-profiles/" class="px-3.5 py-2 rounded-lg border border-slate-500 hover:border-white text-white font-medium">风险与冲突记录</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,140 @@
+---
+import { Image } from 'astro:assets';
+import { formatSourceLabel, resolveEvidenceImage, type Brand } from '../../lib/data';
+
+export interface Props {
+  brand: Brand;
+}
+
+const { brand } = Astro.props;
+const hasTableTests = brand.historicalTests && brand.historicalTests.length > 0;
+const hasScreenshots = brand.testImages && brand.testImages.length > 0;
+---
+
+<section class="observatory-panel rounded-xl p-5 sm:p-6 my-6" aria-label={`${brand.brandName} Performance Monitoring Report`}>
+  <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-700/70">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full" style={`background-color: ${brand.accentColor};`}></span>
+        <span class="font-mono text-[11px] uppercase tracking-wider text-slate-400">Performance Monitoring Report</span>
+      </div>
+      <h3 class="text-base sm:text-lg font-bold text-white mt-1">{brand.brandName} · 历史测速与节点性能证据报告</h3>
+    </div>
+    <div class="flex flex-wrap items-center gap-2 text-[11px] font-mono">
+      <span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-200">
+        {hasScreenshots ? 'Measured Screenshot' : hasTableTests ? 'Historical Reference' : 'Not Tested'}
+      </span>
+      <span class="px-2 py-0.5 rounded bg-slate-800/70 border border-slate-700 text-teal-300">
+        Accent: {brand.accentColor}
+      </span>
+    </div>
+  </div>
+
+  {hasTableTests && (
+    <div class="mt-4 space-y-4">
+      {brand.historicalTests.map((t) => (
+        <div class="observatory-subpanel rounded-lg p-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs mb-3">
+            <span class="font-mono text-teal-300">测试日期：{t.testDate} | 条件：{t.condition}</span>
+            <span class="text-slate-400">来源：{formatSourceLabel(t.source)}（{t.dataStatus}）</span>
+          </div>
+          <div class="space-y-2.5">
+            {t.metrics.map((m) => (
+              <div class="grid grid-cols-12 items-center gap-2 text-xs">
+                <span class="col-span-3 sm:col-span-2 text-slate-200 font-medium">{m.region}</span>
+                {m.latencyMs !== null && m.downloadMbps !== null ? (
+                  <>
+                    <span class="col-span-3 sm:col-span-2 font-mono text-slate-300">{m.latencyMs} ms</span>
+                    <div class="col-span-4 sm:col-span-6 h-2 rounded-full bg-slate-800 overflow-hidden">
+                      <div
+                        class="h-full rounded-full"
+                        style={`width: ${Math.min(100, Math.round((m.downloadMbps / 560) * 100))}%; background-color: ${brand.accentColor};`}
+                      ></div>
+                    </div>
+                    <span class="col-span-2 text-right font-mono text-teal-300">{m.downloadMbps} Mbps</span>
+                  </>
+                ) : (
+                  <span class="col-span-9 sm:col-span-10 text-slate-300 font-mono">{(m as { summary?: string }).summary ?? '未提供数值'}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+
+  {hasScreenshots && (
+    <div class="mt-5 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h4 class="text-sm font-semibold text-white">原始实测截图档案（只读原始证据）</h4>
+        <span class="text-[11px] text-amber-300 font-mono">单日/单批次快照，不代表长期晚高峰稳定性</span>
+      </div>
+      <div class={`grid grid-cols-1 ${brand.testImages.length > 1 ? 'md:grid-cols-2' : ''} gap-4`}>
+        {brand.testImages.map((img) => {
+          const resolved = resolveEvidenceImage(img.file);
+          return (
+            <figure class="observatory-subpanel rounded-lg p-3">
+              <div class="flex flex-wrap items-center justify-between gap-1 text-[11px] font-mono text-slate-300 mb-2">
+                <span>{img.testedAt}</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-800 text-teal-300">{img.protocol}</span>
+              </div>
+              {resolved ? (
+                <Image
+                  src={resolved}
+                  alt={`${brand.brandName} ${img.testedAt} 节点测速截图，包含节点地区、协议、延迟和速度结果。`}
+                  class="w-full h-auto rounded border border-slate-700"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="p-4 text-xs text-slate-400">原始图片文件：{img.file}</div>
+              )}
+              <figcaption class="mt-2 text-xs text-slate-300 leading-relaxed">
+                <span class="block font-mono text-[11px] text-slate-400">测试环境：{img.backend} · 状态：{img.dataStatus}</span>
+                {img.caption}
+              </figcaption>
+              {(img as { observedBreakdown?: { group: string; rtt: string; speed: string; note: string }[] }).observedBreakdown && (
+                <div class="mt-3 overflow-x-auto rounded border border-slate-700/80">
+                  <table class="w-full text-left border-collapse text-[11px]">
+                    <thead>
+                      <tr class="bg-slate-900/90 text-slate-300 border-b border-slate-700">
+                        <th class="py-1.5 px-2">节点组别</th>
+                        <th class="py-1.5 px-2">延迟记录</th>
+                        <th class="py-1.5 px-2">截图速度范围 / 异常</th>
+                        <th class="py-1.5 px-2">备注</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800 text-slate-300">
+                      {(img as { observedBreakdown: { group: string; rtt: string; speed: string; note: string }[] }).observedBreakdown.map((row) => (
+                        <tr>
+                          <td class="py-1.5 px-2 font-medium text-white">{row.group}</td>
+                          <td class="py-1.5 px-2 font-mono">{row.rtt}</td>
+                          <td class="py-1.5 px-2 font-mono text-teal-300">{row.speed}</td>
+                          <td class="py-1.5 px-2 text-slate-400">{row.note}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </figure>
+          );
+        })}
+      </div>
+    </div>
+  )}
+
+  {!hasTableTests && !hasScreenshots && (
+    <div class="mt-4 observatory-subpanel rounded-lg p-5 text-sm text-slate-300">
+      <p class="font-semibold text-amber-300">Not Tested / 暂无可比实测数据</p>
+      <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
+        当前资料库尚未收录 {brand.brandName} 的地区延迟、带宽或实测测速截图。依据本站编辑政策，未提供字段一律标记为“未提供/待核实”，绝不使用样式示例数值替代品牌实际结果。
+      </p>
+    </div>
+  )}
+
+  <div class="mt-4 pt-3 border-t border-slate-700/70 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
+    <span>局限说明：测速受测试节点位置、运营商（联通/电信/移动）、测试时段与并发线程数影响，不构成绝对速度承诺。</span>
+    <span class="font-mono text-slate-500 select-none">机场情报 · jichangqingbao.biz</span>
+  </div>
+</section>

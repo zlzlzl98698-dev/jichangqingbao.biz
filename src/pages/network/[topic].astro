@@ -1,0 +1,37 @@
+---
+import TopicPageTemplate from '../../components/seo/TopicPageTemplate.astro';
+import { NETWORK_TOPICS } from '../../data/topics-technical';
+import { NETWORK_ENRICHMENTS } from '../../data/secondary/batch3-network';
+import { mergeTopicEnrichment } from '../../data/secondary/enrich';
+import { getBrandBySlug } from '../../lib/data';
+
+export async function getStaticPaths() {
+  return NETWORK_TOPICS.filter((t) => t.slug !== 'recommendations').map((t) => ({
+    params: { topic: t.slug },
+    props: { entry: t },
+  }));
+}
+
+const { entry: rawEntry } = Astro.props;
+const entry = mergeTopicEnrichment(rawEntry, NETWORK_ENRICHMENTS[rawEntry.slug]);
+const relatedBrands = (entry.brandSlugs ?? [])
+  .map((s) => getBrandBySlug(s))
+  .filter((b): b is NonNullable<typeof b> => Boolean(b));
+---
+
+<TopicPageTemplate
+  title={entry.title}
+  description={entry.description}
+  h1={entry.h1}
+  eyebrow={entry.eyebrow}
+  answerFirst={entry.answerFirst}
+  breadcrumbs={[{ label: '线路与节点', href: '/network/' }, { label: entry.h1 }]}
+  sections={entry.sections}
+  tables={entry.tables}
+  steps={entry.steps}
+  clusters={entry.clusters}
+  cta={entry.cta}
+  relatedBrands={relatedBrands}
+  faqs={entry.faqs}
+  relatedLinks={entry.relatedLinks}
+/>

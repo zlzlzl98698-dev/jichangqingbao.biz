@@ -1,0 +1,35 @@
+---
+import TopicPageTemplate from '../components/seo/TopicPageTemplate.astro';
+import { brands, plans, testResults, clients } from '../lib/data';
+---
+
+<TopicPageTemplate
+  title="关于机场情报（Airport Intelligence）| 平台定位与数据库说明"
+  description="机场情报（jichangqingbao.biz）是中文网络服务信息与技术情报平台，建立 31 家机场品牌实体档案、套餐价格、测速证据与运营风险数据库。"
+  h1="关于机场情报（Airport Intelligence）"
+  eyebrow="Governance · About"
+  answerFirst={`机场情报（jichangqingbao.biz）定位为中文网络服务信息与技术情报平台。截至当前版本，站内共维护 ${brands.length} 个去重独立品牌实体、${plans.length} 条结构化套餐记录、${testResults.length} 份测试证据及 ${clients.length} 个核心客户端档案，全部数据均区分来源与核实日期。`}
+  breadcrumbs={[{ label: '关于机场情报' }]}
+  sections={[
+    {
+      heading: '一、我们解决什么问题',
+      lead: '普通机场推荐博客往往只有推广链接与单一主观评分，缺乏历史记录、字段冲突审计与故障排查体系。',
+      paragraphs: [
+        '网络服务存在价格变动、订阅模式切换（例如部分品牌从通用订阅改为仅限专属客户端）、AI 与流媒体 IP 风控波动等长期变化。单凭几段宣传语很难支撑长期决策。',
+        '机场情报将“教程知识库”、“品牌评测与风险档案”和“商业选型入口”拆分为三个互相连接的内容体系，用户既可以通过排障指南解决具体技术问题，也可以在购买前核实品牌套餐结构与历史测试证据。',
+      ],
+    },
+    {
+      heading: '二、数据维护与三大独立体系',
+      lead: '商业展示优先级与独立技术数据严格分离存储，绝不通过商业合作修改实测或风险状态。',
+      paragraphs: [
+        '在品牌数据库与推荐专题中，核心合作品牌光速云（LightSpeed）及其他合作方均明确标注合作展示顺序；而每家品牌的协议差异、截图异常点（如 0B 或 KB 级节点）、优惠码冲突及缺省字段均按原貌记录。',
+      ],
+    },
+  ]}
+  relatedLinks={[
+    { label: '编辑政策与数据分级标准', href: '/editorial-policy/', note: '了解 measured / vendor / commercial 分类原则' },
+    { label: '评测方法与测速条件局限', href: '/methodology/', note: '查看 2026-08-11 与 2026-08-19 批次边界' },
+    { label: '推广合作与佣金披露', href: '/disclosure/', note: '所有推广链接属性与利益关系说明' },
+  ]}
+/>

@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../../components/seo/AnchorToc.astro';
+import FaqSection from '../../../components/seo/FaqSection.astro';
+import { getBrandBySlug, getEntryPlan, SITE_META } from '../../../lib/data';
+
+export const COMPARE_PAIRS = [
+  { slug: 'guangsuyun-vs-xingdaomeng', a: 'guangsuyun', b: 'xingdaomeng', focus: '2020老牌 IEPL 双强横向对比' },
+  { slug: 'guangsuyun-vs-weitu', a: 'guangsuyun', b: 'weitu', focus: '光速云 25元/168GB vs 唯兔云 19.9元/150GB' },
+  { slug: 'guangsuyun-vs-muguang', a: 'guangsuyun', b: 'muguang', focus: '多批次实测旗舰 vs BGP 多设备方案' },
+  { slug: 'guangsuyun-vs-feimao', a: 'guangsuyun', b: 'feimao', focus: '双接入模式 vs 纯专属客户端新手方案' },
+  { slug: 'jilian-vs-guangnian', a: 'jilian', b: 'guangnian', focus: '18元月付档 100GB vs 110GB 同价对比' },
+  { slug: 'sujie-vs-kexin', a: 'sujie', b: 'kexin', focus: '25元档 AI工具主打 vs 高透明度标注' },
+  { slug: 'weifeng-vs-firefly', a: 'weifeng', b: 'firefly', focus: '同系技术源流：第三方订阅 vs 专属客户端' },
+  { slug: 'ermao-vs-u1s1', a: 'ermao', b: 'u1s1', focus: '20元月付档 130GB+不限时 vs 120GB新站' },
+  { slug: 'yinxingren-vs-tiziyun', a: 'yinxingren', b: 'tiziyun', focus: '60+节点专属端封闭 vs 通用订阅双支持' },
+  { slug: 'shandianshu-vs-dalaoyun', a: 'shandianshu', b: 'dalaoyun', focus: '5.6元极限平价年付档细微参数核对' },
+];
+
+const compareFaqs = [
+  { q: '为什么机场情报的双品牌对比页不直接判定“A 完胜 B”？', a: '因为同一套预算下两家品牌的强项往往落在不同人群：例如光速云与飞猫云的区别在于开放 Clash 订阅 vs 纯专属端易用性，强行下唯一胜负结论只会误导不同设备环境的用户。' },
+  { q: '同价位对比中发现其中一家标了 CF 字段冲突怎么看待？', a: '表示两份原始档案在该品牌的流量、起步价或优惠码细节上存在记录不一致（如微风网络 7 元月付 vs 137 元年付冲突），建议下单时以官网实时控制台页面为准。' },
+  { q: '对比里的实测截图日期相差几天或测试工具不同，可以直接比速度吗？', a: '如果测试工具版本、测试地区宽带（如珠海联通 vs 长沙电信）或测试时段（凌晨 vs 晚高峰）不同，不可直接比较峰值数值；只能分别看各自是否有较多 0KB 超时节点。' },
+  { q: '在 18 元–25 元主流月付梯队，哪几组对比最常被新手查看？', a: '最常查的是光速云 vs 星岛梦（2020 双老牌）、光速云 vs 唯兔云（25 元 vs 19.9 元/14.9 元限时）、以及极连云 vs 光年梯（同 18 元档对比）。' },
+  { q: '对比后想看更多未配对组合的全部 31 家品牌参数怎么办？', a: '可以回到 /brands/ 品牌数据库使用多维过滤器，或到 /recommend/ 查阅全库 31 家客观对比总表。' },
+  { q: '如果对比中的某家品牌限制仅专属客户端，能否作为 OpenWrt 备选？', a: '不能。所有仅限专属客户端的品牌均不支持导出通用订阅链接进入软路由。' },
+];
+
+const tocItems = [
+  { id: 'cmp-pairs', label: '10 组热门双品牌对比卡' },
+  { id: 'cmp-method', label: '逐字段对比四项严格校准原则' },
+  { id: 'faq-heading', label: '品牌对比常见问题（6 问）' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '机场品牌横向对比中心',
+  url: `${SITE_META.url}/brands/compare/`,
+  description: '提供 10 组热门同预算/同架构机场品牌的逐字段客观横向参数对比，涵盖价格、协议、订阅兼容与实测记录。',
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+---
+
+<BaseLayout
+  title="机场品牌横向对比中心（真实参数与实测对照）| 机场情报"
+  description="提供光速云、星岛梦、唯兔云、极连云、光年梯、微风网络等核心机场品牌的逐字段横向对比页面，拒绝模糊主观胜负判定。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '机场品牌库', href: '/brands/' }, { label: '品牌对比中心' }]} />
+
+    <header class="pb-5 border-b border-slate-200">
+      <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Brands · Head-to-Head Comparisons</span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">机场品牌横向对比中心（10 组高频同档对照）</h1>
+    </header>
+
+    <GeoAnswerBox
+      answer="品牌对比页面从统一结构化数据源动态读取两家品牌的运营年份、月付/年付门槛、线路协议、第三方订阅兼容与实测截图状态，拒绝把两家不同年代、不同测试条件的结果硬判“唯一胜者”，帮助用户在同预算或同需求组内做出有证据支撑的取舍。"
+      verifiedAt={SITE_META.verifiedSnapshotDate}
+      source="机场情报品牌实体数据库"
+    />
+
+    <section id="cmp-pairs" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 scroll-mt-24">
+      {COMPARE_PAIRS.map((pair) => {
+        const bA = getBrandBySlug(pair.a)!;
+        const bB = getBrandBySlug(pair.b)!;
+        const eA = getEntryPlan(bA);
+        const eB = getEntryPlan(bB);
+        return (
+          <a href={`/brands/compare/${pair.slug}/`} class="editorial-card rounded-xl p-5 block hover:border-teal-600 transition-colors">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <h2 class="text-base font-bold text-[#0b192c]">{bA.brandName} vs {bB.brandName}</h2>
+              <span class="text-xs font-mono text-teal-700 font-semibold">进入对比 →</span>
+            </div>
+            <p class="text-xs text-slate-600 mb-3">{pair.focus}</p>
+            <div class="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 rounded-lg p-2.5 border border-slate-100 font-mono">
+              <div>{bA.brandName}: 月付 {eA.cheapestMonthly ? `¥${eA.cheapestMonthly.price}` : '待核实'}</div>
+              <div>{bB.brandName}: 月付 {eB.cheapestMonthly ? `¥${eB.cheapestMonthly.price}` : '待核实'}</div>
+            </div>
+          </a>
+        );
+      })}
+    </section>
+
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <aside class="lg:col-span-4 lg:sticky lg:top-24">
+        <AnchorToc title="对比中心指南目录" items={tocItems} />
+      </aside>
+      <div class="lg:col-span-8 space-y-6">
+        <section id="cmp-method" class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24 space-y-3 text-sm text-slate-700 leading-relaxed">
+          <h2 class="text-lg font-bold text-[#0b192c]">一、机场情报品牌对比的四项客观原则</h2>
+          <p class="font-medium text-teal-800 bg-teal-50/60 border-l-2 border-teal-600 pl-3 py-1.5 rounded-r">
+            所有对比字段均直读自统一的机场情报品牌实体数据库，不为了促成单一转化而篡改对手参数。
+          </p>
+          <p>在传统推广榜单中，对比文章常常用“A 全线秒杀 B”的口号误导读者。实际上，同一价格带的品牌在定位上往往存在清晰分工：例如 `微风网络 vs Firefly` 体现“同系技术源流下支持第三方订阅 vs 仅限专属客户端”的分水岭；`光速云 vs 唯兔云` 体现“2020 老牌多档完整度 vs 极简中生代月付高性价比”的选择差；而 `极连云 vs 光年梯` 则是 18 元同价入门级在 100GB 与 110GB 细微流量、节点构成上的对比。</p>
+          <p>对比完成后，建议同步检查两端在 <a href="/pricing/" class="underline font-medium text-[#0b192c]">全库 154 条价格表</a> 与 <a href="/intelligence/changelog/" class="underline font-medium text-[#0b192c]">18 项冲突审计页</a> 中是否留存额外注意条目。</p>
+        </section>
+
+        <FaqSection title="品牌对比常见问题（FAQ）" items={compareFaqs} includeSchema={true} />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,349 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import { plans, brands, SITE_META } from '../../lib/data';
+import { PRICING_PILLAR_SECTIONS, PRICING_PILLAR_FAQS } from '../../data/pillars/pricing';
+
+const sortedPlans = [...plans].sort((a, b) => a.promotionPriority - b.promotionPriority || a.price - b.price);
+
+const cycleStats = ['月付', '季付', '半年付', '年付', '一次性付费'].map((cycle) => {
+  const matched = plans.filter((p) => p.billingCycle === cycle);
+  const priced = matched.filter((p) => typeof p.price === 'number');
+  const perGbList = matched.map((p) => p.costPerGb).filter((v): v is number => typeof v === 'number' && v > 0);
+  return {
+    cycle,
+    count: matched.length,
+    minPrice: priced.length ? Math.min(...priced.map((p) => p.price)) : null,
+    maxPrice: priced.length ? Math.max(...priced.map((p) => p.price)) : null,
+    avgPerGb: perGbList.length ? (perGbList.reduce((a, b) => a + b, 0) / perGbList.length).toFixed(3) : '—',
+  };
+});
+
+const tocItems = [
+  { id: 'pricing-explorer', label: `全库 ${plans.length} 条套餐筛选表` },
+  { id: 'pricing-cycle-summary', label: '计费周期与单 GB 成本统计总览' },
+  ...PRICING_PILLAR_SECTIONS.map((s) => ({ id: s.id, label: s.heading })),
+  { id: 'faq-heading', label: '价格与套餐常见问题（8 问）' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `机场套餐价格数据库（${plans.length} 条全周期报价与单 GB 成本对比）`,
+  url: `${SITE_META.url}/pricing/`,
+  description: `汇总 ${brands.length} 家独立机场品牌共 ${plans.length} 条月付、年付、季付、半年付及一次性不限时套餐报价、折算月价与单 GB 成本分析。`,
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+---
+
+<BaseLayout
+  title="机场套餐价格数据库（154条全周期报价与单GB成本对比）| 机场情报"
+  description="机场情报套餐价格数据库汇总 31 家品牌共 154 条月付、年付、季付、多年付及一次性不限时流量报价，支持按计费周期、价格上限与订阅模式即时筛选，并拆解单GB成本与优惠限制。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '价格与套餐数据库' }]} />
+
+    <header class="pb-5 border-b border-slate-200">
+      <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Pillar 02 · Pricing Database</span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">机场套餐价格数据库（{plans.length} 条记录 / {brands.length} 家品牌）</h1>
+      <div class="mt-3 flex flex-wrap gap-2 text-xs">
+        <a href="/pricing/cheap/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">便宜机场</a>
+        <a href="/pricing/one-yuan/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">一元机场</a>
+        <a href="/pricing/one-cent/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">一分机场</a>
+        <a href="/pricing/monthly/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">月付机场</a>
+        <a href="/pricing/annual/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">年付机场</a>
+        <a href="/pricing/no-expiry/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">不限时机场</a>
+        <a href="/pricing/value/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">性价比机场</a>
+        <a href="/pricing/high-traffic/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">大流量机场</a>
+        <a href="/pricing/coupons/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">优惠码汇总</a>
+        <a href="/pricing/guangsuyun-plans/" class="px-2.5 py-1 rounded bg-sky-100 text-sky-900 font-medium">光速云套餐解析</a>
+      </div>
+    </header>
+
+    <GeoAnswerBox
+      answer="全站套餐数据库严格区分“月付门槛”与“年付折算均价”：例如光速云轻量版 99 元/年（69GB/月）折合 8.25 元/月，不能描述为普通月付；而 5.6 元/月档（大佬云、闪电鼠、云界线、榴莲云、环球梯）均为年付口径。下单前请使用下方过滤器按计费周期和单 GB 成本核对。"
+      verifiedAt={SITE_META.verifiedSnapshotDate}
+      source="32家机场品牌清单.txt、光速云品牌信息.txt"
+    />
+
+    <!-- Filter Bar & Explorer -->
+    <section id="pricing-explorer" class="mt-4">
+      <div class="editorial-card rounded-xl p-4 sm:p-5 mb-5 space-y-3 text-xs">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-100">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold text-[#0b192c]">全库套餐交互筛选与单 GB 成本排序器</h2>
+            <p class="text-[11px] text-slate-500">支持叠加计费周期、预算上限、最低流量、订阅模式与单 GB 成本即时排序</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="font-mono text-slate-600">匹配 <strong id="p-count" class="text-[#0b192c]">{sortedPlans.length}</strong> / {sortedPlans.length} 条</span>
+            <button id="p-reset" type="button" class="px-2.5 py-1 rounded border border-slate-300 text-slate-700 hover:bg-slate-50 cursor-pointer">
+              重置筛选
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+          <div>
+            <label for="p-search" class="block font-medium text-slate-600 mb-1">品牌或套餐名</label>
+            <input id="p-search" type="search" placeholder="如：光速云、轻量版…" class="w-full h-9 px-3 rounded border border-slate-300 bg-slate-50 focus:bg-white" />
+          </div>
+          <div>
+            <label for="p-cycle" class="block font-medium text-slate-600 mb-1">计费周期</label>
+            <select id="p-cycle" class="w-full h-9 px-2.5 rounded border border-slate-300 bg-white">
+              <option value="">全部周期</option>
+              <option value="月付">月付</option>
+              <option value="年付">年付</option>
+              <option value="一次性付费">一次性付费（不限时）</option>
+              <option value="季付">季付</option>
+              <option value="半年付">半年付</option>
+            </select>
+          </div>
+          <div>
+            <label for="p-max" class="block font-medium text-slate-600 mb-1">单次付款上限</label>
+            <select id="p-max" class="w-full h-9 px-2.5 rounded border border-slate-300 bg-white">
+              <option value="">不限金额</option>
+              <option value="20">≤ ¥20</option>
+              <option value="30">≤ ¥30</option>
+              <option value="100">≤ ¥100</option>
+              <option value="200">≤ ¥200</option>
+            </select>
+          </div>
+          <div>
+            <label for="p-traffic" class="block font-medium text-slate-600 mb-1">最低配额流量</label>
+            <select id="p-traffic" class="w-full h-9 px-2.5 rounded border border-slate-300 bg-white">
+              <option value="">不限流量</option>
+              <option value="100">≥ 100 GB</option>
+              <option value="200">≥ 200 GB</option>
+              <option value="500">≥ 500 GB</option>
+            </select>
+          </div>
+          <div>
+            <label for="p-sub" class="block font-medium text-slate-600 mb-1">订阅兼容</label>
+            <select id="p-sub" class="w-full h-9 px-2.5 rounded border border-slate-300 bg-white">
+              <option value="">全部</option>
+              <option value="true">支持第三方订阅</option>
+              <option value="false">仅限专属客户端</option>
+            </select>
+          </div>
+          <div>
+            <label for="p-sort" class="block font-medium text-slate-600 mb-1">排序方式</label>
+            <select id="p-sort" class="w-full h-9 px-2.5 rounded border border-slate-300 bg-white">
+              <option value="default">推荐优先序</option>
+              <option value="pergb-asc">单 GB 成本最低优先</option>
+              <option value="monthly-asc">折算月价最低优先</option>
+              <option value="price-asc">实付总价最低优先</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="editorial-card rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4">品牌</th>
+                <th class="py-3 px-3">套餐名称</th>
+                <th class="py-3 px-3">周期</th>
+                <th class="py-3 px-3">总价</th>
+                <th class="py-3 px-3">流量配额</th>
+                <th class="py-3 px-3">折算月价</th>
+                <th class="py-3 px-3">单GB成本</th>
+                <th class="py-3 px-3">第三方订阅</th>
+                <th class="py-3 px-4">备注</th>
+              </tr>
+            </thead>
+            <tbody id="plans-tbody" class="divide-y divide-slate-100">
+              {sortedPlans.map((p, idx) => (
+                <tr
+                  class="plan-row hover:bg-slate-50/70"
+                  data-idx={idx}
+                  data-q={`${p.brandName} ${p.planName}`.toLowerCase()}
+                  data-cycle={p.billingCycle}
+                  data-price={p.price}
+                  data-gb={p.trafficGb ?? 0}
+                  data-monthly={p.monthlyEquivalent ?? p.price ?? 99999}
+                  data-pergb={p.costPerGb ?? 99999}
+                  data-sub={String(p.thirdPartyClientSupport)}
+                >
+                  <td class="py-2.5 px-4 font-semibold text-[#0b192c] whitespace-nowrap">
+                    <a href={`/brands/${p.brandSlug}/`} class="hover:underline">{p.brandName}</a>
+                  </td>
+                  <td class="py-2.5 px-3 text-slate-800">{p.planName}</td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">{p.billingCycle}</td>
+                  <td class="py-2.5 px-3 font-mono font-bold text-[#0b192c]">¥{p.price}</td>
+                  <td class="py-2.5 px-3 font-mono whitespace-nowrap">{p.trafficGb ? `${p.trafficGb} GB` : '待核实'}</td>
+                  <td class="py-2.5 px-3 font-mono">{p.monthlyEquivalent ? `¥${p.monthlyEquivalent}` : '—'}</td>
+                  <td class="py-2.5 px-3 font-mono">{p.costPerGb ? `¥${p.costPerGb}` : '—'}</td>
+                  <td class="py-2.5 px-3 whitespace-nowrap">
+                    {p.thirdPartyClientSupport === true ? '支持' : p.thirdPartyClientSupport === false ? '仅专属端' : '待核实'}
+                  </td>
+                  <td class="py-2.5 px-4 text-slate-500 max-w-xs">{p.notes || '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div id="p-empty" class="hidden py-10 text-center text-xs text-slate-500">
+          没有符合当前筛选条件的套餐记录，请放宽金额或流量限制后重试。
+        </div>
+      </div>
+    </section>
+
+    <!-- Cycle Summary Table -->
+    <section id="pricing-cycle-summary" class="mt-10">
+      <div class="flex items-baseline justify-between gap-4 mb-3">
+        <h2 class="text-lg font-bold text-[#0b192c]">各计费周期实付区间与单 GB 成本统计总览</h2>
+        <span class="font-mono text-[11px] text-slate-400">CYCLE BENCHMARK</span>
+      </div>
+      <div class="editorial-card rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4">计费周期</th>
+                <th class="py-3 px-3">收录条目</th>
+                <th class="py-3 px-3">总价下限</th>
+                <th class="py-3 px-3">总价上限</th>
+                <th class="py-3 px-4">均值单 GB 成本</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {cycleStats.map((row) => (
+                <tr class="hover:bg-slate-50/70">
+                  <td class="py-2.5 px-4 font-semibold text-[#0b192c] whitespace-nowrap">{row.cycle}</td>
+                  <td class="py-2.5 px-3 font-mono">{row.count} 条</td>
+                  <td class="py-2.5 px-3 font-mono">{row.minPrice !== null ? `¥${row.minPrice}` : '—'}</td>
+                  <td class="py-2.5 px-3 font-mono">{row.maxPrice !== null ? `¥${row.maxPrice}` : '—'}</td>
+                  <td class="py-2.5 px-4 font-mono text-teal-800">{row.avgPerGb !== '—' ? `¥${row.avgPerGb}/GB` : '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep Editorial Sections + Anchor TOC -->
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+        <AnchorToc title="价格与套餐分析目录" items={tocItems} />
+        <div class="editorial-card rounded-xl p-4 sm:p-5 text-xs text-slate-600 space-y-2">
+          <p class="font-bold text-[#0b192c] text-sm">价格核对快速入口</p>
+          <p>下单前建议按“实付周期 → 节点倍率 → 优惠码限制 → 退款条款”四步核验，避免只看折算月均价。</p>
+          <div class="pt-2 flex flex-wrap gap-2">
+            <a href="/pricing/coupons/" class="px-2.5 py-1.5 rounded bg-[#0b192c] text-white font-medium">查看优惠码规则</a>
+            <a href="/intelligence/price-changes/" class="px-2.5 py-1.5 rounded border border-slate-300 text-[#0b192c] font-medium">历史调价日志</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="lg:col-span-8 space-y-6">
+        {PRICING_PILLAR_SECTIONS.map((sec) => (
+          <section id={sec.id} class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+            <h2 class="text-lg sm:text-xl font-bold text-[#0b192c]">{sec.heading}</h2>
+            <p class="mt-2 text-sm font-medium text-teal-800 bg-teal-50/60 border-l-2 border-teal-600 pl-3 py-1.5 rounded-r">
+              {sec.lead}
+            </p>
+            <div class="mt-3 space-y-2.5 text-sm text-slate-700 leading-relaxed">
+              {(sec.paragraphs ?? []).map((p) => (
+                <p>{p}</p>
+              ))}
+            </div>
+            {sec.bullets && sec.bullets.length > 0 && (
+              <ul class="mt-4 space-y-2 text-xs sm:text-sm text-slate-700 bg-slate-50 rounded-lg p-4 border border-slate-100">
+                {sec.bullets.map((b) => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-teal-700 font-bold shrink-0">•</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+
+        <FaqSection title="价格与套餐常见问题（FAQ）" items={PRICING_PILLAR_FAQS} includeSchema={true} />
+
+        <section class="rounded-xl bg-[#0b192c] text-slate-100 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="font-mono text-[11px] text-teal-300 uppercase">Cost & Risk Check</span>
+            <h2 class="text-base sm:text-lg font-bold text-white mt-0.5">比对完单 GB 成本后，接着查看优惠制限与调价记录</h2>
+            <p class="text-xs text-slate-300 mt-1">注意特价年付（如光速云 99 元/年）通常不可使用折上折优惠码且不支持退款。</p>
+          </div>
+          <div class="flex flex-wrap gap-2 shrink-0 text-xs">
+            <a href="/pricing/coupons/" class="px-3.5 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-[#0b192c] font-bold">查优惠码汇总</a>
+            <a href="/intelligence/price-changes/" class="px-3.5 py-2 rounded-lg border border-slate-500 hover:border-white text-white font-medium">历史价格变更</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tbodyEl = document.getElementById('plans-tbody');
+    const qEl = document.getElementById('p-search') as HTMLInputElement | null;
+    const cEl = document.getElementById('p-cycle') as HTMLSelectElement | null;
+    const mEl = document.getElementById('p-max') as HTMLSelectElement | null;
+    const tEl = document.getElementById('p-traffic') as HTMLSelectElement | null;
+    const sEl = document.getElementById('p-sub') as HTMLSelectElement | null;
+    const sortEl = document.getElementById('p-sort') as HTMLSelectElement | null;
+    const countEl = document.getElementById('p-count');
+    const emptyEl = document.getElementById('p-empty');
+    const resetEl = document.getElementById('p-reset');
+    const rows = Array.from(document.querySelectorAll('.plan-row')) as HTMLElement[];
+
+    function filterPlans() {
+      const q = (qEl?.value || '').trim().toLowerCase();
+      const c = cEl?.value || '';
+      const m = Number(mEl?.value || 0);
+      const t = Number(tEl?.value || 0);
+      const s = sEl?.value || '';
+      const sortBy = sortEl?.value || 'default';
+
+      const sorted = [...rows].sort((a, b) => {
+        if (sortBy === 'pergb-asc') return Number(a.dataset.pergb || 99999) - Number(b.dataset.pergb || 99999);
+        if (sortBy === 'monthly-asc') return Number(a.dataset.monthly || 99999) - Number(b.dataset.monthly || 99999);
+        if (sortBy === 'price-asc') return Number(a.dataset.price || 99999) - Number(b.dataset.price || 99999);
+        return Number(a.dataset.idx || 0) - Number(b.dataset.idx || 0);
+      });
+
+      let visibleCount = 0;
+      for (const r of sorted) {
+        let ok = true;
+        if (q && !(r.dataset.q || '').includes(q)) ok = false;
+        if (c && r.dataset.cycle !== c) ok = false;
+        if (m && Number(r.dataset.price || 99999) > m) ok = false;
+        if (t && Number(r.dataset.gb || 0) < t) ok = false;
+        if (s && r.dataset.sub !== s) ok = false;
+        r.classList.toggle('hidden', !ok);
+        if (ok) visibleCount++;
+        tbodyEl?.appendChild(r);
+      }
+
+      if (countEl) countEl.textContent = String(visibleCount);
+      if (emptyEl) emptyEl.classList.toggle('hidden', visibleCount > 0);
+    }
+
+    [qEl, cEl, mEl, tEl, sEl, sortEl].forEach((el) => {
+      el?.addEventListener('input', filterPlans);
+      el?.addEventListener('change', filterPlans);
+    });
+
+    resetEl?.addEventListener('click', () => {
+      if (qEl) qEl.value = '';
+      if (cEl) cEl.value = '';
+      if (mEl) mEl.value = '';
+      if (tEl) tEl.value = '';
+      if (sEl) sEl.value = '';
+      if (sortEl) sortEl.value = 'default';
+      filterPlans();
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,14 @@
+[
+  { "canonicalUrl": "/recommend/", "primaryKeyword": "综合机场推荐与选择", "searchIntent": "综合选型决策", "h1": "2026 综合机场推荐与按需选型指南", "guardRule": "承接泛词“机场推荐”，明确区分合作展示顺序与独立数据维度，不与 /pricing/cheap/ 抢占低价词。" },
+  { "canonicalUrl": "/pricing/cheap/", "primaryKeyword": "便宜机场", "searchIntent": "低价门槛筛选", "h1": "便宜机场价格结构与低价套餐风险核查", "guardRule": "专注低预算（如5.6元–10元折算月价档）对比，明确标出年付折算与普通月付的区别。" },
+  { "canonicalUrl": "/pricing/value/", "primaryKeyword": "性价比机场", "searchIntent": "单GB成本与性能平衡", "h1": "性价比机场评估：单位流量成本与线路配置对照", "guardRule": "专注 15–30 元月付主流区间性价比核算，与 /pricing/cheap/ 分离意图。" },
+  { "canonicalUrl": "/pricing/no-expiry/", "primaryKeyword": "不限时机场", "searchIntent": "一次性流量包需求", "h1": "不限时一次性流量包机场数据库与使用边界", "guardRule": "集中对比 147元/247GB、99元/100GB、100元/100GB 等一次性流量包。" },
+  { "canonicalUrl": "/brands/guangsuyun/", "primaryKeyword": "光速云综合品牌评测", "searchIntent": "单一品牌深度评估", "h1": "光速云（LightSpeed）完整品牌档案与深度评测", "guardRule": "唯一承接“光速云评测”主词，子专题页面（套餐、教程、风险）语义回链本页，禁止相互争抢主词。" },
+  { "canonicalUrl": "/network/iepl/", "primaryKeyword": "IEPL 技术知识", "searchIntent": "概念原理科普", "h1": "IEPL 专线技术原理、延迟结构与常见误区", "guardRule": "纯技术定义与网络路径解析，不放品牌推荐榜单。" },
+  { "canonicalUrl": "/network/iepl/recommendations/", "primaryKeyword": "IEPL 服务选择与比较", "searchIntent": "IEPL 品牌筛选与对比", "h1": "IEPL 专线机场服务选择与参数对比", "guardRule": "承接“IEPL机场推荐/选择”，与 /network/iepl/ 形成知识→选型闭环。" },
+  { "canonicalUrl": "/clients/clash-verge/", "primaryKeyword": "Clash Verge Rev 客户端介绍", "searchIntent": "软件属性、支持协议与下载来源", "h1": "Clash Verge Rev 客户端档案：支持平台、内核与安全注意事项", "guardRule": "软件百科页，负责版本、内核、架构、权限说明；操作步骤交由 /guides/clash-verge/。" },
+  { "canonicalUrl": "/guides/clash-verge/", "primaryKeyword": "Clash Verge Rev 操作教程", "searchIntent": "安装与配置步骤", "h1": "Clash Verge Rev 订阅导入、分流与 TUN 模式配置教程", "guardRule": "HowTo 步骤页，不与 /clients/clash-verge/ 重复介绍软件背景。" },
+  { "canonicalUrl": "/diagnostics/node-timeout/", "primaryKeyword": "节点超时排查", "searchIntent": "单点故障诊断", "h1": "机场节点超时（Timeout）原因定位与逐步排查", "guardRule": "专注部分或单个节点超时；全部节点无法连通交由 /diagnostics/all-timeout/。" },
+  { "canonicalUrl": "/intelligence/exit-scam/", "primaryKeyword": "机场跑路风险识别", "searchIntent": "跑路预警与核查标准", "h1": "机场跑路预警信号识别与无证据投诉区分指南", "guardRule": "建立证据分级标准，严禁把单次失联或官网维护直接定性为跑路。" },
+  { "canonicalUrl": "/intelligence/alternatives/", "primaryKeyword": "机场替代方案", "searchIntent": "平替与迁移决策", "h1": "同价位、同协议与订阅模式替代机场选择矩阵", "guardRule": "按预算、线路、是否开放第三方订阅提供结构化迁移路径。" }
+]

@@ -1,0 +1,224 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import TimelineList from '../../components/intelligence/TimelineList.astro';
+import { intelligenceEvents, brands, dataConflicts, getStatusBadgeStyle, SITE_META } from '../../lib/data';
+import { INTELLIGENCE_PILLAR_SECTIONS, INTELLIGENCE_PILLAR_FAQS } from '../../data/pillars/intelligence';
+
+const noAnomalyCount = brands.filter((b) => b.operatingStatus === '暂无已核实异常记录').length;
+const pendingInfoCount = brands.filter((b) => b.operatingStatus === '存在待核实信息').length;
+
+const intelLinks = [
+  { label: '机场跑路预警识别', href: '/intelligence/exit-scam/' },
+  { label: '机场停运与失联记录', href: '/intelligence/shutdowns/' },
+  { label: '服务异常记录', href: '/intelligence/outages/' },
+  { label: '价格变动档案', href: '/intelligence/price-changes/' },
+  { label: '域名变更与链接核查', href: '/intelligence/domain-changes/' },
+  { label: '机场避坑指南', href: '/intelligence/avoid-pitfalls/' },
+  { label: '同价位替代方案', href: '/intelligence/alternatives/' },
+  { label: '退款政策风险', href: '/intelligence/refund-policy/' },
+  { label: '安全性与隐私边界', href: '/intelligence/security/' },
+  { label: '机场运营历史', href: '/intelligence/history/' },
+  { label: '品牌风险档案', href: '/intelligence/risk-profiles/' },
+  { label: '冲突审计与更新日志', href: '/intelligence/changelog/' },
+  { label: '光速云风险评估', href: '/intelligence/guangsuyun-risk/' },
+];
+
+const migrationRows = [
+  {
+    scenario: '主力开放订阅品牌维护 / 本地运营商波动',
+    currentMode: 'Clash / Shadowrocket / 软路由多端订阅',
+    alternatives: '光速云、星岛梦、唯兔云、暮光加速、一翻云、极连云',
+    note: '优先保持标准 YAML / Mihomo 兼容，无需重构客户端规则',
+  },
+  {
+    scenario: '原用专属客户端（如无忧链接 / Firefly 2026-10 调整）想切回开放订阅',
+    currentMode: '仅官方 App → 开放第三方订阅',
+    alternatives: '光速云（双支持）、梯子云（双支持）、唯兔云、光年梯',
+    note: '需要重新导出并导入标准订阅链接，不可复用原 App 账号',
+  },
+  {
+    scenario: '纯零配置极简上手、不打算折腾第三方客户端',
+    currentMode: '一键登录官方专属 App',
+    alternatives: '飞猫云、无忧链接、灵猫网络、Firefly、光速云（亦提供自研端）',
+    note: '适合单手机/单电脑轻度用户，不兼容 OpenWrt 软路由',
+  },
+  {
+    scenario: '需要低成本应急备用线以防主力失联',
+    currentMode: '主力月付 + 低消耗不限时或入门年付冗余',
+    alternatives: '查看 /pricing/no-expiry/ 或 5.6–9 元试错档',
+    note: '不同入口运营商组合最能降低单点停运影响',
+  },
+];
+
+const tocItems = [
+  { id: 'intel-summary', label: '全站风险状态统计与时间线' },
+  { id: 'intel-migration-matrix', label: '品牌迁移与同模式替代对照表' },
+  ...INTELLIGENCE_PILLAR_SECTIONS.map((s) => ({ id: s.id, label: s.heading })),
+  { id: 'faq-heading', label: '风险与替代常见问题（8 问）' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '机场情报中心与运营风险数据库',
+  url: `${SITE_META.url}/intelligence/`,
+  description: `机场情报核心差异化栏目：追踪 31 家机场品牌运营状态、${intelligenceEvents.length} 条可溯源时间线事件、${dataConflicts.length} 项跨来源冲突与替代迁移矩阵。`,
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+---
+
+<BaseLayout
+  title="机场情报中心：风险档案、运营事件时间线与替代方案 | 机场情报"
+  description="机场情报核心差异化栏目：跟踪 31 家机场品牌的实测批次、客户端模式变更、域名格式异常、价格冲突、退款政策及同价位可核实替代方案。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '风险与替代情报中心' }]} />
+
+    <header class="pb-5 border-b border-slate-200">
+      <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Pillar 10 · Core Intelligence Center</span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">机场情报中心与运营风险数据库</h1>
+      <p class="mt-2 text-sm text-slate-600 max-w-3xl leading-relaxed">
+        不靠制造恐慌吸引点击，也不为推广合作隐瞒字段冲突。每条异常、调价、客户端政策调整与域名格式疑点均附带来源文件名与批次日期。
+      </p>
+      <div class="mt-3 flex flex-wrap gap-2 text-xs">
+        {intelLinks.map((l) => (
+          <a href={l.href} class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">{l.label}</a>
+        ))}
+      </div>
+    </header>
+
+    <GeoAnswerBox
+      answer={`当前 31 家收录品牌中，${noAnomalyCount} 家标注“暂无已核实异常记录”，${pendingInfoCount} 家标注“存在待核实信息”（含数据缺失、2026-08-09 历史资料未复核或字段冲突），暂无已核实停止运营记录。本站共计审计出 ${dataConflicts.length} 项跨来源冲突并归档 ${intelligenceEvents.length} 条带证据来源的时间线事件。`}
+      verifiedAt={SITE_META.lastUpdated}
+      source="intelligence-events.json、data-conflicts.json"
+    />
+
+    <!-- Status Summary Cards & Timeline -->
+    <section id="intel-summary" class="scroll-mt-24">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 my-6">
+        <div class="editorial-card rounded-xl p-4">
+          <span class="text-xs text-slate-500 block">暂无已核实异常记录</span>
+          <strong class="text-2xl font-mono font-bold text-teal-700 mt-1 block">{noAnomalyCount}</strong>
+        </div>
+        <div class="editorial-card rounded-xl p-4">
+          <span class="text-xs text-slate-500 block">存在待核实信息</span>
+          <strong class="text-2xl font-mono font-bold text-amber-600 mt-1 block">{pendingInfoCount}</strong>
+        </div>
+        <div class="editorial-card rounded-xl p-4">
+          <span class="text-xs text-slate-500 block">已确认停止运营</span>
+          <strong class="text-2xl font-mono font-bold text-[#0b192c] mt-1 block">0</strong>
+        </div>
+        <div class="editorial-card rounded-xl p-4">
+          <span class="text-xs text-slate-500 block">审计字段冲突条目</span>
+          <strong class="text-2xl font-mono font-bold text-red-700 mt-1 block">{dataConflicts.length}</strong>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <section class="lg:col-span-8">
+          <h2 class="text-xl font-bold text-[#0b192c] mb-4">全站已核实情报时间线（{intelligenceEvents.length} 条证据记录）</h2>
+          <TimelineList events={intelligenceEvents} />
+        </section>
+
+        <aside class="lg:col-span-4 space-y-4">
+          <div class="editorial-card rounded-xl p-5">
+            <h2 class="text-base font-bold text-[#0b192c] mb-3">品牌当前风险状态速览</h2>
+            <div class="space-y-2 max-h-[540px] overflow-y-auto pr-1 text-xs">
+              {brands.map((b) => {
+                const st = getStatusBadgeStyle(b.operatingStatus);
+                return (
+                  <div class="flex items-center justify-between gap-2 py-1.5 border-b border-slate-100">
+                    <a href={`/brands/${b.slug}/`} class="font-semibold text-[#0b192c] hover:underline truncate">{b.brandName}</a>
+                    <span class={`px-2 py-0.5 rounded border text-[10px] shrink-0 ${st.bg} ${st.text}`}>{b.operatingStatus}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Alternative Migration Table -->
+    <section id="intel-migration-matrix" class="my-10 scroll-mt-24">
+      <div class="flex items-baseline justify-between gap-4 mb-3">
+        <h2 class="text-lg font-bold text-[#0b192c]">按原模式与风控需求匹配替代方案矩阵</h2>
+        <a href="/intelligence/alternatives/" class="text-xs font-medium text-teal-700 hover:underline shrink-0">查看完整替代库 →</a>
+      </div>
+      <div class="editorial-card rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4">迁移场景</th>
+                <th class="py-3 px-3">客户端兼容变化</th>
+                <th class="py-3 px-3">重点参考替代品牌组</th>
+                <th class="py-3 px-4">迁移实操提醒</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {migrationRows.map((row) => (
+                <tr class="hover:bg-slate-50/70 align-top">
+                  <td class="py-3 px-4 font-bold text-[#0b192c] min-w-[170px]">{row.scenario}</td>
+                  <td class="py-3 px-3 text-slate-700 min-w-[150px]">{row.currentMode}</td>
+                  <td class="py-3 px-3 font-medium text-teal-800 min-w-[170px]">{row.alternatives}</td>
+                  <td class="py-3 px-4 text-slate-600 min-w-[170px]">{row.note}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep Editorial Sections + Anchor TOC -->
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+        <AnchorToc title="风险与替代分析目录" items={tocItems} />
+        <div class="editorial-card rounded-xl p-4 sm:p-5 text-xs text-slate-600 space-y-2">
+          <p class="font-bold text-[#0b192c] text-sm">购买前风控核查清单</p>
+          <p>遇到 18 项字段冲突、退款争议条款或非晚高峰待复核档案时，请保持最小月付测试原则。</p>
+          <div class="pt-2 flex flex-wrap gap-2">
+            <a href="/intelligence/changelog/" class="px-2.5 py-1.5 rounded bg-[#0b192c] text-white font-medium">查看 18 项冲突审计</a>
+            <a href="/intelligence/avoid-pitfalls/" class="px-2.5 py-1.5 rounded border border-slate-300 text-[#0b192c] font-medium">防踩坑全准则</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="lg:col-span-8 space-y-6">
+        {INTELLIGENCE_PILLAR_SECTIONS.map((sec) => (
+          <section id={sec.id} class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+            <h2 class="text-lg sm:text-xl font-bold text-[#0b192c]">{sec.heading}</h2>
+            <p class="mt-2 text-sm font-medium text-teal-800 bg-teal-50/60 border-l-2 border-teal-600 pl-3 py-1.5 rounded-r">
+              {sec.lead}
+            </p>
+            <div class="mt-3 space-y-2.5 text-sm text-slate-700 leading-relaxed">
+              {(sec.paragraphs ?? []).map((p) => (
+                <p>{p}</p>
+              ))}
+            </div>
+            {sec.bullets && sec.bullets.length > 0 && (
+              <ul class="mt-4 space-y-2 text-xs sm:text-sm text-slate-700 bg-slate-50 rounded-lg p-4 border border-slate-100">
+                {sec.bullets.map((b) => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-teal-700 font-bold shrink-0">•</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+
+        <FaqSection title="运营风险与替代方案常见问题（FAQ）" items={INTELLIGENCE_PILLAR_FAQS} includeSchema={true} />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

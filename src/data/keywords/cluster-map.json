@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-11-26",
+  "clusters": [
+    { "pillar": "01-recommend", "secondaryTopic": "/recommend/rankings/", "publishedArticles": ["/articles/isp-selection/"] },
+    { "pillar": "01-recommend", "secondaryTopic": "/recommend/multi-device/", "publishedArticles": ["/articles/multi-device-quota/"] },
+    { "pillar": "02-pricing", "secondaryTopic": "/pricing/monthly/", "publishedArticles": ["/articles/20-yuan-monthly-guide/"] },
+    { "pillar": "02-pricing", "secondaryTopic": "/pricing/value/", "publishedArticles": ["/articles/traffic-multiplier-math/"] },
+    { "pillar": "03-brands", "secondaryTopic": "/brands/official-links/", "publishedArticles": ["/articles/verify-official-panel/"] },
+    { "pillar": "04-vpn", "secondaryTopic": "/vpn/vs-proxy/", "publishedArticles": ["/articles/vpn-vs-proxy-architecture/"] },
+    { "pillar": "05-clients", "secondaryTopic": "/clients/v2rayn/", "publishedArticles": ["/articles/v2rayn-import-and-core/"] },
+    { "pillar": "05-clients", "secondaryTopic": "/clients/clash-meta/", "publishedArticles": ["/articles/android-background-keepalive/"] },
+    { "pillar": "06-streaming-ai", "secondaryTopic": "/streaming-ai/chatgpt/", "publishedArticles": ["/articles/chatgpt-desktop-tun-guide/"] },
+    { "pillar": "06-streaming-ai", "secondaryTopic": "/streaming-ai/claude/", "publishedArticles": ["/articles/claude-safety-node-strategy/"] },
+    { "pillar": "07-network", "secondaryTopic": "/network/speedtest/", "publishedArticles": ["/articles/single-thread-vs-multi-speedtest/"] },
+    { "pillar": "08-guides", "secondaryTopic": "/guides/subscription-management/", "publishedArticles": ["/articles/backup-no-expiry-setup/"] },
+    { "pillar": "08-guides", "secondaryTopic": "/guides/routing-rules/", "publishedArticles": ["/articles/clash-rule-vs-global/"] },
+    { "pillar": "09-diagnostics", "secondaryTopic": "/diagnostics/node-timeout/", "publishedArticles": ["/articles/clash-verge-timeout-triage/", "/articles/v2rayn-timeout-minus-one/"] },
+    { "pillar": "09-diagnostics", "secondaryTopic": "/diagnostics/all-timeout/", "publishedArticles": ["/articles/wifi-vs-5g-timeout/"] },
+    { "pillar": "09-diagnostics", "secondaryTopic": "/diagnostics/connection-failed/", "publishedArticles": ["/articles/windows-proxy-reset-emergency/"] },
+    { "pillar": "09-diagnostics", "secondaryTopic": "/diagnostics/tun-error/", "publishedArticles": ["/articles/tun-service-mode-fix/"] },
+    { "pillar": "05-clients", "secondaryTopic": "/clients/openwrt/", "publishedArticles": ["/articles/openwrt-openclash-vs-nikki/"] },
+    { "pillar": "05-clients", "secondaryTopic": "/clients/ios/", "publishedArticles": ["/articles/ios-free-client-guide/"] },
+    { "pillar": "02-pricing", "secondaryTopic": "/pricing/annual/", "publishedArticles": ["/articles/annual-plan-refund-rules/"] },
+    { "pillar": "07-network", "secondaryTopic": "/network/native-ip/", "publishedArticles": ["/articles/check-native-vs-broadcast-ip/"] },
+    { "pillar": "10-intelligence", "secondaryTopic": "/intelligence/domain-changes/", "publishedArticles": ["/articles/find-official-panel-anti-loss/"] },
+    { "pillar": "10-intelligence", "secondaryTopic": "/intelligence/alternatives/", "publishedArticles": ["/articles/migrate-from-exclusive-client/"] }
+  ]
+}

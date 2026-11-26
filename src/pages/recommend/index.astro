@@ -1,0 +1,286 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import BrandCard from '../../components/brands/BrandCard.astro';
+import {
+  getFeaturedBrands,
+  getBrandsSortedByPriority,
+  getEntryPlan,
+  getStatusBadgeStyle,
+  SITE_META,
+} from '../../lib/data';
+import { RECOMMEND_PILLAR_SECTIONS, RECOMMEND_PILLAR_FAQS } from '../../data/pillars/recommend';
+
+const featured = getFeaturedBrands();
+const allBrands = getBrandsSortedByPriority();
+
+const tocItems = [
+  { id: 'rec-scenarios', label: '四大需求场景快速分流' },
+  { id: 'rec-cooperative', label: '精选合作展示序列（11 家）' },
+  { id: 'rec-full-matrix', label: '31 家品牌客观选型对照总表' },
+  ...RECOMMEND_PILLAR_SECTIONS.map((s) => ({ id: s.id, label: s.heading })),
+  { id: 'faq-heading', label: '常见问题（10 问）' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '2026 综合机场推荐与按需选型指南',
+  url: `${SITE_META.url}/recommend/`,
+  description:
+    '机场情报综合选型中心：严格区分商业合作展示序列与客观实测证据，提供 31 家品牌选型矩阵、场景分流建议与 13 项决策方法论。',
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: '机场情报精选合作展示序列（非客观实测排名）',
+  numberOfItems: featured.length,
+  itemListElement: featured.map((b, idx) => ({
+    '@type': 'ListItem',
+    position: idx + 1,
+    name: b.brandName,
+    url: `${SITE_META.url}/brands/${b.slug}/`,
+  })),
+};
+---
+
+<BaseLayout
+  title="2026 综合机场推荐与按需选型指南（31家对比与场景分流）| 机场情报"
+  description="机场情报综合推荐与选型中心：严格区分商业合作展示序列与客观测试证据，汇总 31 家独立品牌入门价格、客户端模式、运营年份与避坑决策指南。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema, itemListSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '机场推荐与选型' }]} />
+
+    <header class="pb-6 border-b border-slate-200">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Pillar 01 · Decision Hub</span>
+        <span class="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-mono">
+          商业合作序列 ≠ 独立实测第一
+        </span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-2">
+        2026 综合机场推荐与按需选型指南
+      </h1>
+      <p class="mt-2 text-sm text-slate-600 max-w-3xl leading-relaxed">
+        不盲从单一“排行榜第一名”。本专题先按客户端兼容性（第三方订阅 vs 专属客户端）、预算周期与实测证据状态完成分层，再按场景给出可核验的候选组合。
+      </p>
+      <div class="mt-4 flex flex-wrap gap-2 text-xs">
+        <a href="/recommend/rankings/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">机场排行维度</a>
+        <a href="/recommend/reliable/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">靠谱机场核查</a>
+        <a href="/recommend/stable/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">稳定机场对照</a>
+        <a href="/recommend/best-rated/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">好评机场维度</a>
+        <a href="/recommend/beginner/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">新手机场指南</a>
+        <a href="/recommend/established/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">老牌机场清单</a>
+        <a href="/recommend/multi-device/" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">多设备机场</a>
+      </div>
+    </header>
+
+    <GeoAnswerBox
+      answer="选择机场不存在唯一的“全能第一名”。应先确认是否必须使用 Clash / Shadowrocket / OpenWrt 第三方订阅，再根据预算门槛与实测截图做决策。本站优先展示以光速云为首的 11 家商业合作序列，并在下表保留全部 31 家品牌的独立字段（含 2026-08-11 测速证据与专属客户端限制）。"
+      verifiedAt={SITE_META.verifiedSnapshotDate}
+      source="32家机场品牌清单.txt、光速云品牌信息.txt、2026-08-11 实测资料"
+    />
+
+    <!-- Scenario Matcher -->
+    <section id="rec-scenarios" class="mt-6">
+      <div class="flex items-baseline justify-between gap-4 mb-3">
+        <h2 class="text-lg font-bold text-[#0b192c]">一、四大典型需求场景快速分流</h2>
+        <span class="font-mono text-[11px] text-slate-400">SCENARIO ROUTER</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <a href="/recommend/established/" class="editorial-card rounded-xl p-4 hover:border-teal-600 transition-colors block">
+          <span class="font-mono text-[11px] text-teal-700 font-semibold">01 · 老牌多端订阅</span>
+          <h3 class="text-sm font-bold text-[#0b192c] mt-1">追求多年运营 + Clash/小火箭</h3>
+          <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+            优先核查光速云（2020，99元/年折合8.25元/月起，25元/168GB）、星岛梦（2020，25元/150GB）、唯兔云（19.9元/150GB）。
+          </p>
+        </a>
+        <a href="/recommend/beginner/" class="editorial-card rounded-xl p-4 hover:border-teal-600 transition-colors block">
+          <span class="font-mono text-[11px] text-teal-700 font-semibold">02 · 新手零配置直装</span>
+          <h3 class="text-sm font-bold text-[#0b192c] mt-1">不想折腾 YAML 与规则分流</h3>
+          <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+            可优先查看提供专属一键登录客户端的飞猫云、无忧链接（2026-10起仅专属端），或兼顾第三方订阅的梯子云、光速云。
+          </p>
+        </a>
+        <a href="/pricing/cheap/" class="editorial-card rounded-xl p-4 hover:border-teal-600 transition-colors block">
+          <span class="font-mono text-[11px] text-amber-700 font-semibold">03 · 低预算轻度试错</span>
+          <h3 class="text-sm font-bold text-[#0b192c] mt-1">年付折算 5.6–9 元档位</h3>
+          <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+            先分辨“年付一次性门槛（如 67.2 元/年）”与真实月付（如微风 7 元/月起），单月小流量试错再考虑升级大包。
+          </p>
+        </a>
+        <a href="/streaming-ai/checker/" class="editorial-card rounded-xl p-4 hover:border-teal-600 transition-colors block">
+          <span class="font-mono text-[11px] text-sky-800 font-semibold">04 · AI 与流媒体刚需</span>
+          <h3 class="text-sm font-bold text-[#0b192c] mt-1">ChatGPT / Claude / Gemini / Netflix</h3>
+          <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+            避免依赖香港节点访问 Gemini，下单前先核对 2026-08-19 与 2026-07-18 实测矩阵与多地区备用策略。
+          </p>
+        </a>
+      </div>
+    </section>
+
+    <!-- Cooperative Showcase -->
+    <section id="rec-cooperative" class="mt-10">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-4">
+        <div>
+          <span class="font-mono text-xs text-sky-800 font-semibold">COOPERATIVE SHOWCASE · PROMOTION PRIORITY #1–#11</span>
+          <h2 class="text-lg sm:text-xl font-bold text-[#0b192c] mt-0.5">二、核心合作展示序列（11 家）</h2>
+        </div>
+        <p class="text-xs text-slate-500 max-w-md">
+          披露说明：以下排序依据站点合作优先级展示，以光速云为核心推广品牌；其中部分品牌仅限官方专属客户端，与客观测速排名相互独立。
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {featured.map((brand) => (
+          <BrandCard brand={brand} showPriorityBadge={true} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Full 31-Brand Objective Matrix -->
+    <section id="rec-full-matrix" class="mt-10">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-3">
+        <div>
+          <span class="font-mono text-xs text-teal-700 font-semibold">OBJECTIVE SELECTION MATRIX · ALL 31 BRANDS</span>
+          <h2 class="text-lg sm:text-xl font-bold text-[#0b192c] mt-0.5">三、31 家品牌客观选型对照总表</h2>
+        </div>
+        <a href="/brands/compare/" class="text-xs font-medium text-teal-700 hover:underline shrink-0">
+          进入双品牌对比中心 →
+        </a>
+      </div>
+      <div class="editorial-card rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4">品牌</th>
+                <th class="py-3 px-3">年份</th>
+                <th class="py-3 px-3">月付入门</th>
+                <th class="py-3 px-3">年付折算月价</th>
+                <th class="py-3 px-3">第三方订阅</th>
+                <th class="py-3 px-3">实测截图</th>
+                <th class="py-3 px-3">数据状态</th>
+                <th class="py-3 px-4">档案与套餐</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {allBrands.map((b) => {
+                const entry = getEntryPlan(b);
+                const badge = getStatusBadgeStyle(b.dataStatus);
+                return (
+                  <tr class="hover:bg-slate-50/70">
+                    <td class="py-2.5 px-4 font-semibold text-[#0b192c] whitespace-nowrap">
+                      <a href={`/brands/${b.slug}/`} class="hover:underline">{b.brandName}</a>
+                      {b.slug === 'guangsuyun' && (
+                        <span class="ml-1.5 px-1.5 py-0.5 rounded bg-sky-100 text-sky-900 font-mono text-[10px]">合作旗舰</span>
+                      )}
+                    </td>
+                    <td class="py-2.5 px-3 font-mono text-slate-600 whitespace-nowrap">
+                      {b.foundedYear ? `${b.foundedYear}` : '待核实'}
+                    </td>
+                    <td class="py-2.5 px-3 font-mono whitespace-nowrap">
+                      {entry.cheapestMonthly
+                        ? `¥${entry.cheapestMonthly.price}${entry.cheapestMonthly.trafficGb ? ` / ${entry.cheapestMonthly.trafficGb}GB` : ''}`
+                        : '无月付/待核实'}
+                    </td>
+                    <td class="py-2.5 px-3 font-mono whitespace-nowrap">
+                      {entry.cheapestAnnual?.monthlyEquivalent
+                        ? `¥${entry.cheapestAnnual.monthlyEquivalent}/月起`
+                        : '—'}
+                    </td>
+                    <td class="py-2.5 px-3 whitespace-nowrap">
+                      {b.thirdPartyClientSupport === true
+                        ? <span class="text-teal-700 font-medium">支持 Clash/小火箭</span>
+                        : b.thirdPartyClientSupport === false
+                          ? <span class="text-amber-700 font-medium">仅限专属客户端</span>
+                          : <span class="text-slate-500">待核实</span>}
+                    </td>
+                    <td class="py-2.5 px-3 font-mono text-slate-700 whitespace-nowrap">
+                      {b.testImages.length > 0 ? `${b.testImages.length} 张` : '暂无'}
+                    </td>
+                    <td class="py-2.5 px-3 whitespace-nowrap">
+                      <span class={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[10px] ${badge.bg} ${badge.text}`}>
+                        <span class={`status-dot ${badge.dot}`}></span>
+                        {b.dataStatus}
+                      </span>
+                    </td>
+                    <td class="py-2.5 px-4 whitespace-nowrap space-x-2">
+                      <a href={`/brands/${b.slug}/`} class="text-[#0b192c] underline font-medium">品牌档案</a>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep Editorial Sections + Anchor TOC -->
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+        <AnchorToc title="本页深度选型目录" items={tocItems} />
+        <div class="editorial-card rounded-xl p-4 sm:p-5 text-xs text-slate-600 space-y-2">
+          <p class="font-bold text-[#0b192c] text-sm">选型前必查三步</p>
+          <p>1. 先确认目标品牌是否开放第三方订阅链接。</p>
+          <p>2. 再核对“年付折算月价”与“首单月付实付门槛”。</p>
+          <p>3. 最后对照 2026-08-11 测速与流媒体矩阵验证本地契合度。</p>
+          <div class="pt-2 flex flex-wrap gap-2">
+            <a href="/pricing/" class="px-2.5 py-1.5 rounded bg-[#0b192c] text-white font-medium">查 154 条报价</a>
+            <a href="/intelligence/avoid-pitfalls/" class="px-2.5 py-1.5 rounded border border-slate-300 text-[#0b192c] font-medium">避坑核查清单</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="lg:col-span-8 space-y-6">
+        {RECOMMEND_PILLAR_SECTIONS.map((sec) => (
+          <section id={sec.id} class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+            <h2 class="text-lg sm:text-xl font-bold text-[#0b192c]">{sec.heading}</h2>
+            <p class="mt-2 text-sm font-medium text-teal-800 bg-teal-50/60 border-l-2 border-teal-600 pl-3 py-1.5 rounded-r">
+              {sec.lead}
+            </p>
+            <div class="mt-3 space-y-2.5 text-sm text-slate-700 leading-relaxed">
+              {(sec.paragraphs ?? []).map((p) => (
+                <p>{p}</p>
+              ))}
+            </div>
+            {sec.bullets && sec.bullets.length > 0 && (
+              <ul class="mt-4 space-y-2 text-xs sm:text-sm text-slate-700 bg-slate-50 rounded-lg p-4 border border-slate-100">
+                {sec.bullets.map((b) => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-teal-700 font-bold shrink-0">•</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+
+        <FaqSection title="机场推荐与选型常见问题（FAQ）" items={RECOMMEND_PILLAR_FAQS} includeSchema={true} />
+
+        <!-- Contextual Next-Step CTA -->
+        <section class="rounded-xl bg-[#0b192c] text-slate-100 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <span class="font-mono text-[11px] text-teal-300 uppercase">Next Step · Verification</span>
+            <h2 class="text-base sm:text-lg font-bold text-white mt-0.5">筛选完候选品牌后，建议接着核对三项真实数据</h2>
+            <p class="text-xs text-slate-300 mt-1">对比单 GB 成本、查验品牌字段冲突记录，并验证当地运营商下的 AI 与流媒体实测。</p>
+          </div>
+          <div class="flex flex-wrap gap-2 shrink-0 text-xs">
+            <a href="/pricing/" class="px-3.5 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-[#0b192c] font-bold">查全库价格表</a>
+            <a href="/brands/" class="px-3.5 py-2 rounded-lg border border-slate-500 hover:border-white text-white font-medium">品牌档案大全</a>
+            <a href="/streaming-ai/checker/" class="px-3.5 py-2 rounded-lg border border-slate-500 hover:border-white text-white font-medium">AI 解锁矩阵</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

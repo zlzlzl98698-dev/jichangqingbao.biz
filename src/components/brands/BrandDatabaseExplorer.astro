@@ -1,0 +1,272 @@
+---
+import BrandCard from './BrandCard.astro';
+import { getEntryPlan, type Brand } from '../../lib/data';
+
+export interface Props {
+  brands: Brand[];
+}
+
+const { brands } = Astro.props;
+
+const indexedBrands = brands.map((b) => {
+  const { cheapestMonthly, cheapestAnnual, hasNoExpiry } = getEntryPlan(b);
+  const minMonthlyEq = cheapestAnnual?.monthlyEquivalent ?? cheapestMonthly?.price ?? 999;
+  const maxTraffic = Math.max(0, ...b.plans.map((p) => p.trafficGb ?? 0));
+  const hasMonthly = b.plans.some((p) => p.billingCycle === '月付');
+  const hasAnnual = b.plans.some((p) => p.billingCycle === '年付');
+  const hasAiClaim = Object.values(b.aiAvailability).some((v) => v.startsWith('支持') || v.startsWith('部分') || v.startsWith('品牌方'));
+  return {
+    brand: b,
+    searchBlob: [b.brandName, b.slug, ...b.aliases, ...b.protocols, ...b.networkTypes].join(' ').toLowerCase(),
+    year: b.foundedYear ? String(b.foundedYear) : 'unknown',
+    minPrice: minMonthlyEq,
+    maxTraffic,
+    hasMonthly,
+    hasAnnual,
+    hasNoExpiry,
+    network: b.networkTypes.join(' '),
+    protocols: b.protocols.join(' '),
+    officialClient: b.officialClient ? 'yes' : 'no',
+    thirdParty: b.thirdPartyClientSupport === true ? 'yes' : b.thirdPartyClientSupport === false ? 'no' : 'unknown',
+    hasAi: hasAiClaim ? 'yes' : 'no',
+    hasTests: b.testImages.length > 0 || b.historicalTests.length > 0 ? 'yes' : 'no',
+    dataStatus: b.dataStatus,
+    operatingStatus: b.operatingStatus,
+  };
+});
+---
+
+<section id="brand-explorer" class="space-y-5">
+  <div class="editorial-card rounded-xl p-4 sm:p-5 space-y-4">
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <div>
+        <h2 class="text-base sm:text-lg font-bold text-[#0b192c]">多维度品牌情报筛选器</h2>
+        <p class="text-xs text-slate-500">支持按名称别名、运营年份、预算、计费周期、流量、线路、协议、客户端与实测状态实时筛选</p>
+      </div>
+      <div class="flex items-center gap-2 text-xs">
+        <span class="font-mono text-slate-600">当前匹配：<strong id="explorer-count" class="text-[#0b192c]">{brands.length}</strong> / {brands.length} 家</span>
+        <button
+          id="explorer-reset"
+          type="button"
+          class="px-2.5 py-1 rounded border border-slate-300 text-slate-700 hover:bg-slate-50"
+        >
+          重置条件
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+      <div>
+        <label for="f-search" class="block text-slate-600 font-medium mb-1">品牌名称 / 别名 / 协议</label>
+        <input id="f-search" type="search" placeholder="如：光速云、V2云、VLESS…" class="w-full h-9 px-3 rounded border border-slate-300 bg-slate-50 focus:bg-white focus:border-[#0b192c] focus:outline-none" />
+      </div>
+
+      <div>
+        <label for="f-price" class="block text-slate-600 font-medium mb-1">折算月价范围</label>
+        <select id="f-price" class="w-full h-9 px-2.5 rounded border border-slate-300 bg-white">
+          <option value="">全部价格区间</option>
+          <option value="under10">≤ 10 元/月（年付折算/平价档）</option>
+          <option value="10to20">10 – 20 元/月</option>
+          <option value="over20">20 元/月以上（标准月付起）</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="f-cycle" class="block text-slate-600 font-medium mb-1">计费周期支持</label>
+        <select id="f-cycle" class="w-full h-9 px-2.5 rounded border border-slate-300 bg-white">
+          <option value="">全部周期</option>
+          <option value="monthly">支持月付</option>
+          <option value="annual">支持年付</option>
+          <option value="noexpiry">含不限时一次性包</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="f-traffic" class="block text-slate-600 font-medium mb-1">最高单套餐流量区间</label>
+        <select id="f-traffic" class="w-full h-9 px-2.5 rounded border border-slate-300 bg-white">
+          <option value="">全部流量档位</option>
+          <option value="small">≤ 150 GB</option>
+          <option value="mid">151 – 600 GB</option>
+          <option value="large">600 GB 以上（大流量）</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="f-year" class="block text-slate-600 font-medium mb-1">运营年份</label>
+        <select id="f-year" class="w-full h-9 px-2.5 rounded border border-slate-300 bg-white">
+          <option value="">全部年份</option>
+          <option value="2020">2020 年（老牌）</option>
+          <option value="2023">2023 年</option>
+          <option value="2024">2024 年</option>
+          <option value="2025">2025 年</option>
+          <option value="2026">2026 年</option>
+          <option value="unknown">年份待核实</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="f-network" class="block text-slate-600 font-medium mb-1">线路与协议</label>
+        <select id="f-network" class="w-full h-9 px-2.5 rounded border border-slate-300 bg-white">
+          <option value="">全部线路与协议</option>
+          <option value="IEPL">IEPL 专线</option>
+          <option value="IPLC">IPLC 专线</option>
+          <option value="BGP">BGP 智能优化</option>
+          <option value="VLESS">VLESS 协议</option>
+          <option value="Trojan">Trojan 协议</option>
+          <option value="Shadowsocks">Shadowsocks 协议</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="f-client" class="block text-slate-600 font-medium mb-1">客户端与订阅兼容性</label>
+        <select id="f-client" class="w-full h-9 px-2.5 rounded border border-slate-300 bg-white">
+          <option value="">全部接入模式</option>
+          <option value="third-party">支持 Clash / Shadowrocket 订阅</option>
+          <option value="exclusive">仅限官方专属客户端</option>
+          <option value="official-any">提供自研官方客户端</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="f-status" class="block text-slate-600 font-medium mb-1">数据状态 / 实测 / 排序</label>
+        <div class="flex gap-1.5">
+          <select id="f-status" class="w-1/2 h-9 px-2 rounded border border-slate-300 bg-white">
+            <option value="">全部状态</option>
+            <option value="tested">有历史测速资料</option>
+            <option value="独立实测">独立实测</option>
+            <option value="来源冲突">来源冲突</option>
+            <option value="待核实">待核实</option>
+            <option value="ai">含 AI/流媒体资料</option>
+          </select>
+          <select id="f-sort" class="w-1/2 h-9 px-2 rounded border border-slate-300 bg-white">
+            <option value="priority">合作/档案顺序</option>
+            <option value="price-asc">入门价从低到高</option>
+            <option value="updated">最近更新时间</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="explorer-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {indexedBrands.map((item) => (
+      <div
+        class="explorer-item"
+        data-search={item.searchBlob}
+        data-year={item.year}
+        data-price={item.minPrice}
+        data-monthly={String(item.hasMonthly)}
+        data-annual={String(item.hasAnnual)}
+        data-noexpiry={String(item.hasNoExpiry)}
+        data-traffic={item.maxTraffic}
+        data-netproto={`${item.network} ${item.protocols}`}
+        data-official={item.officialClient}
+        data-thirdparty={item.thirdParty}
+        data-ai={item.hasAi}
+        data-tests={item.hasTests}
+        data-datastatus={item.dataStatus}
+        data-priority={item.brand.promotionPriority}
+        data-updated={item.brand.updatedAt}
+      >
+        <BrandCard brand={item.brand} showPriorityBadge={true} />
+      </div>
+    ))}
+  </div>
+
+  <div id="explorer-empty" class="hidden editorial-card rounded-xl p-8 text-center">
+    <p class="text-base font-bold text-[#0b192c]">没有找到符合当前筛选条件的品牌档案</p>
+    <p class="text-xs text-slate-500 mt-1">部分品牌处于“待核实”状态，放宽年份或实测条件可查看更多收录实体。</p>
+    <button id="explorer-empty-reset" type="button" class="mt-4 px-4 py-2 rounded bg-[#0b192c] text-white text-xs font-medium">
+      显示全部 {brands.length} 家品牌
+    </button>
+  </div>
+</section>
+
+<script>
+  const grid = document.getElementById('explorer-grid');
+  const emptyBox = document.getElementById('explorer-empty');
+  const countEl = document.getElementById('explorer-count');
+  const items = Array.from(document.querySelectorAll('.explorer-item')) as HTMLElement[];
+
+  const els = {
+    search: document.getElementById('f-search') as HTMLInputElement | null,
+    price: document.getElementById('f-price') as HTMLSelectElement | null,
+    cycle: document.getElementById('f-cycle') as HTMLSelectElement | null,
+    traffic: document.getElementById('f-traffic') as HTMLSelectElement | null,
+    year: document.getElementById('f-year') as HTMLSelectElement | null,
+    network: document.getElementById('f-network') as HTMLSelectElement | null,
+    client: document.getElementById('f-client') as HTMLSelectElement | null,
+    status: document.getElementById('f-status') as HTMLSelectElement | null,
+    sort: document.getElementById('f-sort') as HTMLSelectElement | null,
+  };
+
+  function applyFilter() {
+    const q = (els.search?.value || '').trim().toLowerCase();
+    const price = els.price?.value || '';
+    const cycle = els.cycle?.value || '';
+    const traffic = els.traffic?.value || '';
+    const year = els.year?.value || '';
+    const network = els.network?.value || '';
+    const client = els.client?.value || '';
+    const status = els.status?.value || '';
+    const sortBy = els.sort?.value || 'priority';
+
+    let visibleCount = 0;
+
+    const sorted = [...items].sort((a, b) => {
+      if (sortBy === 'price-asc') {
+        return Number(a.dataset.price || 999) - Number(b.dataset.price || 999);
+      }
+      if (sortBy === 'updated') {
+        return (b.dataset.updated || '').localeCompare(a.dataset.updated || '');
+      }
+      return Number(a.dataset.priority || 999) - Number(b.dataset.priority || 999);
+    });
+
+    for (const el of sorted) {
+      grid?.appendChild(el);
+      let ok = true;
+      const d = el.dataset;
+      if (q && !(d.search || '').includes(q)) ok = false;
+      const p = Number(d.price || 999);
+      if (price === 'under10' && p > 10) ok = false;
+      if (price === '10to20' && (p <= 10 || p > 20)) ok = false;
+      if (price === 'over20' && p <= 20) ok = false;
+      if (cycle === 'monthly' && d.monthly !== 'true') ok = false;
+      if (cycle === 'annual' && d.annual !== 'true') ok = false;
+      if (cycle === 'noexpiry' && d.noexpiry !== 'true') ok = false;
+      const tr = Number(d.traffic || 0);
+      if (traffic === 'small' && tr > 150) ok = false;
+      if (traffic === 'mid' && (tr <= 150 || tr > 600)) ok = false;
+      if (traffic === 'large' && tr <= 600) ok = false;
+      if (year && d.year !== year) ok = false;
+      if (network && !(d.netproto || '').includes(network)) ok = false;
+      if (client === 'third-party' && d.thirdparty !== 'yes') ok = false;
+      if (client === 'exclusive' && d.thirdparty !== 'no') ok = false;
+      if (client === 'official-any' && d.official !== 'yes') ok = false;
+      if (status === 'tested' && d.tests !== 'yes') ok = false;
+      else if (status === 'ai' && d.ai !== 'yes') ok = false;
+      else if (status && status !== 'tested' && status !== 'ai' && d.datastatus !== status) ok = false;
+
+      el.classList.toggle('hidden', !ok);
+      if (ok) visibleCount++;
+    }
+
+    if (countEl) countEl.textContent = String(visibleCount);
+    emptyBox?.classList.toggle('hidden', visibleCount > 0);
+  }
+
+  function resetAll() {
+    Object.values(els).forEach((el) => {
+      if (el) el.value = el.id === 'f-sort' ? 'priority' : '';
+    });
+    applyFilter();
+  }
+
+  Object.values(els).forEach((el) => {
+    el?.addEventListener('input', applyFilter);
+    el?.addEventListener('change', applyFilter);
+  });
+  document.getElementById('explorer-reset')?.addEventListener('click', resetAll);
+  document.getElementById('explorer-empty-reset')?.addEventListener('click', resetAll);
+</script>

@@ -1,0 +1,36 @@
+---
+import TopicPageTemplate from '../components/seo/TopicPageTemplate.astro';
+---
+
+<TopicPageTemplate
+  title="评测方法与测速条件局限说明 | 机场情报"
+  description="说明机场情报收录的 2026-07-18/19、2026-08-11（MAI-TEST-BOT）及 2026-08-19（MiaoKo）测试条件、指标含义与不能证明的事项。"
+  h1="评测方法与测速条件局限说明"
+  eyebrow="Governance · Methodology"
+  answerFirst="本站收录的节点测速图与参考测速表均为特定时间窗口与特定运营商后端下的快照记录：2026-08-11 批次覆盖不同时段（凌晨至晚间），2026-10-19 参考表原文标注为非晚高峰。单次测速快照不能单独证明长期晚高峰稳定性，也不能用于跨品牌绝对速度排名。"
+  breadcrumbs={[{ label: '评测方法' }]}
+  sections={[
+    {
+      heading: '一、已收录实测批次与工具环境',
+      lead: '测速结果高度依赖本地运营商、测试工具版本、并发线程数与采样时间点。',
+      paragraphs: [
+        '2026-08-11 批次（16 张 PNG）：多数采用 MAI-TEST-BOT 2.0.0-dev（珠海联通 5Gbps 后端、32 线程、Ping 5 次），其中宇宙云与快狸采用主端 4.3.3 / 喵速 4.7.0（珠海联通 9Gbps 后端）。可信云截图因底部日期被裁切，按压缩包批次暂记为 2026-08-11 并标为待复核。',
+        '2026-08-19 光速云批次（5 张 JPG）：包含长沙电信、广西移动、河北联通 2Gbps（6 线程，62 节点）与珠海联通 9Gbps 单线程（70 节点），同步记录了速度与 Disney+/Netflix/YouTube/OpenAI/Gemini 解锁状态。',
+        '2026-07-18 / 07-19 批次：记录无忧链接与微风网络各 50 节点在珠海联通 9Gbps 32 线程环境下的单日表现。',
+      ],
+    },
+    {
+      heading: '二、测速截图不能证明的事项',
+      lead: '透明呈现方法边界是网络情报平台区别于营销榜单的核心原则。',
+      bullets: [
+        '不能证明某品牌长期不掉速或所有地区家庭宽带都能达到截图吞吐。',
+        '单纯的速度截图（如 2026-08-11 批次）不能证明 ChatGPT、Claude、Gemini、Netflix 或 Disney+ 可用性。',
+        '不能仅凭速度数值反推节点是否使用了 IEPL、IPLC 或原生住宅 IP，线路属性需结合独立来源核对。',
+      ],
+    },
+  ]}
+  relatedLinks={[
+    { label: '查看全站实测截图证据库', href: '/network/speedtest/' },
+    { label: 'AI 与流媒体可用性矩阵', href: '/streaming-ai/' },
+  ]}
+/>

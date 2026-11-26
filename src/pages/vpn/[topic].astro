@@ -1,0 +1,37 @@
+---
+import TopicPageTemplate from '../../components/seo/TopicPageTemplate.astro';
+import { VPN_TOPICS } from '../../data/topics-intel-vpn';
+import { VPN_ENRICHMENTS } from '../../data/secondary/batch2-vpn';
+import { mergeTopicEnrichment } from '../../data/secondary/enrich';
+import { getBrandBySlug } from '../../lib/data';
+
+export async function getStaticPaths() {
+  return VPN_TOPICS.map((t) => ({
+    params: { topic: t.slug },
+    props: { entry: t },
+  }));
+}
+
+const { entry: rawEntry } = Astro.props;
+const entry = mergeTopicEnrichment(rawEntry, VPN_ENRICHMENTS[rawEntry.slug]);
+const relatedBrands = (entry.brandSlugs ?? [])
+  .map((s) => getBrandBySlug(s))
+  .filter((b): b is NonNullable<typeof b> => Boolean(b));
+---
+
+<TopicPageTemplate
+  title={entry.title}
+  description={entry.description}
+  h1={entry.h1}
+  eyebrow={entry.eyebrow}
+  answerFirst={entry.answerFirst}
+  breadcrumbs={[{ label: 'VPN 与加速器', href: '/vpn/' }, { label: entry.h1 }]}
+  sections={entry.sections}
+  tables={entry.tables}
+  steps={entry.steps}
+  clusters={entry.clusters}
+  cta={entry.cta}
+  relatedBrands={relatedBrands}
+  faqs={entry.faqs}
+  relatedLinks={entry.relatedLinks}
+/>

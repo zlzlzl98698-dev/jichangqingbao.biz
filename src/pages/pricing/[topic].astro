@@ -1,0 +1,195 @@
+---
+import TopicPageTemplate, { type TopicTable } from '../../components/seo/TopicPageTemplate.astro';
+import { PRICING_TOPICS } from '../../data/topics-commercial';
+import { PRICING_ENRICHMENTS } from '../../data/secondary/batch1-pricing';
+import { mergeTopicEnrichment } from '../../data/secondary/enrich';
+import { getBrandBySlug, plans, brands } from '../../lib/data';
+
+export async function getStaticPaths() {
+  return PRICING_TOPICS.map((t) => ({
+    params: { topic: t.slug },
+    props: { entry: t },
+  }));
+}
+
+const { entry: rawEntry } = Astro.props;
+
+function buildDynamicTables(slug: string): TopicTable[] {
+  if (slug === 'cheap') {
+    const rows = [...plans]
+      .filter((p) => (p.monthlyEquivalent ?? p.price) <= 18)
+      .sort((a, b) => (a.monthlyEquivalent ?? a.price) - (b.monthlyEquivalent ?? b.price))
+      .slice(0, 14)
+      .map((p) => [
+        p.brandName,
+        p.planName,
+        p.billingCycle,
+        `¥${p.price}`,
+        p.trafficGb ? `${p.trafficGb} GB` : '待核实',
+        p.monthlyEquivalent ? `¥${p.monthlyEquivalent}/月` : '—',
+        p.thirdPartyClientSupport === true ? '支持订阅' : p.thirdPartyClientSupport === false ? '仅专属端' : '待核实',
+      ]);
+    return [{
+      title: '全库低价档实付门槛与折算对照表（≤ ¥18/月口径）',
+      subtitle: '实时核对自套餐报价数据库',
+      columns: ['品牌', '套餐', '计费周期', '实付总价', '流量/月', '折算月均', '客户端支持'],
+      rows,
+    }];
+  }
+  if (slug === 'monthly') {
+    const rows = [...plans]
+      .filter((p) => p.billingCycle === '月付')
+      .sort((a, b) => a.price - b.price || a.promotionPriority - b.promotionPriority)
+      .slice(0, 18)
+      .map((p) => [
+        p.brandName,
+        p.planName,
+        `¥${p.price}`,
+        p.trafficGb ? `${p.trafficGb} GB` : '待核实',
+        p.costPerGb ? `¥${p.costPerGb}/GB` : '—',
+        p.thirdPartyClientSupport === true ? '支持订阅' : p.thirdPartyClientSupport === false ? '仅专属端' : '待核实',
+      ]);
+    return [{
+      title: '可按单月购买套餐实付入门筛选表（前 18 项）',
+      subtitle: '核对真实月付口径',
+      columns: ['品牌', '套餐名', '实付月费', '月流量', '单GB成本', '订阅支持'],
+      rows,
+    }];
+  }
+  if (slug === 'annual') {
+    const rows = [...plans]
+      .filter((p) => p.billingCycle === '年付')
+      .sort((a, b) => a.price - b.price)
+      .slice(0, 15)
+      .map((p) => [
+        p.brandName,
+        p.planName,
+        `¥${p.price}/年`,
+        p.monthlyEquivalent ? `¥${p.monthlyEquivalent}/月` : '—',
+        p.trafficGb ? `${p.trafficGb} GB/月` : '待核实',
+        p.notes || '常规年付条款',
+      ]);
+    return [{
+      title: '全库年付套餐实付总价与折算均价对照',
+      subtitle: '严格区分单次实付总额与折算均价',
+      columns: ['品牌', '套餐名', '年付总价', '折算月价', '月度配额', '条件备注'],
+      rows,
+    }];
+  }
+  if (slug === 'no-expiry') {
+    const rows = [...plans]
+      .filter((p) => p.billingCycle === '一次性付费')
+      .sort((a, b) => a.price - b.price)
+      .map((p) => [
+        p.brandName,
+        p.planName,
+        `¥${p.price}`,
+        p.trafficGb ? `${p.trafficGb} GB` : '待核实',
+        p.costPerGb ? `¥${p.costPerGb}/GB` : '—',
+        p.thirdPartyClientSupport === true ? '支持订阅' : p.thirdPartyClientSupport === false ? '仅专属端' : '待核实',
+      ]);
+    return [{
+      title: '全库一次性付费（不限时流量包）全量对比表',
+      subtitle: `共 ${rows.length} 条记录`,
+      columns: ['品牌', '流量包名', '实付金额', '总流量', '单位GB成本', '订阅支持'],
+      rows,
+    }];
+  }
+  if (slug === 'value') {
+    const rows = [...plans]
+      .filter((p) => typeof p.costPerGb === 'number' && p.costPerGb > 0)
+      .sort((a, b) => (a.costPerGb ?? 99) - (b.costPerGb ?? 99))
+      .slice(0, 15)
+      .map((p) => [
+        p.brandName,
+        p.planName,
+        p.billingCycle,
+        `¥${p.price}`,
+        p.trafficGb ? `${p.trafficGb} GB` : '—',
+        `¥${p.costPerGb}/GB`,
+      ]);
+    return [{
+      title: '全库单 GB 流量成本最低前 15 项参考',
+      subtitle: '含历史多年付标示对比',
+      columns: ['品牌', '套餐名', '周期', '总价', '配额', '单GB实算'],
+      rows,
+    }];
+  }
+  if (slug === 'high-traffic') {
+    const rows = [...plans]
+      .filter((p) => (p.trafficGb ?? 0) >= 300)
+      .sort((a, b) => (b.trafficGb ?? 0) - (a.trafficGb ?? 0))
+      .slice(0, 14)
+      .map((p) => [
+        p.brandName,
+        p.planName,
+        p.billingCycle,
+        `¥${p.price}`,
+        `${p.trafficGb} GB`,
+        p.thirdPartyClientSupport === true ? '支持订阅' : '仅专属端/待核实',
+      ]);
+    return [{
+      title: '300GB 以上大流量套餐清单与订阅模式对照',
+      subtitle: '实时核对自套餐报价数据库',
+      columns: ['品牌', '套餐', '周期', '实付价格', '流量配额', '兼容性'],
+      rows,
+    }];
+  }
+  if (slug === 'coupons') {
+    const rows = brands
+      .filter((b) => b.couponCode || b.couponRestrictions)
+      .map((b) => [
+        b.brandName,
+        b.couponCode || '无通用码/按周期折',
+        b.couponRestrictions || '常规周期适用',
+        b.fieldConflicts.some((c) => c.includes('优惠')) ? '存在多来源冲突' : '口径一致',
+      ]);
+    return [{
+      title: '各品牌优惠码与限制条件汇总表',
+      subtitle: `实时汇总 ${rows.length} 条优惠档案记录`,
+      columns: ['品牌', '收录优惠码', '限制条件 / 适用范围', '审计状态'],
+      rows,
+    }];
+  }
+  if (slug === 'guangsuyun-plans') {
+    const gs = getBrandBySlug('guangsuyun');
+    if (gs) {
+      return [{
+        title: '光速云全部在库套餐档位与单 GB 成本对照',
+        subtitle: '来源：光速云核实档案 / CF-001 已披露',
+        columns: ['套餐名称', '计费周期', '标面总价', '流量配额', '备注限制'],
+        rows: gs.plans.map((p) => [
+          p.planName,
+          p.billingCycle,
+          `¥${p.price}`,
+          p.trafficGb ? `${p.trafficGb} GB` : '按约定/定制',
+          p.notes || '—',
+        ]),
+      }];
+    }
+  }
+  return [];
+}
+
+const entry = mergeTopicEnrichment(rawEntry, PRICING_ENRICHMENTS[rawEntry.slug], buildDynamicTables(rawEntry.slug));
+const relatedBrands = (entry.brandSlugs ?? [])
+  .map((s) => getBrandBySlug(s))
+  .filter((b): b is NonNullable<typeof b> => Boolean(b));
+---
+
+<TopicPageTemplate
+  title={entry.title}
+  description={entry.description}
+  h1={entry.h1}
+  eyebrow={entry.eyebrow}
+  answerFirst={entry.answerFirst}
+  breadcrumbs={[{ label: '价格与套餐', href: '/pricing/' }, { label: entry.h1 }]}
+  sections={entry.sections}
+  tables={entry.tables}
+  steps={entry.steps}
+  clusters={entry.clusters}
+  cta={entry.cta}
+  relatedBrands={relatedBrands}
+  faqs={entry.faqs}
+  relatedLinks={entry.relatedLinks}
+/>

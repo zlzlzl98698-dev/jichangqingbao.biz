@@ -1,0 +1,261 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import { clients, brands, SITE_META } from '../../lib/data';
+import { CLIENTS_PILLAR_SECTIONS, CLIENTS_PILLAR_FAQS } from '../../data/pillars/clients';
+
+const thirdPartyBrands = brands.filter((b) => b.thirdPartyClientSupport === true);
+const exclusiveBrands = brands.filter((b) => b.thirdPartyClientSupport === false);
+const unknownBrands = brands.filter((b) => b.thirdPartyClientSupport === null);
+
+const platformCards = [
+  { name: 'Windows 客户端', href: '/clients/windows/', desc: 'Clash Verge Rev、v2rayN、FlClash、Clash Nyanpasu、Hiddify、Karing、Clash Mi' },
+  { name: 'Android 客户端', href: '/clients/android/', desc: 'v2rayNG、FlClash、Clash Meta for Android、Hiddify、Karing、SFA（警惕假冒 NekoBox）' },
+  { name: 'iOS / iPadOS 客户端', href: '/clients/ios/', desc: 'Shadowrocket、Stash、Quantumult X、Surge 5、SFI、Karing、Clash Mi、Streisand' },
+  { name: 'macOS 客户端', href: '/clients/macos/', desc: '区分 Intel 与 Apple Silicon DMG：Clash Verge Rev、FlClash、v2rayN、Surge Mac、SFM' },
+  { name: 'Linux 客户端', href: '/clients/linux/', desc: '提供 DEB / RPM / AppImage 打包及无桌面主机适用 v2rayA 透明代理方案' },
+  { name: 'OpenWrt / 软路由', href: '/clients/openwrt/', desc: 'OpenClash、PassWall2、Nikki（需 24.10+）、HomeProxy（需核实防火墙与 CPU 架构）' },
+];
+
+const osRecommendMatrix = [
+  {
+    os: 'Windows 10/11',
+    primary: 'Clash Verge Rev / FlClash',
+    alt: 'v2rayN / Karing / Hiddify',
+    kernel: 'Mihomo / Xray-core / sing-box',
+    note: '支持 TUN 接管游戏/命令行；淘汰停更旧版 CFW',
+  },
+  {
+    os: 'macOS (Apple Silicon / Intel)',
+    primary: 'Clash Verge Rev / FlClash',
+    alt: 'v2rayN / SFM / Surge Mac',
+    kernel: 'Mihomo / sing-box',
+    note: '下载 DMG 前核对 arm64 与 x86_64 架构',
+  },
+  {
+    os: 'Android',
+    primary: 'FlClash / v2rayNG',
+    alt: 'Clash Meta for Android / Karing',
+    kernel: 'Mihomo / Xray-core / sing-box',
+    note: '关闭电池优化防断连；警惕盗版 NekoBox 安装包',
+  },
+  {
+    os: 'iOS / iPadOS',
+    primary: 'Shadowrocket（付费）',
+    alt: 'Karing / Clash Mi（免费）/ Stash / Quantumult X',
+    kernel: '自研引擎 / sing-box / Mihomo',
+    note: '需外区 Apple ID，严禁登录他人共享账号防锁机',
+  },
+  {
+    os: 'Linux（桌面 / 无头主机）',
+    primary: 'Clash Verge Rev / v2rayA',
+    alt: 'FlClash / sing-box CLI',
+    kernel: 'Mihomo / sing-box / v2ray-core',
+    note: '无桌面服务器与 NAS 推荐 v2rayA 或服务模式',
+  },
+  {
+    os: 'OpenWrt 软路由',
+    primary: 'OpenClash / Nikki',
+    alt: 'PassWall2 / HomeProxy',
+    kernel: 'Mihomo / sing-box',
+    note: '需支持第三方订阅链接的机场，专属端不可入路由',
+  },
+];
+
+const tocItems = [
+  { id: 'cli-platforms', label: '六大操作系统平台目录' },
+  { id: 'cli-os-matrix', label: '全平台主力软件与内核对照表' },
+  { id: 'cli-catalog', label: '十大核心代理软件与内核档案' },
+  { id: 'cli-brand-split', label: '第三方订阅 vs 仅专属端品牌划分' },
+  ...CLIENTS_PILLAR_SECTIONS.map((s) => ({ id: s.id, label: s.heading })),
+  { id: 'faq-heading', label: '客户端常见问题（8 问）' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '第三方代理客户端百科与机场兼容矩阵',
+  url: `${SITE_META.url}/clients/`,
+  description: '覆盖 Windows、Android、iOS、macOS、Linux、OpenWrt 六大平台及 Clash Verge Rev、v2rayN、Shadowrocket、Mihomo、sing-box、FlClash 等十大客户端与兼容机场。',
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+---
+
+<BaseLayout
+  title="第三方代理客户端百科（六大平台软件档案与兼容机场矩阵）| 机场情报"
+  description="覆盖 Windows、Android、iOS、macOS、Linux 与 OpenWrt 六大平台的代理客户端数据库，严格区分支持第三方订阅与仅限专属客户端的机场品牌。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '客户端软件百科' }]} />
+
+    <header class="pb-5 border-b border-slate-200">
+      <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Pillar 05 · Client Encyclopedia</span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">第三方代理客户端百科与机场兼容矩阵</h1>
+      <p class="text-sm text-slate-600 mt-2 max-w-3xl">
+        严格依据站内客户端兼容性档案与 31 家品牌资料整理。清晰区分“第三方通用客户端订阅导入”与“仅支持账号登录的机场专属客户端”，绝不给不提供订阅链接的品牌强行标注 Clash/小火箭兼容。
+      </p>
+    </header>
+
+    <GeoAnswerBox
+      answer={`当前收录的 ${brands.length} 家品牌中，明确支持第三方通用客户端（Clash Verge Rev、v2rayN、Shadowrocket 等）的有 ${thirdPartyBrands.length} 家；仅支持官方专属客户端、不提供第三方订阅链接的有 ${exclusiveBrands.length} 家（飞猫云、隐形人、无忧链接、灵猫网络、Firefly、SOGO 云、闪跃、全球云）；另有 ${unknownBrands.length} 家待核实（宇宙云、浪网、边缘节点 EdgeNova）。`}
+      verifiedAt={SITE_META.verifiedSnapshotDate}
+      source="第三方代理客户端.txt、32家机场品牌清单.txt"
+    />
+
+    <!-- Six Platform Directory -->
+    <section id="cli-platforms" class="my-8 scroll-mt-24">
+      <h2 class="text-xl font-bold text-[#0b192c] mb-4">一、按操作系统平台浏览客户端百科</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {platformCards.map((p) => (
+          <a href={p.href} class="editorial-card rounded-xl p-5 block hover:border-teal-600 transition-colors">
+            <h3 class="text-base font-bold text-[#0b192c]">{p.name} →</h3>
+            <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">{p.desc}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- OS Compatibility Matrix -->
+    <section id="cli-os-matrix" class="my-8 scroll-mt-24">
+      <div class="flex items-baseline justify-between gap-4 mb-3">
+        <h2 class="text-lg font-bold text-[#0b192c]">六大系统主力客户端、底层内核与避坑要点对照表</h2>
+        <span class="font-mono text-[11px] text-slate-400">OS × KERNEL MATRIX</span>
+      </div>
+      <div class="editorial-card rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4">操作系统</th>
+                <th class="py-3 px-3">主力建议客户端</th>
+                <th class="py-3 px-3">备选客户端</th>
+                <th class="py-3 px-3">底层内核</th>
+                <th class="py-3 px-4">选型与安全注意</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {osRecommendMatrix.map((row) => (
+                <tr class="hover:bg-slate-50/70">
+                  <td class="py-2.5 px-4 font-bold text-[#0b192c] whitespace-nowrap">{row.os}</td>
+                  <td class="py-2.5 px-3 font-medium text-teal-800 whitespace-nowrap">{row.primary}</td>
+                  <td class="py-2.5 px-3 text-slate-700">{row.alt}</td>
+                  <td class="py-2.5 px-3 font-mono text-slate-600 whitespace-nowrap">{row.kernel}</td>
+                  <td class="py-2.5 px-4 text-slate-600">{row.note}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Client Software Directory -->
+    <section id="cli-catalog" class="my-8 scroll-mt-24">
+      <h2 class="text-xl font-bold text-[#0b192c] mb-4">二、十大核心代理软件与内核档案</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {clients.map((c) => (
+          <article class="editorial-card rounded-xl p-5 flex flex-col justify-between gap-3">
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-base font-bold text-[#0b192c]">
+                  <a href={`/clients/${c.slug}/`} class="hover:underline">{c.name}</a>
+                </h3>
+                <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-slate-100 text-slate-700">{c.core}</span>
+              </div>
+              <p class="text-xs text-slate-600 mt-2 leading-relaxed">{c.summary}</p>
+              <div class="mt-3 flex flex-wrap gap-1.5 text-[11px]">
+                {c.platforms.map((os) => (
+                  <span class="px-1.5 py-0.5 rounded bg-slate-50 border border-slate-200 text-slate-700">{os}</span>
+                ))}
+              </div>
+            </div>
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span class="text-slate-500">{c.pricing} · {c.sourceLocation}</span>
+              <a href={`/clients/${c.slug}/`} class="font-semibold text-teal-700 hover:underline">软件详情档案 →</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Brand Compatibility Split -->
+    <section id="cli-brand-split" class="my-8 grid grid-cols-1 lg:grid-cols-2 gap-6 scroll-mt-24">
+      <div class="editorial-card rounded-xl p-5">
+        <h2 class="text-base font-bold text-teal-800 pb-2 border-b border-slate-100">
+          支持第三方订阅导入（{thirdPartyBrands.length} 家）
+        </h2>
+        <p class="text-xs text-slate-500 mt-2 mb-3">可直接导入 Clash Verge Rev、Shadowrocket、v2rayN 或 OpenWrt 软路由：</p>
+        <div class="flex flex-wrap gap-2">
+          {thirdPartyBrands.map((b) => (
+            <a href={`/brands/${b.slug}/`} class="px-2.5 py-1 rounded bg-teal-50 border border-teal-200 text-xs font-medium text-teal-900 hover:bg-teal-100">
+              {b.brandName}{b.officialClient ? '（兼有自研端）' : ''}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="editorial-card rounded-xl p-5 border-amber-200 bg-amber-50/30">
+        <h2 class="text-base font-bold text-amber-900 pb-2 border-b border-amber-200/70">
+          仅限专属客户端 · 无订阅链接（{exclusiveBrands.length} 家）
+        </h2>
+        <p class="text-xs text-amber-800 mt-2 mb-3">以下品牌不支持 Clash / Shadowrocket / 软路由，仅支持登录官方专属 App：</p>
+        <div class="flex flex-wrap gap-2">
+          {exclusiveBrands.map((b) => (
+            <a href={`/brands/${b.slug}/`} class="px-2.5 py-1 rounded bg-white border border-amber-300 text-xs font-medium text-amber-950 hover:bg-amber-50">
+              {b.brandName}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Deep Editorial Sections + Anchor TOC -->
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+        <AnchorToc title="客户端百科深度目录" items={tocItems} />
+        <div class="editorial-card rounded-xl p-4 sm:p-5 text-xs text-slate-600 space-y-2">
+          <p class="font-bold text-[#0b192c] text-sm">安装完成后下一步？</p>
+          <p>软件装好后，需通过订阅导入、规则分流、TUN 与 DNS 设置才能获得理想体验。</p>
+          <div class="pt-2 flex flex-wrap gap-2">
+            <a href="/guides/subscription/" class="px-2.5 py-1.5 rounded bg-[#0b192c] text-white font-medium">订阅导入教程</a>
+            <a href="/diagnostics/" class="px-2.5 py-1.5 rounded border border-slate-300 text-[#0b192c] font-medium">连接故障排查</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="lg:col-span-8 space-y-6">
+        {CLIENTS_PILLAR_SECTIONS.map((sec) => (
+          <section id={sec.id} class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+            <h2 class="text-lg sm:text-xl font-bold text-[#0b192c]">{sec.heading}</h2>
+            <p class="mt-2 text-sm font-medium text-teal-800 bg-teal-50/60 border-l-2 border-teal-600 pl-3 py-1.5 rounded-r">
+              {sec.lead}
+            </p>
+            <div class="mt-3 space-y-2.5 text-sm text-slate-700 leading-relaxed">
+              {(sec.paragraphs ?? []).map((p) => (
+                <p>{p}</p>
+              ))}
+            </div>
+            {sec.bullets && sec.bullets.length > 0 && (
+              <ul class="mt-4 space-y-2 text-xs sm:text-sm text-slate-700 bg-slate-50 rounded-lg p-4 border border-slate-100">
+                {sec.bullets.map((b) => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-teal-700 font-bold shrink-0">•</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+
+        <FaqSection title="第三方客户端常见问题（FAQ）" items={CLIENTS_PILLAR_FAQS} includeSchema={true} />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

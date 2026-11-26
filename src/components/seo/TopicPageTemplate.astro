@@ -1,0 +1,480 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs, { type BreadcrumbItem } from '../navigation/Breadcrumbs.astro';
+import GeoAnswerBox from './GeoAnswerBox.astro';
+import AnchorToc from './AnchorToc.astro';
+import FaqSection, { type FaqItem } from './FaqSection.astro';
+import BrandCard from '../brands/BrandCard.astro';
+import { getEntryPlan, SITE_META, type Brand } from '../../lib/data';
+
+export interface SectionBlock {
+  heading: string;
+  lead: string;
+  paragraphs?: string[];
+  bullets?: string[];
+}
+
+export interface TopicTable {
+  title: string;
+  subtitle?: string;
+  columns: string[];
+  rows: string[][];
+}
+
+export interface TopicStep {
+  title: string;
+  detail: string;
+}
+
+export interface ClusterArticle {
+  title: string;
+  targetKeyword: string;
+  plannedUrl: string;
+  summary: string;
+  existingHref?: string;
+}
+
+export interface TopicClusterGroup {
+  clusterName: string;
+  intent: string;
+  articles: ClusterArticle[];
+}
+
+export interface TopicCta {
+  eyebrow: string;
+  title: string;
+  description: string;
+  primaryLabel: string;
+  primaryHref: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+}
+
+export interface Props {
+  title: string;
+  description: string;
+  h1: string;
+  eyebrow: string;
+  answerFirst: string;
+  breadcrumbs: BreadcrumbItem[];
+  sections: SectionBlock[];
+  tables?: TopicTable[];
+  steps?: TopicStep[];
+  clusters?: TopicClusterGroup[];
+  cta?: TopicCta;
+  relatedBrands?: Brand[];
+  relatedLinks?: { label: string; href: string; note?: string }[];
+  faqs?: FaqItem[];
+  verifiedAt?: string;
+  updatedAt?: string;
+  sourceNote?: string;
+  schemaType?: 'Article' | 'HowTo';
+}
+
+const {
+  title,
+  description,
+  h1,
+  eyebrow,
+  answerFirst,
+  breadcrumbs,
+  sections,
+  tables = [],
+  steps = [],
+  clusters = [],
+  cta,
+  relatedBrands = [],
+  relatedLinks = [],
+  faqs = [],
+  verifiedAt = SITE_META.verifiedSnapshotDate,
+  updatedAt = SITE_META.lastUpdated,
+  sourceNote = '机场情报核实档案、客户端百科与历史实测证据包',
+  schemaType = 'Article',
+} = Astro.props;
+
+const parentHref = breadcrumbs[0]?.href ?? '/';
+const topicShortLabel = breadcrumbs[breadcrumbs.length - 1]?.label ?? h1;
+const rootSectionLabel = breadcrumbs[0]?.label ?? '专题';
+
+function getDynamicBrandHeading(rootHref: string, shortLabel: string): string {
+  if (rootHref.startsWith('/clients') || rootHref.startsWith('/vpn')) return `${shortLabel}：开放订阅验证与可用品牌`;
+  if (rootHref.startsWith('/diagnostics')) return `${shortLabel}：规范多协议与稳态参考品牌`;
+  if (rootHref.startsWith('/pricing')) return `${shortLabel}：实付门槛与同价位代表品牌`;
+  if (rootHref.startsWith('/streaming-ai')) return `${shortLabel}：分区解锁与 AI 适配参考品牌`;
+  if (rootHref.startsWith('/network')) return `${shortLabel}：路线标本与实测样本品牌`;
+  return `${shortLabel} · 核实品牌档案对照`;
+}
+
+const brandSectionHeading = getDynamicBrandHeading(parentHref, topicShortLabel);
+const clusterSectionHeading = `${topicShortLabel} · 细分问题集群与延伸阅读`;
+const sidebarTocTitle = `${topicShortLabel}阅读导航`;
+const relatedLinksHeading = `更多${rootSectionLabel}与跨栏目入口`;
+const faqSectionHeading = `${topicShortLabel}常见问题（FAQ）`;
+
+function resolveDefaultCta(rootHref: string): TopicCta {
+  if (rootHref.startsWith('/diagnostics')) {
+    return {
+      eyebrow: 'Diagnostics & Recovery',
+      title: '仍未恢复？核实服务端异常与替代方案',
+      description: '排除本机系统时间、DNS 与虚拟网卡冲突后若仍全灭，建议查看全站风险记录或平替列表。',
+      primaryLabel: '查看服务异常记录',
+      primaryHref: '/intelligence/outages/',
+      secondaryLabel: '配置教程中心',
+      secondaryHref: '/guides/',
+    };
+  }
+  if (rootHref.startsWith('/guides')) {
+    return {
+      eyebrow: 'Setup & Diagnostics',
+      title: '配置卡壳或报错？',
+      description: '对应查询订阅拉取失败、TUN 模式冲突或 AI 区域错误排障步骤。',
+      primaryLabel: '进入故障排查中心',
+      primaryHref: '/diagnostics/',
+      secondaryLabel: '查客户端兼容矩阵',
+      secondaryHref: '/clients/',
+    };
+  }
+  if (rootHref.startsWith('/clients') || rootHref.startsWith('/vpn')) {
+    return {
+      eyebrow: 'Client Compatibility',
+      title: '核对 31 家品牌客户端与订阅限制',
+      description: '站内明确区隔 20 家开放第三方订阅品牌与 8 家仅专属客户端品牌，选购前先对齐工具链。',
+      primaryLabel: '看客户端百科总览',
+      primaryHref: '/clients/',
+      secondaryLabel: '看订阅导入教程',
+      secondaryHref: '/guides/subscription/',
+    };
+  }
+  if (rootHref.startsWith('/streaming-ai')) {
+    return {
+      eyebrow: 'Unlock Verification',
+      title: '比对 31 品牌 AI 与流媒体矩阵',
+      description: '严格区分光速云/无忧/灵动云实测截图与商家文案宣称，并用分流规则固定日/新/美节点。',
+      primaryLabel: '查可用性总矩阵',
+      primaryHref: '/streaming-ai/',
+      secondaryLabel: '配置分流规则',
+      secondaryHref: '/guides/routing-rules/',
+    };
+  }
+  if (rootHref.startsWith('/network')) {
+    return {
+      eyebrow: 'Observatory Evidence',
+      title: '查看原始测速截图与方法说明',
+      description: '2026-08-11 批次与 2026-08-19 三网数据均保留原始时间戳与 0KB 异常节点，不拼造伪排行榜。',
+      primaryLabel: '浏览原始测速证据库',
+      primaryHref: '/network/speedtest/',
+      secondaryLabel: 'IEPL 选型说明',
+      secondaryHref: '/network/iepl/recommendations/',
+    };
+  }
+  if (rootHref.startsWith('/intelligence')) {
+    return {
+      eyebrow: 'Risk & Alternatives',
+      title: '查冲突审计与同价位替代矩阵',
+      description: '对比 CF-001 至 CF-018 全站字段冲突明细，并按客户端自由度筛选可平滑迁移方案。',
+      primaryLabel: '查同价位替代库',
+      primaryHref: '/intelligence/alternatives/',
+      secondaryLabel: '18 项冲突审计',
+      secondaryHref: '/intelligence/changelog/',
+    };
+  }
+  return {
+    eyebrow: 'Brand Verification & Plans',
+    title: '交叉核对全库 154 条报价与 31 家品牌档案',
+    description: '商业合作序不冒充独立测试排名。购买前可对比单位 GB 成本、第三方订阅兼容与旗舰实测证据。',
+    primaryLabel: '查 154 条实时报价',
+    primaryHref: '/pricing/',
+    secondaryLabel: '光速云旗舰档案',
+    secondaryHref: '/brands/guangsuyun/',
+  };
+}
+
+const activeCta = cta ?? resolveDefaultCta(parentHref);
+const currentRoute = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const publishedArticles = (await getCollection('articles', (a) => !a.data.draft)).filter(
+  (a) => a.data.parentTopic === currentRoute
+);
+
+const tocItems = [
+  ...(tables.length > 0 ? [{ id: 'sec-tables', label: '核心数据与参数对照表' }] : []),
+  ...(steps.length > 0 ? [{ id: 'sec-steps', label: '实操与决策步骤流程' }] : []),
+  ...sections.map((s, idx) => ({ id: `sec-${idx + 1}`, label: s.heading })),
+  ...(clusters.length > 0 ? [{ id: 'sec-clusters', label: '三级专题集群与延伸阅读' }] : []),
+  ...(faqs.length > 0 ? [{ id: 'faq-heading', label: `常见问题（${faqs.length} 问）` }] : []),
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': schemaType,
+  headline: h1,
+  description,
+  inLanguage: 'zh-CN',
+  datePublished: verifiedAt,
+  dateModified: updatedAt,
+  author: {
+    '@type': 'Organization',
+    name: SITE_META.name,
+  },
+  publisher: {
+    '@id': `${SITE_META.url}/#organization`,
+  },
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogType="article"
+  publishedAt={verifiedAt}
+  updatedAt={updatedAt}
+  schemas={[articleSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <article class="lg:col-span-8 min-w-0">
+        <header class="pb-5 border-b border-slate-200">
+          <span class="inline-block font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold mb-2">
+            {eyebrow}
+          </span>
+          <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] leading-tight">{h1}</h1>
+          <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 font-mono">
+            <span>发布/核实：{verifiedAt}</span>
+            <span>最近更新：{updatedAt}</span>
+            <span>编辑主体：机场情报研究组</span>
+          </div>
+        </header>
+
+        <GeoAnswerBox answer={answerFirst} verifiedAt={verifiedAt} source={sourceNote} />
+
+        <slot name="before-sections" />
+
+        {tables.length > 0 && (
+          <section id="sec-tables" class="my-6 space-y-5 scroll-mt-24">
+            {tables.map((tbl) => (
+              <div class="editorial-card rounded-xl overflow-hidden">
+                <div class="px-4 sm:px-5 py-3.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-baseline justify-between gap-2">
+                  <h2 class="text-base font-bold text-[#0b192c]">{tbl.title}</h2>
+                  {tbl.subtitle && <span class="font-mono text-[11px] text-slate-500">{tbl.subtitle}</span>}
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr class="border-b border-slate-200 text-slate-700 bg-slate-50/50">
+                        {tbl.columns.map((col) => (
+                          <th class="py-2.5 px-3.5 font-semibold whitespace-nowrap">{col}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                      {tbl.rows.map((row) => (
+                        <tr class="hover:bg-slate-50/70 align-top">
+                          {row.map((cell, ci) => (
+                            <td class={ci === 0 ? 'py-2.5 px-3.5 font-semibold text-[#0b192c] whitespace-nowrap' : 'py-2.5 px-3.5 text-slate-700 min-w-[110px]'}>
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {steps.length > 0 && (
+          <section id="sec-steps" class="my-6 editorial-card rounded-xl p-5 scroll-mt-24">
+            <h2 class="text-lg font-bold text-[#0b192c] mb-3">标准化判断与执行步骤</h2>
+            <ol class="space-y-3">
+              {steps.map((st, idx) => (
+                <li class="flex items-start gap-3 text-xs sm:text-sm">
+                  <span class="w-6 h-6 rounded-full bg-[#0b192c] text-white font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">
+                    {idx + 1}
+                  </span>
+                  <div>
+                    <strong class="block text-[#0b192c]">{st.title}</strong>
+                    <p class="text-slate-600 mt-0.5 leading-relaxed">{st.detail}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        <div class="prose-intel">
+          {sections.map((sec, idx) => (
+            <section id={`sec-${idx + 1}`} class="scroll-mt-24">
+              <h2>{sec.heading}</h2>
+              <p class="font-semibold text-[#0b192c]">{sec.lead}</p>
+              {(sec.paragraphs ?? []).map((p) => (
+                <p>{p}</p>
+              ))}
+              {sec.bullets && sec.bullets.length > 0 && (
+                <ul>
+                  {sec.bullets.map((b) => (
+                    <li>{b}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
+
+        <slot name="after-sections" />
+
+        {relatedBrands.length > 0 && (
+          <section class="my-8 space-y-4">
+            <div class="flex items-center justify-between gap-2">
+              <h2 class="text-xl font-bold text-[#0b192c]">{brandSectionHeading}</h2>
+              <a href="/brands/" class="text-xs font-semibold text-teal-700 hover:underline">查看全部 31 家品牌 →</a>
+            </div>
+            {tables.length === 0 && (
+              <div class="editorial-card rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                      <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                        <th class="py-2.5 px-3.5 font-semibold">品牌</th>
+                        <th class="py-2.5 px-3 font-semibold">入门月付/折算</th>
+                        <th class="py-2.5 px-3 font-semibold">线路与协议</th>
+                        <th class="py-2.5 px-3 font-semibold">订阅兼容</th>
+                        <th class="py-2.5 px-3 font-semibold">证据定性</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                      {relatedBrands.map((b) => {
+                        const ep = getEntryPlan(b);
+                        return (
+                          <tr class="hover:bg-slate-50/70">
+                            <td class="py-2 px-3.5 font-semibold text-[#0b192c] whitespace-nowrap">
+                              <a href={`/brands/${b.slug}/`} class="hover:underline">{b.brandName}</a>
+                            </td>
+                            <td class="py-2 px-3 font-mono whitespace-nowrap">
+                              {ep.cheapestMonthly ? `¥${ep.cheapestMonthly.price}/月` : ep.cheapestAnnual?.monthlyEquivalent ? `¥${ep.cheapestAnnual.monthlyEquivalent}/月(年付)` : '待核实'}
+                            </td>
+                            <td class="py-2 px-3 text-slate-700">{b.networkTypes.join('/')} · {b.protocols.join('/')}</td>
+                            <td class="py-2 px-3 whitespace-nowrap">{b.thirdPartyClientSupport === true ? '支持第三方订阅' : b.thirdPartyClientSupport === false ? '仅专属端' : '待核实'}</td>
+                            <td class="py-2 px-3 whitespace-nowrap">{b.dataStatus}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {relatedBrands.map((b) => (
+                <BrandCard brand={b} showPriorityBadge={true} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {publishedArticles.length > 0 && (
+          <section class="my-8 editorial-card rounded-xl p-5 sm:p-6 border-teal-200/80 bg-teal-50/20">
+            <div class="flex flex-wrap items-baseline justify-between gap-2 pb-2 border-b border-slate-200 mb-3">
+              <h2 class="text-base font-bold text-[#0b192c]">{topicShortLabel}：已上线三级实战指南（{publishedArticles.length} 篇）</h2>
+              <a href="/articles/" class="text-xs font-medium text-teal-800 hover:underline">查看全部长尾文章库 →</a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              {publishedArticles.map((art) => (
+                <a href={`/articles/${art.id}/`} class="rounded-lg border border-slate-200 bg-white p-3.5 hover:border-teal-600 transition-colors block">
+                  <span class="font-mono text-[10px] text-teal-700 block">{art.data.parentCluster} · {art.data.searchIntent}</span>
+                  <strong class="text-sm text-[#0b192c] mt-0.5 block">{art.data.h1}</strong>
+                  <span class="text-slate-600 mt-1 block line-clamp-2">{art.data.description}</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {clusters.length > 0 && (
+          <section id="sec-clusters" class="my-8 editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+            <div class="flex flex-wrap items-baseline justify-between gap-2 pb-3 border-b border-slate-100">
+              <h2 class="text-lg font-bold text-[#0b192c]">{clusterSectionHeading}</h2>
+              <span class="font-mono text-[11px] text-slate-400">TOPIC CLUSTERS</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-2">
+              本二级专题向下承接以下细分长尾选题集群；已上线页面可直接点击阅读，待排期选题仅作专题结构规划公示，不产生空白死链。
+            </p>
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              {clusters.map((grp) => (
+                <div class="rounded-lg border border-slate-200 bg-slate-50/60 p-4">
+                  <div class="flex items-center justify-between gap-2 mb-2">
+                    <h3 class="text-sm font-bold text-[#0b192c]">{grp.clusterName}</h3>
+                    <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700">{grp.intent}</span>
+                  </div>
+                  <ul class="space-y-2 text-xs">
+                    {grp.articles.map((art) => (
+                      <li class="border-t border-slate-200/70 pt-2 first:border-t-0 first:pt-0">
+                        {art.existingHref ? (
+                          <a href={art.existingHref} class="font-semibold text-teal-800 hover:underline block">
+                            {art.title} →
+                          </a>
+                        ) : (
+                          <span class="font-semibold text-[#0b192c] block">
+                            {art.title}
+                            <span class="ml-1.5 font-mono text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">待排期</span>
+                          </span>
+                        )}
+                        <span class="block text-slate-500 mt-0.5">关键词：{art.targetKeyword} · {art.summary}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <FaqSection title={faqSectionHeading} items={faqs} />
+
+        <footer class="mt-8 rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600 space-y-1">
+          <p><strong>数据来源与口径：</strong>{sourceNote}</p>
+          <p><strong>编辑声明：</strong>本站坚持事实可核查原则，对缺省资料明确标示“待核实”，不虚构长期实测结论。<a href="/corrections/" class="text-[#0b192c] underline ml-1">提交纠错</a></p>
+        </footer>
+      </article>
+
+      <aside class="lg:col-span-4 space-y-5 lg:sticky lg:top-24">
+        <AnchorToc title={sidebarTocTitle} items={tocItems} />
+
+        {relatedLinks.length > 0 && (
+          <div class="editorial-card rounded-xl p-4 sm:p-5">
+            <h2 class="text-sm font-bold text-[#0b192c] pb-2 border-b border-slate-100">{relatedLinksHeading}</h2>
+            <ul class="mt-3 space-y-2.5 text-xs">
+              {relatedLinks.map((l) => (
+                <li>
+                  <a href={l.href} class="font-semibold text-[#0b192c] hover:text-teal-700 hover:underline block">
+                    {l.label} →
+                  </a>
+                  {l.note && <span class="text-slate-500 block mt-0.5">{l.note}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div class="observatory-panel rounded-xl p-4 sm:p-5">
+          <span class="font-mono text-[10px] uppercase tracking-wider text-teal-300">{activeCta.eyebrow}</span>
+          <h3 class="text-sm font-bold text-white mt-1">{activeCta.title}</h3>
+          <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">{activeCta.description}</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            <a href={activeCta.primaryHref} class="px-3 py-1.5 rounded bg-teal-600 text-white text-xs font-semibold hover:bg-teal-500">
+              {activeCta.primaryLabel}
+            </a>
+            {activeCta.secondaryHref && activeCta.secondaryLabel && (
+              <a href={activeCta.secondaryHref} class="px-3 py-1.5 rounded border border-slate-600 text-slate-200 text-xs hover:bg-slate-800">
+                {activeCta.secondaryLabel}
+              </a>
+            )}
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

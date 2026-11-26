@@ -1,0 +1,201 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import { DIAGNOSTICS_TOPICS } from '../../data/topics-guides-diag';
+import { DIAGNOSTICS_PILLAR_SECTIONS, DIAGNOSTICS_PILLAR_FAQS } from '../../data/pillars/diagnostics';
+import { SITE_META } from '../../lib/data';
+
+const triageMatrix = [
+  {
+    symptom: '仅个别节点超时（香港/日本红）',
+    cause: '单机房维护、端口更新或本地入口临时波动',
+    check: '测试同机场其他地区节点是否显示绿色延迟',
+    action: '客户端内刷新一次订阅配置，并切到备选节点',
+    verify: '新节点延迟恢复且外网页面正常加载',
+    nextHref: '/diagnostics/node-timeout/',
+  },
+  {
+    symptom: '全部节点同时超时（全红）',
+    cause: '系统时间偏差 >60s、流量耗尽/到期、其他 VPN 抢路由',
+    check: '核对系统时钟与官网套餐余额，检查是否双开加速器',
+    action: '开启自动同步网络时间，退出其余代理/加速器并刷新订阅',
+    verify: '延迟检测重新出现毫秒级响应',
+    nextHref: '/diagnostics/all-timeout/',
+  },
+  {
+    symptom: '拉取订阅失败 / YAML 解析错',
+    cause: '专属端误找订阅链接、贴错登录网址、或直连域名被阻断',
+    check: '确认品牌是否支持第三方订阅，核对 URL 完整格式',
+    action: '换用代理更新/手机热点更新订阅，或改用品牌专属端',
+    verify: '配置文件节点数量正常刷新更新',
+    nextHref: '/diagnostics/subscription-failed/',
+  },
+  {
+    symptom: '已连绿色延迟但浏览器上不了网',
+    cause: '未点亮系统代理、浏览器扩展端口劫持或旧 DNS 缓存残留',
+    check: '禁用 SwitchyOmega 等扩展，检查系统代理端口设置',
+    action: '关闭冲突扩展，重启客户端系统代理或刷新本地 DNS',
+    verify: '浏览器无痕窗口正常访问目标站点',
+    nextHref: '/diagnostics/connection-failed/',
+  },
+  {
+    symptom: '开 TUN 后全机断网（微信也断）',
+    cause: '多款虚拟网卡驱动冲突（如同时开游戏加速器或企业 VPN）',
+    check: '检查任务栏和网络适配器是否并存多个 TUN 设备',
+    action: '完全退出另一款加速或 VPN 工具后重开一次 TUN 开关',
+    verify: '国内直连与境外命令行/桌面端同步恢复',
+    nextHref: '/diagnostics/tun-error/',
+  },
+  {
+    symptom: 'ChatGPT / Claude / Gemini 提示地区错误',
+    cause: '策略组落在了香港节点、历史 Cookie 残留或本地 DNS 泄露',
+    check: '查看策略组出口地区，并用浏览器无痕窗口验证',
+    action: 'AI 策略组改绑新加坡/日本/美国，启用 Fake-IP 或远程 DoH',
+    verify: '无痕窗口重新登录即可进入对话界面',
+    nextHref: '/diagnostics/ai-blocked/',
+  },
+];
+
+const tocItems = [
+  { id: 'diag-triage-matrix', label: '六步症状分诊速查表' },
+  { id: 'diag-subtopics', label: '十大单症状深度排查卡' },
+  ...DIAGNOSTICS_PILLAR_SECTIONS.map((s) => ({ id: s.id, label: s.heading })),
+  { id: 'faq-heading', label: '故障排查常见问题（8 问）' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '网络连接故障诊断知识库',
+  url: `${SITE_META.url}/diagnostics/`,
+  description: '覆盖单节点超时、全节点超时、订阅拉取失败、已连接上不了网、DNS 错误、TUN 虚拟网卡冲突、速度慢与 AI/流媒体区域报错的完整排障中心。',
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+---
+
+<BaseLayout
+  title="网络连接故障诊断中心（节点超时/订阅失败/AI异常/TUN冲突）| 机场情报"
+  description="覆盖代理连接各环节的网络故障诊断知识库：单节点超时、全节点超时、订阅失败、已连接上不了网、DNS 错误、TUN 异常、速度慢与 AI/流媒体地域错误。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '故障排查诊断中心' }]} />
+
+    <header class="pb-5 border-b border-slate-200">
+      <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Pillar 09 · Network Diagnostics</span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">网络连接故障诊断知识库</h1>
+      <p class="mt-2 text-sm text-slate-600 max-w-3xl leading-relaxed">
+        按“现象 → 可能原因 → 检查步骤 → 处理方法 → 验证结果 → 专项排障页”六步漏斗，先排除本地时间、端口与路由冲突，再定位服务端异常。
+      </p>
+    </header>
+
+    <GeoAnswerBox
+      answer="遇到代理连不上或报错时，切忌直接把单次故障归因为“机场跑路”。按照排查漏斗，90% 以上的问题集中在五个本地或节点层级：1) 系统时间偏差（>60秒导致 TLS 握手失败）；2) 系统代理或 TUN 未开启；3) 订阅长时间未更新；4) 与其他 VPN/游戏加速器发生虚拟网卡冲突；5) 香港节点触发 OpenAI/Gemini/TikTok 区域策略。"
+      verifiedAt={SITE_META.lastUpdated}
+      source="机场情报故障排查知识库"
+    />
+
+    <!-- Symptom Triage Matrix -->
+    <section id="diag-triage-matrix" class="my-6 scroll-mt-24">
+      <div class="flex items-baseline justify-between gap-4 mb-3">
+        <h2 class="text-lg font-bold text-[#0b192c]">一、高频连接故障六步症状分诊表</h2>
+        <span class="font-mono text-[11px] text-slate-400">TRIAGE FUNNEL</span>
+      </div>
+      <div class="editorial-card rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4">故障现象</th>
+                <th class="py-3 px-3">主要可能原因</th>
+                <th class="py-3 px-3">优先检查步骤</th>
+                <th class="py-3 px-3">标准处理方法</th>
+                <th class="py-3 px-3">验证结果</th>
+                <th class="py-3 px-4">专项排查页</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {triageMatrix.map((row) => (
+                <tr class="hover:bg-slate-50/70 align-top">
+                  <td class="py-3 px-4 font-bold text-[#0b192c] min-w-[140px]">{row.symptom}</td>
+                  <td class="py-3 px-3 text-slate-700 min-w-[150px]">{row.cause}</td>
+                  <td class="py-3 px-3 text-slate-700 min-w-[150px]">{row.check}</td>
+                  <td class="py-3 px-3 text-slate-700 min-w-[160px]">{row.action}</td>
+                  <td class="py-3 px-3 text-teal-800 font-medium min-w-[130px]">{row.verify}</td>
+                  <td class="py-3 px-4 whitespace-nowrap">
+                    <a href={row.nextHref} class="text-[#0b192c] underline font-semibold">进入细查 →</a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Subtopic Cards -->
+    <section id="diag-subtopics" class="my-8 scroll-mt-24">
+      <h2 class="text-lg font-bold text-[#0b192c] mb-3">二、按报错场景直达单症状诊断专页</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {DIAGNOSTICS_TOPICS.map((d) => (
+          <a href={`/diagnostics/${d.slug}/`} class="editorial-card rounded-xl p-5 flex flex-col justify-between hover:border-teal-600 transition-colors">
+            <div>
+              <span class="font-mono text-[10px] uppercase tracking-wider text-teal-700 font-semibold">{d.eyebrow}</span>
+              <h3 class="text-base font-bold text-[#0b192c] mt-1">{d.h1}</h3>
+              <p class="text-xs text-slate-600 mt-2 line-clamp-3 leading-relaxed">{d.answerFirst}</p>
+            </div>
+            <span class="mt-4 text-xs font-semibold text-[#0b192c]">查看完整诊断步骤 →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Deep Editorial Sections + Anchor TOC -->
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+        <AnchorToc title="故障排查系统指南" items={tocItems} />
+        <div class="editorial-card rounded-xl p-4 sm:p-5 text-xs text-slate-600 space-y-2">
+          <p class="font-bold text-[#0b192c] text-sm">排除本机原因后仍全灭？</p>
+          <p>如果在更换手机 5G 网络、校对系统时间且刷新订阅后依然无法恢复，建议进入风险情报中心核实品牌状态。</p>
+          <div class="pt-2 flex flex-wrap gap-2">
+            <a href="/intelligence/outages/" class="px-2.5 py-1.5 rounded bg-[#0b192c] text-white font-medium">查看服务异常记录</a>
+            <a href="/intelligence/alternatives/" class="px-2.5 py-1.5 rounded border border-slate-300 text-[#0b192c] font-medium">查看替代方案</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="lg:col-span-8 space-y-6">
+        {DIAGNOSTICS_PILLAR_SECTIONS.map((sec) => (
+          <section id={sec.id} class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+            <h2 class="text-lg sm:text-xl font-bold text-[#0b192c]">{sec.heading}</h2>
+            <p class="mt-2 text-sm font-medium text-teal-800 bg-teal-50/60 border-l-2 border-teal-600 pl-3 py-1.5 rounded-r">
+              {sec.lead}
+            </p>
+            <div class="mt-3 space-y-2.5 text-sm text-slate-700 leading-relaxed">
+              {(sec.paragraphs ?? []).map((p) => (
+                <p>{p}</p>
+              ))}
+            </div>
+            {sec.bullets && sec.bullets.length > 0 && (
+              <ul class="mt-4 space-y-2 text-xs sm:text-sm text-slate-700 bg-slate-50 rounded-lg p-4 border border-slate-100">
+                {sec.bullets.map((b) => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-teal-700 font-bold shrink-0">•</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+
+        <FaqSection title="故障诊断常见问题（FAQ）" items={DIAGNOSTICS_PILLAR_FAQS} includeSchema={true} />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

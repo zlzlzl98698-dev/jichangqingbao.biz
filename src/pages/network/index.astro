@@ -1,0 +1,265 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import BrandCard from '../../components/brands/BrandCard.astro';
+import { getBrandBySlug, SITE_META } from '../../lib/data';
+import { NETWORK_PILLAR_SECTIONS, NETWORK_PILLAR_FAQS } from '../../data/pillars/network';
+
+const sampleBrands = ['guangsuyun', 'muguang', 'weitu', 'yifan']
+  .map((s) => getBrandBySlug(s))
+  .filter((b): b is NonNullable<typeof b> => Boolean(b));
+
+const subLinks = [
+  { label: 'IEPL 专线原理', href: '/network/iepl/' },
+  { label: 'IEPL 服务选型', href: '/network/iepl/recommendations/' },
+  { label: 'IPLC 专线', href: '/network/iplc/' },
+  { label: 'BGP 多线网络', href: '/network/bgp/' },
+  { label: '中转线路', href: '/network/transit/' },
+  { label: '直连线路', href: '/network/direct/' },
+  { label: '香港节点', href: '/network/hong-kong/' },
+  { label: '日本节点', href: '/network/japan/' },
+  { label: '新加坡节点', href: '/network/singapore/' },
+  { label: '美国节点', href: '/network/usa/' },
+  { label: '低延迟节点', href: '/network/low-latency/' },
+  { label: '原生 IP 辨析', href: '/network/native-ip/' },
+  { label: '线路倍率计算', href: '/network/multiplier/' },
+  { label: '实测证据与测速库', href: '/network/speedtest/' },
+  { label: '光速云线路解析', href: '/network/guangsuyun-analysis/' },
+];
+
+const architectureRows = [
+  {
+    arch: 'IEPL / IPLC 专线',
+    crossBorder: '私有二层/三层内网通道，绕开公网国际拥塞出口',
+    peakStability: '晚高峰稳定性高，抖动与重传极低',
+    costTier: '带宽成本最高，部分站点设 1.5x–3x 线路倍率',
+    fit: '延迟敏感型远程办公、SSH、跨境会议与重度观影',
+  },
+  {
+    arch: 'BGP 多线中转',
+    crossBorder: '国内电信/联通/移动三网就近接入 + 优化隧道转发',
+    peakStability: '三网均衡性良好，跨省宽带适应性强',
+    costTier: '中高性价比主力方案，多为 1x 标准扣量',
+    fit: '家庭多成员、混合宽带环境与日常综合使用',
+  },
+  {
+    arch: '单线中转',
+    crossBorder: '依赖单一国内入口（如移动或联通优化节点）中转',
+    peakStability: '命中同运营商表现好，跨网高峰可能波动',
+    costTier: '中低成本，常见于 ¥10–¥18 月付档位',
+    fit: '明确知晓自身宽带运营商且需求单一的用户',
+  },
+  {
+    arch: '公网直连',
+    crossBorder: '本地宽带直接访问境外机房 IP',
+    peakStability: '晚高峰 20:00–23:30 易受国际出口拥塞与 QoS 限速',
+    costTier: '硬件门槛最低，多见于低价试错档或备用下载节点',
+    fit: '凌晨错峰下载、轻量文字查询或极低预算备用',
+  },
+];
+
+const regionBaselines = [
+  {
+    region: '香港（HK）',
+    rtt: '21–27 ms',
+    routingNote: '光速云 2026-10-19 非晚高峰记录及华南典型基线',
+    aiLimit: 'OpenAI / Gemini 官方受限',
+    useCase: '网页秒开、4K YouTube、低延迟开发资料查阅',
+  },
+  {
+    region: '新加坡（SG）',
+    rtt: '42–46 ms',
+    routingNote: '东南亚主力枢纽，兼顾低延迟与跨区策略',
+    aiLimit: 'ChatGPT / Gemini 常用主力区',
+    useCase: 'AI 对话开发 + 流媒体全能平衡核心出口',
+  },
+  {
+    region: '日本（JP）',
+    rtt: '53–57 ms',
+    routingNote: '华东/北方访问体验优秀，海底光缆路由多样',
+    aiLimit: 'ChatGPT / Claude / 日区解锁',
+    useCase: '日区流媒体动画、AI 工作流与 GitHub 下载',
+  },
+  {
+    region: '美国（US）',
+    rtt: '134–180 ms',
+    routingNote: '跨太平洋物理距离较远，纯加载略逊于近邻节点',
+    aiLimit: '美区限定服务与高权限模型',
+    useCase: '美区电商 SaaS、美区流媒体与特定 Claude 接口',
+  },
+];
+
+const tocItems = [
+  { id: 'net-arch-matrix', label: '四大跨境线路架构对比表' },
+  { id: 'net-region-panel', label: '主流节点地区延迟与用途观测面板' },
+  ...NETWORK_PILLAR_SECTIONS.map((s) => ({ id: s.id, label: s.heading })),
+  { id: 'net-samples', label: '典型线路架构品牌档案样本' },
+  { id: 'faq-heading', label: '线路与节点常见问题（8 问）' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '机场线路与节点技术知识库',
+  url: `${SITE_META.url}/network/`,
+  description: '系统科普 IEPL、IPLC、BGP 多线、中转与直连线路原理，解析香港、日本、新加坡、美国节点延迟特征、原生 IP、线路倍率与跨批次测速统计口径。',
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+---
+
+<BaseLayout
+  title="机场技术线路知识库与节点性能分析（IEPL/IPLC/BGP/原生IP/测速）| 机场情报"
+  description="系统科普 IEPL、IPLC、BGP 多线、中转与直连线路原理，解析香港、日本、新加坡、美国节点延迟特征、原生 IP 属性、线路倍率计算与测速方法论。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '线路与节点知识库' }]} />
+
+    <header class="pb-5 border-b border-slate-200">
+      <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Pillar 07 · Network & Nodes</span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">机场线路与节点技术知识库</h1>
+      <p class="mt-2 text-sm text-slate-600 max-w-3xl leading-relaxed">
+        拆解“国内接入、跨境段传输与海外落地”三段链路，客观区分传输层专线与落地原生 IP 属性，拒绝将不同环境与时段的测速图混合排榜。
+      </p>
+      <div class="mt-4 flex flex-wrap gap-2 text-xs">
+        {subLinks.map((l) => (
+          <a href={l.href} class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 font-medium text-[#0b192c]">{l.label}</a>
+        ))}
+      </div>
+    </header>
+
+    <GeoAnswerBox
+      answer="代理节点的实际连接体验取决于“国内接入方式（BGP 多线 / 单线中转 / 直连）”、“跨境段介质（IEPL / IPLC 专线 vs 公网隧道）”和“落地 IP 质量（商宽/机房 vs 原生住宅）”三段共同作用。本栏目提供纯技术原理科普，并将具体的 IEPL 选型对比与全站原始测速截图库拆分到独立页面。"
+      verifiedAt={SITE_META.verifiedSnapshotDate}
+      source="32家机场品牌清单.txt、2026-08-11 实测资料"
+    />
+
+    <!-- Line Architecture Comparison Table -->
+    <section id="net-arch-matrix" class="mt-6 scroll-mt-24">
+      <div class="flex items-baseline justify-between gap-4 mb-3">
+        <h2 class="text-lg font-bold text-[#0b192c]">一、四大跨境线路架构技术参数对比</h2>
+        <span class="font-mono text-[11px] text-slate-400">TOPOLOGY COMPARISON</span>
+      </div>
+      <div class="editorial-card rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                <th class="py-3 px-4">线路类型</th>
+                <th class="py-3 px-3">传输路径特征</th>
+                <th class="py-3 px-3">晚高峰稳定性表现</th>
+                <th class="py-3 px-3">成本与倍率倾向</th>
+                <th class="py-3 px-4">适合的使用场景</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {architectureRows.map((row) => (
+                <tr class="hover:bg-slate-50/70 align-top">
+                  <td class="py-3 px-4 font-bold text-[#0b192c] whitespace-nowrap">{row.arch}</td>
+                  <td class="py-3 px-3 text-slate-700 min-w-[180px]">{row.crossBorder}</td>
+                  <td class="py-3 px-3 text-slate-700 min-w-[160px]">{row.peakStability}</td>
+                  <td class="py-3 px-3 text-slate-700 min-w-[160px]">{row.costTier}</td>
+                  <td class="py-3 px-4 text-teal-800 font-medium min-w-[170px]">{row.fit}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dark Network Observatory Regional Panel -->
+    <section id="net-region-panel" class="observatory-panel rounded-2xl p-4 sm:p-6 my-8 scroll-mt-24">
+      <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-700/70">
+        <div>
+          <span class="font-mono text-[11px] uppercase tracking-wider text-teal-300">Regional Latency & Routing Observatory</span>
+          <h2 class="text-lg font-bold text-white mt-0.5">二、四大常用地区节点延迟基线与职责分工</h2>
+        </div>
+        <a href="/network/speedtest/" class="font-mono text-xs text-teal-300 hover:underline">
+          查看全站原始测速图库 →
+        </a>
+      </div>
+      <div class="overflow-x-auto mt-4">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="border-b border-slate-700 text-slate-300 font-mono">
+              <th class="py-2.5 px-3">地区节点</th>
+              <th class="py-2.5 px-3">参考基础延迟</th>
+              <th class="py-2.5 px-3">地理与路由特征</th>
+              <th class="py-2.5 px-3">AI / 解锁重点提示</th>
+              <th class="py-2.5 px-3">推荐主责用途</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/80 text-slate-200">
+            {regionBaselines.map((r) => (
+              <tr class="hover:bg-slate-800/40">
+                <td class="py-2.5 px-3 font-bold text-white whitespace-nowrap">{r.region}</td>
+                <td class="py-2.5 px-3 font-mono text-teal-300 whitespace-nowrap">{r.rtt}</td>
+                <td class="py-2.5 px-3 text-slate-300">{r.routingNote}</td>
+                <td class="py-2.5 px-3 text-amber-300">{r.aiLimit}</td>
+                <td class="py-2.5 px-3 text-slate-200">{r.useCase}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Deep Editorial Sections + Anchor TOC -->
+    <div class="mt-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
+        <AnchorToc title="线路与节点知识目录" items={tocItems} />
+        <div class="editorial-card rounded-xl p-4 sm:p-5 text-xs text-slate-600 space-y-2">
+          <p class="font-bold text-[#0b192c] text-sm">测速证据与选型延伸</p>
+          <p>请结合自身宽带地区查看真实测速截图批次，不要将非晚高峰机房测速当作全部地区通用值。</p>
+          <div class="pt-2 flex flex-wrap gap-2">
+            <a href="/network/speedtest/" class="px-2.5 py-1.5 rounded bg-[#0b192c] text-white font-medium">浏览原始测速截图</a>
+            <a href="/network/iepl/recommendations/" class="px-2.5 py-1.5 rounded border border-slate-300 text-[#0b192c] font-medium">IEPL 选型参考</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="lg:col-span-8 space-y-6">
+        {NETWORK_PILLAR_SECTIONS.map((sec) => (
+          <section id={sec.id} class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+            <h2 class="text-lg sm:text-xl font-bold text-[#0b192c]">{sec.heading}</h2>
+            <p class="mt-2 text-sm font-medium text-teal-800 bg-teal-50/60 border-l-2 border-teal-600 pl-3 py-1.5 rounded-r">
+              {sec.lead}
+            </p>
+            <div class="mt-3 space-y-2.5 text-sm text-slate-700 leading-relaxed">
+              {(sec.paragraphs ?? []).map((p) => (
+                <p>{p}</p>
+              ))}
+            </div>
+            {sec.bullets && sec.bullets.length > 0 && (
+              <ul class="mt-4 space-y-2 text-xs sm:text-sm text-slate-700 bg-slate-50 rounded-lg p-4 border border-slate-100">
+                {sec.bullets.map((b) => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-teal-700 font-bold shrink-0">•</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+
+        <section id="net-samples" class="scroll-mt-24">
+          <h2 class="text-lg font-bold text-[#0b192c] mb-3">典型线路架构档案样本</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {sampleBrands.map((b) => (
+              <BrandCard brand={b} />
+            ))}
+          </div>
+        </section>
+
+        <FaqSection title="线路与节点常见问题（FAQ）" items={NETWORK_PILLAR_FAQS} includeSchema={true} />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

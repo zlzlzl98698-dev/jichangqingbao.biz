@@ -1,0 +1,34 @@
+---
+import TopicPageTemplate from '../components/seo/TopicPageTemplate.astro';
+import { affiliateRegistry } from '../lib/data';
+---
+
+<TopicPageTemplate
+  title="推广合作与利益关系披露 | 机场情报"
+  description="说明机场情报（jichangqingbao.biz）的联盟推广链接规范、佣金机制以及商业合作与客观技术数据分离原则。"
+  h1="推广合作与利益关系披露"
+  eyebrow="Governance · Affiliate Disclosure"
+  answerFirst={`机场情报的部分品牌注册链接为联盟推广链接（含推广链接，通过链接注册可能为本站带来佣金，不影响用户支付价格）。本站所有站外商业注册链接统一添加 target="_blank" rel="nofollow sponsored noopener"，且商业推广排序不修改任何技术参数、实测截图与风险提示。`}
+  breadcrumbs={[{ label: '推广披露' }]}
+  sections={[
+    {
+      heading: '一、推广链接统一规范',
+      lead: '所有推广注册入口统一由结构化注册表调度，禁止在正文散落未披露的隐蔽跳转链接。',
+      paragraphs: [
+        `全站披露口径：${affiliateRegistry.disclosureDefault}`,
+        '光速云（LightSpeed）作为本站核心合作品牌，在首页与综合推荐中享有优先合作展示位；暮光加速、飞猫云、微风网络、大佬云、星岛梦、隐形人、二猫云、无忧链接、唯兔云与 Firefly 组成 11 家精选合作展示序列，灵动云、浪网与边缘节点 EdgeNova 按原始资料要求靠后展示。',
+      ],
+    },
+    {
+      heading: '二、独立性与中立边界',
+      lead: '合作品牌同样接受字段冲突审计与局限提示，不因佣金关系隐瞒负面实测数据。',
+      paragraphs: [
+        '例如，在核心合作品牌光速云的页面中，本站依然如实披露其轻量版 59GB/69GB 资料冲突、2026-08-19 实测中香港节点 OpenAI 仅 APP 可用、Gemini 多数节点失败、美国02单线程异常低速（1.60KB）以及特殊套餐不支持退款的注意事项。',
+      ],
+    },
+  ]}
+  relatedLinks={[
+    { label: '编辑政策与数据分级', href: '/editorial-policy/' },
+    { label: '光速云旗舰深度评测', href: '/brands/guangsuyun/' },
+  ]}
+/>

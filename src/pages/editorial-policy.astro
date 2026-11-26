@@ -1,0 +1,36 @@
+---
+import TopicPageTemplate from '../components/seo/TopicPageTemplate.astro';
+---
+
+<TopicPageTemplate
+  title="编辑政策与数据分级标准 | 机场情报"
+  description="机场情报严格划分 measured（实测）、vendor（品牌资料）、commercial（商业信息）、editorial（编辑判断）与 mock（禁止入库）五级数据口径。"
+  h1="编辑政策与数据分级标准"
+  eyebrow="Governance · Editorial Policy"
+  answerFirst="机场情报采用五类严格的数据标签制度：独立实测、历史测试资料、品牌方提供、第三方来源与待核实/来源冲突。任何缺乏证据支持的信息不得写为确定性结论，更不得用样式示例数值充当品牌真实测试结果。"
+  breadcrumbs={[{ label: '编辑政策' }]}
+  sections={[
+    {
+      heading: '一、五级数据来源定义',
+      lead: '不同来源字段拥有各自独立的核实日期，禁止用单一更新时间掩盖未核实字段。',
+      paragraphs: [
+        '1. 独立实测（measured）：仅指本站保留的原始测速与流媒体截图中所展示的时间、节点、协议、延迟与速度，必须同时标注测试日期、运营商后端与局限。',
+        '2. 品牌方提供（vendor）：来自服务商官网、套餐列表与品牌简介的宣传内容（如不限速、2Gbps 带宽、支持某平台解锁），必须标明“品牌资料显示”，不自动升级为实测结论。',
+        '3. 商业信息（commercial）：包含推广链接、优惠码、折扣规则与支付方式，均需记录核实日期并进行佣金关系披露。',
+        '4. 编辑判断（editorial）：适合人群、优缺点与替代建议，需说明分析依据。',
+      ],
+    },
+    {
+      heading: '二、异常值与跑路定性规则',
+      lead: '禁止将官网单次打不开、连接超时或长期未更新直接判定为“跑路”。',
+      paragraphs: [
+        '原始测速图中出现的 0B、KB 级速度、延迟异常或视频送中（CN）结果均属真实测量的一部分，绝不为美化展示而静默删除。',
+        '涉及跑路预警时，前台仅使用“暂无已核实异常记录”、“存在待核实信息”、“已确认服务异常”、“服务已恢复”、“已确认停止运营”等客观状态描述。',
+      ],
+    },
+  ]}
+  relatedLinks={[
+    { label: '数据冲突与来源审计日志', href: '/intelligence/changelog/', note: '查看当前 18 项字段冲突处理记录' },
+    { label: '评测方法说明', href: '/methodology/' },
+  ]}
+/>

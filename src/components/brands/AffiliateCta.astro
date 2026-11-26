@@ -1,0 +1,102 @@
+---
+import { affiliateRegistry, getAffiliateEntry, type Brand } from '../../lib/data';
+
+export interface Props {
+  brand: Brand;
+  variant?: 'card' | 'inline' | 'banner';
+}
+
+const { brand, variant = 'card' } = Astro.props;
+const entry = getAffiliateEntry(brand.slug);
+const hasValidUrl = Boolean(entry?.affiliateUrl);
+---
+
+{hasValidUrl ? (
+  <div
+    class={`rounded-lg border ${
+      variant === 'banner'
+        ? 'border-sky-200 bg-sky-50/70 p-4 sm:p-5'
+        : 'border-slate-200 bg-slate-50/80 p-3.5'
+    }`}
+  >
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div class="space-y-1">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-sm font-bold text-[#0b192c]">{brand.brandName} 官方合作注册入口</span>
+          {entry.couponCode && entry.couponCode !== '待核实' && (
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-white border border-slate-200 font-mono text-xs text-[#0b192c]">
+              优惠码: <strong>{entry.couponCode}</strong>
+              <button
+                type="button"
+                data-copy-coupon={entry.couponCode.includes('/') ? entry.couponCode.split('/')[0].trim() : entry.couponCode}
+                class="ml-0.5 px-1.5 py-0.5 rounded bg-slate-100 hover:bg-teal-100 text-[11px] font-sans font-semibold text-teal-800 transition-colors cursor-pointer"
+                title={`复制优惠码 ${entry.couponCode}`}
+              >
+                复制
+              </button>
+            </span>
+          )}
+        </div>
+        <p class="text-xs text-slate-600">
+          折扣说明：{entry.couponDiscount}
+          {entry.couponRestrictions ? `（${entry.couponRestrictions}）` : ''}
+        </p>
+        {entry.affiliateStatus === 'format-anomaly' && (
+          <p class="text-xs text-amber-700 font-medium">
+            链接格式提醒：{entry.linkNote || '该推广链接格式缺少 #/，注册前请确认页面可正常打开。'}
+          </p>
+        )}
+        {entry.affiliateStatus === 'historical-unverified' && (
+          <p class="text-xs text-amber-700 font-medium">
+            时效提醒：{entry.linkNote || '保存自历史记录，不保证当前依然有效。'}
+          </p>
+        )}
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <a
+          href={entry.affiliateUrl}
+          target="_blank"
+          rel="nofollow sponsored noopener"
+          class="inline-flex items-center justify-center px-4 py-2 rounded-md bg-[#0b192c] text-white text-xs font-semibold hover:bg-[#13294b] transition-colors whitespace-nowrap"
+        >
+          前往 {brand.brandName} 注册 →
+        </a>
+      </div>
+    </div>
+
+    <p class="mt-2.5 pt-2 border-t border-slate-200/80 text-[11px] text-slate-500 leading-relaxed">
+      商业关系披露：{affiliateRegistry.disclosureDefault} 资料核实日期：<span class="font-mono">{entry.verifiedAt}</span>。
+    </p>
+  </div>
+) : (
+  <div class="rounded-lg border border-slate-200 bg-slate-50 p-3.5 text-xs text-slate-600">
+    该品牌暂未收录可靠注册入口，本页仅作为独立信息档案展示。您可以查看 <a href="/intelligence/alternatives/" class="text-[#0b192c] font-semibold underline">替代方案数据库</a> 或 <a href="/brands/" class="text-[#0b192c] font-semibold underline">全部品牌库</a>。
+  </div>
+)}
+
+<script>
+  const w = window as Window & { __jcqbCouponCopyBound?: boolean };
+  if (!w.__jcqbCouponCopyBound) {
+    w.__jcqbCouponCopyBound = true;
+    document.addEventListener('click', async (event) => {
+      const target = event.target as HTMLElement | null;
+      const btn = target?.closest('[data-copy-coupon]') as HTMLButtonElement | null;
+      if (!btn) return;
+      const code = btn.getAttribute('data-copy-coupon') || '';
+      if (!code) return;
+      try {
+        await navigator.clipboard.writeText(code);
+        const orig = btn.textContent || '复制';
+        btn.textContent = '已复制';
+        btn.classList.add('bg-teal-600', 'text-white');
+        setTimeout(() => {
+          btn.textContent = orig;
+          btn.classList.remove('bg-teal-600', 'text-white');
+        }, 1800);
+      } catch {
+        btn.textContent = code;
+      }
+    });
+  }
+</script>

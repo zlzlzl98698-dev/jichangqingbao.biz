@@ -1,0 +1,28 @@
+---
+import TopicPageTemplate from '../components/seo/TopicPageTemplate.astro';
+---
+
+<TopicPageTemplate
+  title="隐私政策 | 机场情报 (jichangqingbao.biz)"
+  description="详细说明机场情报（jichangqingbao.biz）纯静态 HTML 架构的无账户注册、本地 Pagefind 搜索处理原则、无跨站追踪声明以及跳转第三方服务商时的安全隔离隐私准则。"
+  h1="隐私政策"
+  eyebrow="Governance · Privacy"
+  answerFirst="机场情报（jichangqingbao.biz）采用纯静态 HTML 架构与本地 Pagefind 站内搜索，不要求用户注册账号、不收集个人支付信息，也不在站内运行侵入式跨站行为追踪脚本。"
+  breadcrumbs={[{ label: '隐私政策' }]}
+  sections={[
+    {
+      heading: '一、站内搜索与筛选数据处理',
+      lead: '品牌数据库筛选与 Pagefind 全文搜索均在用户浏览器本地完成。',
+      paragraphs: [
+        '当您使用首页搜索框或品牌库多维筛选器时，筛选逻辑直接在本地静态索引上运行，不会向外部服务器上传您的检索历史。',
+      ],
+    },
+    {
+      heading: '二、站外链接与第三方服务商',
+      lead: '点击合作注册链接离开本站后，数据收集行为受目标服务商各自隐私条款约束。',
+      paragraphs: [
+        '本站仅提供信息档案与规范外链跳转。建议您在注册任何第三方网络服务时，使用独立邮箱与高强度随机密码，避免与个人常用金融或社交账号密码复用。',
+      ],
+    },
+  ]}
+/>

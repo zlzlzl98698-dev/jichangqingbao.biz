@@ -1,0 +1,80 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/navigation/Breadcrumbs.astro';
+import { PRIMARY_NAV, FOOTER_GOVERNANCE_LINKS } from '../data/navigation';
+import { getBrandsSortedByPriority } from '../lib/data';
+
+const allBrands = getBrandsSortedByPriority();
+const allArticles = await getCollection('articles', (a) => !a.data.draft);
+---
+
+<BaseLayout
+  title="全站可视化网站地图 | 机场情报 (jichangqingbao.biz)"
+  description="机场情报全部十大专题栏目、二级专题页、31 家机场品牌深度评测页面与治理规范页面完整索引。"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '网站地图' }]} />
+    <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mb-2">全站可视化网站地图</h1>
+    <p class="text-sm text-slate-600 mb-8">
+      汇总本站十大核心专题栏目、全部二级专题路由、{allBrands.length} 个独立品牌档案页及政策治理页面。另提供机器可读的 <a href="/sitemap-index.xml" class="underline font-mono text-[#0b192c]">sitemap-index.xml</a> 与 <a href="/rss.xml" class="underline font-mono text-[#0b192c]">rss.xml</a>。
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+      {PRIMARY_NAV.map((cat) => (
+        <section class="editorial-card rounded-xl p-5">
+          <h2 class="text-base font-bold text-[#0b192c] pb-2 border-b border-slate-100">
+            <a href={cat.href} class="hover:underline">{cat.label}</a>
+          </h2>
+          <ul class="mt-3 space-y-1.5 text-xs">
+            {cat.items.map((item) => (
+              <li>
+                <a href={item.href} class="text-slate-700 hover:text-[#0b192c] hover:underline">{item.label}</a>
+                <span class="font-mono text-[10px] text-slate-400 ml-1.5">{item.href}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+
+    <section class="editorial-card rounded-xl p-5 mb-8">
+      <h2 class="text-base font-bold text-[#0b192c] pb-2 border-b border-slate-100">
+        31 家独立机场品牌深度档案（/brands/[slug]/）
+      </h2>
+      <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 text-xs">
+        {allBrands.map((b) => (
+          <a href={`/brands/${b.slug}/`} class="px-2.5 py-1.5 rounded bg-slate-50 border border-slate-200 hover:bg-slate-100 text-[#0b192c] font-medium truncate">
+            {b.brandName}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="editorial-card rounded-xl p-5 mb-8">
+      <h2 class="text-base font-bold text-[#0b192c] pb-2 border-b border-slate-100">
+        三级长尾文章库（/articles/ · {allArticles.length} 篇）
+      </h2>
+      <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs">
+        {allArticles.map((art) => (
+          <a href={`/articles/${art.id}/`} class="px-3 py-2 rounded bg-slate-50 border border-slate-200 hover:bg-slate-100 text-[#0b192c] font-medium truncate">
+            {art.data.h1}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="editorial-card rounded-xl p-5">
+      <h2 class="text-base font-bold text-[#0b192c] pb-2 border-b border-slate-100">治理、政策与工具入口</h2>
+      <div class="mt-3 flex flex-wrap gap-3 text-xs">
+        <a href="/articles/" class="px-3 py-1.5 rounded border border-teal-200 bg-teal-50 text-teal-900 font-medium">三级长尾文章库</a>
+        {FOOTER_GOVERNANCE_LINKS.map((l) => (
+          <a href={l.href} class="px-3 py-1.5 rounded border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium">
+            {l.label}
+          </a>
+        ))}
+        <a href="/search/" class="px-3 py-1.5 rounded border border-teal-200 bg-teal-50 text-teal-900 font-medium">全站检索</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

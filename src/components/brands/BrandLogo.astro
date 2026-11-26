@@ -1,0 +1,37 @@
+---
+import { Image } from 'astro:assets';
+import { resolveLogoImage, type Brand } from '../../lib/data';
+
+export interface Props {
+  brand: Brand;
+  size?: 'sm' | 'md' | 'lg';
+}
+
+const { brand, size = 'md' } = Astro.props;
+const logoMeta = resolveLogoImage(brand.logo);
+const sizeClass =
+  size === 'sm' ? 'w-9 h-9 text-xs' : size === 'lg' ? 'w-14 h-14 text-base' : 'w-11 h-11 text-sm';
+const pixelSize = size === 'sm' ? 36 : size === 'lg' ? 56 : 44;
+const monogram = brand.brandName.slice(0, 2);
+---
+
+{logoMeta ? (
+  <div class={`${sizeClass} rounded-lg border border-slate-200 bg-white overflow-hidden shrink-0 flex items-center justify-center p-0.5`}>
+    <Image
+      src={logoMeta}
+      alt={`${brand.brandName} 品牌标识`}
+      width={pixelSize * 2}
+      height={pixelSize * 2}
+      class="w-full h-full object-contain rounded"
+      loading="lazy"
+    />
+  </div>
+) : (
+  <div
+    class={`${sizeClass} rounded-lg shrink-0 flex items-center justify-center font-bold text-white tracking-tight border border-white/15`}
+    style={`background-color: ${brand.accentColor};`}
+    aria-hidden="true"
+  >
+    {monogram}
+  </div>
+)}

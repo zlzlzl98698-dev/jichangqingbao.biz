@@ -1,0 +1,267 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import AnchorToc from '../../components/seo/AnchorToc.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import TopicPageTemplate from '../../components/seo/TopicPageTemplate.astro';
+import { clients, brands, getEntryPlan, SITE_META, type ClientApp } from '../../lib/data';
+import { CLIENT_PLATFORM_TOPICS } from '../../data/topics-intel-vpn';
+import { CLIENT_PLATFORM_ENRICHMENTS } from '../../data/secondary/batch2-clients-platforms';
+import { CLIENT_APP_DEEP_GUIDES } from '../../data/secondary/batch2-clients-apps';
+import { mergeTopicEnrichment } from '../../data/secondary/enrich';
+import type { SubtopicEntry } from '../../data/topics-commercial';
+
+export async function getStaticPaths() {
+  const clientPaths = clients.map((c) => ({
+    params: { slug: c.slug },
+    props: { kind: 'client' as const, client: c },
+  }));
+  const platformPaths = CLIENT_PLATFORM_TOPICS.map((p) => ({
+    params: { slug: p.slug },
+    props: { kind: 'platform' as const, platform: p },
+  }));
+  return [...clientPaths, ...platformPaths];
+}
+
+type Props =
+  | { kind: 'client'; client: ClientApp }
+  | { kind: 'platform'; platform: SubtopicEntry };
+
+const props = Astro.props as Props;
+const compatibleThirdPartyBrands = brands.filter((b) => b.thirdPartyClientSupport === true);
+const exclusiveOnlyBrands = brands.filter((b) => b.thirdPartyClientSupport === false);
+
+const enrichedPlatform =
+  props.kind === 'platform'
+    ? mergeTopicEnrichment(props.platform, CLIENT_PLATFORM_ENRICHMENTS[props.platform.slug])
+    : null;
+
+const appGuide = props.kind === 'client' ? CLIENT_APP_DEEP_GUIDES[props.client.slug] : null;
+
+const appTocItems =
+  props.kind === 'client'
+    ? [
+        { id: 'cli-specs', label: '核心技术规格与下载源' },
+        ...(appGuide ? [{ id: 'cli-steps', label: '标准安装与快速启用步骤' }] : []),
+        ...(appGuide?.sections.map((s, i) => ({ id: `cli-sec-${i + 1}`, label: s.heading })) ?? []),
+        { id: 'cli-compat', label: `兼容机场清单（${compatibleThirdPartyBrands.length} 家）` },
+        ...(appGuide?.clusters.length ? [{ id: 'cli-clusters', label: '三级文章与教程集群' }] : []),
+        ...(appGuide?.faqs.length ? [{ id: 'faq-heading', label: `常见问题（${appGuide.faqs.length} 问）` }] : []),
+      ]
+    : [];
+
+const shortClientTitle = props.kind === 'client' ? props.client.name.replace(/（.*?）/g, '').trim() : '';
+const pageClientTitle = props.kind === 'client' ? `${shortClientTitle} 客户端档案与使用指南 | 机场情报` : '';
+
+const softwareSchema =
+  props.kind === 'client'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: props.client.name,
+        applicationCategory: 'NetworkingApplication',
+        operatingSystem: props.client.platforms.join(', '),
+        offers: {
+          '@type': 'Offer',
+          price: props.client.pricing.includes('免费') ? '0' : '2.99',
+          priceCurrency: 'USD',
+        },
+        url: props.client.officialUrl,
+      }
+    : undefined;
+---
+
+{props.kind === 'platform' && enrichedPlatform ? (
+  <TopicPageTemplate
+    title={enrichedPlatform.title}
+    description={enrichedPlatform.description}
+    h1={enrichedPlatform.h1}
+    eyebrow={enrichedPlatform.eyebrow}
+    answerFirst={enrichedPlatform.answerFirst}
+    breadcrumbs={[{ label: '客户端软件', href: '/clients/' }, { label: enrichedPlatform.h1 }]}
+    sections={enrichedPlatform.sections}
+    tables={enrichedPlatform.tables}
+    steps={enrichedPlatform.steps}
+    clusters={enrichedPlatform.clusters}
+    cta={enrichedPlatform.cta}
+    relatedBrands={compatibleThirdPartyBrands.slice(0, 6)}
+    faqs={enrichedPlatform.faqs}
+    relatedLinks={enrichedPlatform.relatedLinks}
+  />
+) : props.kind === 'client' ? (
+  <BaseLayout
+    title={pageClientTitle}
+    description={`${props.client.name}（${props.client.core} 内核）百科档案：涵盖支持平台、订阅格式、安装上手步骤、避坑常见问题及兼容机场列表。`}
+    updatedAt={SITE_META.lastUpdated}
+    schemas={softwareSchema ? [softwareSchema] : []}
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <Breadcrumbs items={[{ label: '客户端软件', href: '/clients/' }, { label: props.client.name }]} />
+
+      <header class="pb-5 border-b border-slate-200">
+        <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">{props.client.category}</span>
+        <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">
+          {props.client.name} 软件档案与兼容说明
+        </h1>
+        <p class="text-xs font-mono text-slate-500 mt-2">
+          核心引擎：{props.client.core} · 授权模式：{props.client.pricing} · 维护状态：{props.client.maintenanceStatus}
+        </p>
+      </header>
+
+      <GeoAnswerBox
+        answer={appGuide ? `${appGuide.summaryLead} 支持 ${props.client.platforms.join('、')} 平台与 ${props.client.protocols.join(' / ')} 等协议，兼容 ${props.client.subscriptionFormats.join('、')}。请仅从核实官方来源（${props.client.sourceLocation}）下载，并留意 8 家仅专属客户端机场不支持订阅导出。` : `${props.client.name} 是基于 ${props.client.core} 的${props.client.category}，支持 ${props.client.platforms.join('、')} 平台与 ${props.client.protocols.join(' / ')} 等主流协议，兼容 ${props.client.subscriptionFormats.join('、')}。`}
+        verifiedAt={SITE_META.verifiedSnapshotDate}
+        source="第三方客户端百科与协议兼容库"
+      />
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="lg:col-span-8 space-y-6 min-w-0">
+          <section id="cli-specs" class="editorial-card rounded-xl p-5 scroll-mt-24">
+            <h2 class="text-lg font-bold text-[#0b192c] mb-3">核心技术规格表</h2>
+            <dl class="divide-y divide-slate-100 text-xs sm:text-sm">
+              <div class="py-2.5 flex justify-between gap-4"><dt class="text-slate-500">支持操作系统</dt><dd class="font-medium text-right">{props.client.platforms.join(' / ')}</dd></div>
+              <div class="py-2.5 flex justify-between gap-4"><dt class="text-slate-500">代理核心</dt><dd class="font-mono text-right">{props.client.core}</dd></div>
+              <div class="py-2.5 flex justify-between gap-4"><dt class="text-slate-500">支持协议</dt><dd class="font-mono text-right">{props.client.protocols.join(' · ')}</dd></div>
+              <div class="py-2.5 flex justify-between gap-4"><dt class="text-slate-500">订阅格式</dt><dd class="text-right">{props.client.subscriptionFormats.join(' / ')}</dd></div>
+              <div class="py-2.5 flex justify-between gap-4"><dt class="text-slate-500">安装包形态</dt><dd class="text-right">{props.client.packages.join('；')}</dd></div>
+              <div class="py-2.5 flex justify-between gap-4"><dt class="text-slate-500">项目与来源</dt><dd class="text-right"><a href={props.client.officialUrl} target="_blank" rel="nofollow noopener" class="text-teal-700 underline font-mono break-all">{props.client.officialUrl}</a></dd></div>
+            </dl>
+          </section>
+
+          {appGuide && (
+            <section id="cli-steps" class="editorial-card rounded-xl p-5 scroll-mt-24">
+              <h2 class="text-lg font-bold text-[#0b192c] mb-3">标准安装与快速启用步骤</h2>
+              <ol class="space-y-3">
+                {appGuide.steps.map((st, idx) => (
+                  <li class="flex items-start gap-3 text-xs sm:text-sm">
+                    <span class="w-6 h-6 rounded-full bg-[#0b192c] text-white font-mono text-xs flex items-center justify-center shrink-0 mt-0.5">
+                      {idx + 1}
+                    </span>
+                    <div>
+                      <strong class="block text-[#0b192c]">{st.title}</strong>
+                      <p class="text-slate-600 mt-0.5 leading-relaxed">{st.detail}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )}
+
+          {appGuide && appGuide.sections.map((sec, idx) => (
+            <section id={`cli-sec-${idx + 1}`} class="editorial-card rounded-xl p-5 sm:p-6 scroll-mt-24">
+              <h2 class="text-lg font-bold text-[#0b192c] mb-2">{sec.heading}</h2>
+              <div class="space-y-2.5 text-sm text-slate-700 leading-relaxed">
+                {sec.paragraphs.map((p) => (
+                  <p>{p}</p>
+                ))}
+              </div>
+              {sec.bullets && sec.bullets.length > 0 && (
+                <ul class="mt-3 space-y-1.5 text-xs sm:text-sm text-slate-700 bg-slate-50 rounded-lg p-4 border border-slate-100">
+                  {sec.bullets.map((b) => (
+                    <li class="flex items-start gap-2">
+                      <span class="text-teal-700 font-bold shrink-0">•</span>
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
+
+          <section class="editorial-card rounded-xl p-5 border-amber-200 bg-amber-50/40">
+            <h2 class="text-base font-bold text-amber-950 mb-2">安全、权限与架构注意事项</h2>
+            <p class="text-xs sm:text-sm text-amber-950 leading-relaxed">{props.client.securityNotes}</p>
+          </section>
+
+          <section id="cli-compat" class="editorial-card rounded-xl p-5 scroll-mt-24 space-y-3">
+            <h2 class="text-base font-bold text-[#0b192c]">兼容 {shortClientTitle} 的机场品牌参数对照表（{compatibleThirdPartyBrands.length} 家开放订阅）</h2>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              下表实时汇总站内已核实支持 Clash / Mihomo / V2Ray / sing-box 通用订阅导入的品牌，包含各自入门实付门槛、传输协议与并发设备策略，方便你在下载 {props.client.name} 后直接筛选匹配上游订阅。
+            </p>
+            <div class="overflow-x-auto border border-slate-200 rounded-lg">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr class="bg-slate-50 border-b border-slate-200 text-slate-700">
+                    <th class="py-2 px-3 font-semibold">品牌</th>
+                    <th class="py-2 px-2.5 font-semibold">入门月付 / 年付折算</th>
+                    <th class="py-2 px-2.5 font-semibold">线路与协议</th>
+                    <th class="py-2 px-2.5 font-semibold">设备限制</th>
+                    <th class="py-2 px-2.5 font-semibold">资料状态</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  {compatibleThirdPartyBrands.map((b) => {
+                    const ep = getEntryPlan(b);
+                    return (
+                      <tr class="hover:bg-slate-50/70">
+                        <td class="py-2 px-3 font-semibold text-[#0b192c] whitespace-nowrap">
+                          <a href={`/brands/${b.slug}/`} class="hover:underline">{b.brandName}</a>
+                        </td>
+                        <td class="py-2 px-2.5 font-mono whitespace-nowrap">
+                          {ep.cheapestMonthly ? `¥${ep.cheapestMonthly.price}/月` : ep.cheapestAnnual?.monthlyEquivalent ? `¥${ep.cheapestAnnual.monthlyEquivalent}/月(年付)` : '待核实'}
+                        </td>
+                        <td class="py-2 px-2.5 text-slate-700">{b.networkTypes.join('/')} · {b.protocols.join('/')}</td>
+                        <td class="py-2 px-2.5 text-slate-700">{b.deviceLimit}</td>
+                        <td class="py-2 px-2.5 whitespace-nowrap">{b.dataStatus}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p class="text-xs text-slate-500">
+              不兼容排除：{exclusiveOnlyBrands.map((b) => b.brandName).join('、')} 目前仅支持官方专属客户端，无法通过订阅链接导入 {props.client.name}；如需要从专属端切换开放生态，可查阅 <a href="/articles/migrate-from-exclusive-client/" class="text-teal-800 underline">专属客户端平滑迁移指南</a>。
+            </p>
+          </section>
+
+          {appGuide && appGuide.clusters.length > 0 && (
+            <section id="cli-clusters" class="editorial-card rounded-xl p-5 scroll-mt-24">
+              <h2 class="text-lg font-bold text-[#0b192c] mb-3">配套三级教程与排障阅读路径</h2>
+              <div class="grid grid-cols-1 gap-3">
+                {appGuide.clusters.map((grp) => (
+                  <div class="rounded-lg border border-slate-200 bg-slate-50/60 p-4">
+                    <h3 class="text-sm font-bold text-[#0b192c] mb-2">{grp.clusterName}</h3>
+                    <ul class="space-y-2 text-xs">
+                      {grp.articles.map((art) => (
+                        <li class="border-t border-slate-200/70 pt-2 first:border-t-0 first:pt-0">
+                          {art.existingHref ? (
+                            <a href={art.existingHref} class="font-semibold text-teal-800 hover:underline block">
+                              {art.title} →
+                            </a>
+                          ) : (
+                            <span class="font-semibold text-[#0b192c] block">
+                              {art.title}
+                              <span class="ml-1.5 font-mono text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">待排期</span>
+                            </span>
+                          )}
+                          <span class="block text-slate-500 mt-0.5">关键词：{art.targetKeyword} · {art.summary}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {appGuide && <FaqSection title={`${props.client.name} 常见问题（FAQ）`} items={appGuide.faqs} includeSchema={true} />}
+        </div>
+
+        <aside class="lg:col-span-4 space-y-4 lg:sticky lg:top-24">
+          <AnchorToc title="软件档案目录" items={appTocItems} />
+
+          <div class="editorial-card rounded-xl p-5">
+            <h2 class="text-sm font-bold text-[#0b192c] mb-2">配套配置与排查教程</h2>
+            <ul class="space-y-2 text-xs">
+              <li><a href="/guides/clash-verge/" class="font-semibold text-teal-700 hover:underline">Clash Verge Rev 订阅配置教程 →</a></li>
+              <li><a href="/guides/subscription/" class="font-semibold text-[#0b192c] hover:underline">机场订阅通用导入步骤 →</a></li>
+              <li><a href="/guides/installation/" class="font-semibold text-[#0b192c] hover:underline">芯片架构与包格式识别指南 →</a></li>
+              <li><a href="/diagnostics/subscription-failed/" class="font-semibold text-[#0b192c] hover:underline">订阅更新失败排查 →</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </BaseLayout>
+) : null}

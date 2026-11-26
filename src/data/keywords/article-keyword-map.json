@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-11-26",
+  "publishedCount": 24,
+  "plannedBacklogCount": 2,
+  "articles": [
+    { "slug": "isp-selection", "pillar": "01-recommend", "parentTopic": "/recommend/rankings/", "primaryKeyword": "电信联通移动机场怎么选", "intent": "Commercial Investigation", "targetUrl": "/articles/isp-selection/", "status": "published" },
+    { "slug": "multi-device-quota", "pillar": "01-recommend", "parentTopic": "/recommend/multi-device/", "primaryKeyword": "多设备机场同时在线限制", "intent": "How-to", "targetUrl": "/articles/multi-device-quota/", "status": "published" },
+    { "slug": "20-yuan-monthly-guide", "pillar": "02-pricing", "parentTopic": "/pricing/monthly/", "primaryKeyword": "20元以内月付机场怎么选", "intent": "Commercial Investigation", "targetUrl": "/articles/20-yuan-monthly-guide/", "status": "published" },
+    { "slug": "traffic-multiplier-math", "pillar": "02-pricing", "parentTopic": "/pricing/value/", "primaryKeyword": "100GB流量够用多久", "intent": "Informational", "targetUrl": "/articles/traffic-multiplier-math/", "status": "published" },
+    { "slug": "verify-official-panel", "pillar": "03-brands", "parentTopic": "/brands/official-links/", "primaryKeyword": "如何判断机场官网是否真实", "intent": "How-to", "targetUrl": "/articles/verify-official-panel/", "status": "published" },
+    { "slug": "vpn-vs-proxy-architecture", "pillar": "04-vpn", "parentTopic": "/vpn/vs-proxy/", "primaryKeyword": "VPN和代理软件能同时开启吗", "intent": "Informational", "targetUrl": "/articles/vpn-vs-proxy-architecture/", "status": "published" },
+    { "slug": "v2rayn-import-and-core", "pillar": "05-clients", "parentTopic": "/clients/v2rayn/", "primaryKeyword": "v2rayN怎么导入机场订阅", "intent": "How-to", "targetUrl": "/articles/v2rayn-import-and-core/", "status": "published" },
+    { "slug": "android-background-keepalive", "pillar": "05-clients", "parentTopic": "/clients/clash-meta/", "primaryKeyword": "安卓代理客户端锁屏断线怎么办", "intent": "Troubleshooting", "targetUrl": "/articles/android-background-keepalive/", "status": "published" },
+    { "slug": "chatgpt-desktop-tun-guide", "pillar": "06-streaming-ai", "parentTopic": "/streaming-ai/chatgpt/", "primaryKeyword": "ChatGPT提示地区不支持与桌面端不通", "intent": "Troubleshooting", "targetUrl": "/articles/chatgpt-desktop-tun-guide/", "status": "published" },
+    { "slug": "claude-safety-node-strategy", "pillar": "06-streaming-ai", "parentTopic": "/streaming-ai/claude/", "primaryKeyword": "Claude账号防封号对节点有什么要求", "intent": "How-to", "targetUrl": "/articles/claude-safety-node-strategy/", "status": "published" },
+    { "slug": "single-thread-vs-multi-speedtest", "pillar": "07-network", "parentTopic": "/network/speedtest/", "primaryKeyword": "测速900Mbps为什么看YouTube 4K卡顿", "intent": "Informational", "targetUrl": "/articles/single-thread-vs-multi-speedtest/", "status": "published" },
+    { "slug": "backup-no-expiry-setup", "pillar": "08-guides", "parentTopic": "/guides/subscription-management/", "primaryKeyword": "主力月付搭配不限时备用怎么配置", "intent": "How-to", "targetUrl": "/articles/backup-no-expiry-setup/", "status": "published" },
+    { "slug": "clash-rule-vs-global", "pillar": "08-guides", "parentTopic": "/guides/routing-rules/", "primaryKeyword": "Clash规则模式Rule和全局Global怎么选", "intent": "How-to", "targetUrl": "/articles/clash-rule-vs-global/", "status": "published" },
+    { "slug": "clash-verge-timeout-triage", "pillar": "09-diagnostics", "parentTopic": "/diagnostics/node-timeout/", "primaryKeyword": "Clash Verge节点全部超时怎么办", "intent": "Troubleshooting", "targetUrl": "/articles/clash-verge-timeout-triage/", "status": "published" },
+    { "slug": "tun-service-mode-fix", "pillar": "09-diagnostics", "parentTopic": "/diagnostics/tun-error/", "primaryKeyword": "Clash服务模式安装失败和TUN断网修复", "intent": "Troubleshooting", "targetUrl": "/articles/tun-service-mode-fix/", "status": "published" },
+    { "slug": "migrate-from-exclusive-client", "pillar": "10-intelligence", "parentTopic": "/intelligence/alternatives/", "primaryKeyword": "专属客户端机场怎么换回Clash和软路由", "intent": "Comparison", "targetUrl": "/articles/migrate-from-exclusive-client/", "status": "published" },
+    { "slug": "v2rayn-timeout-minus-one", "pillar": "09-diagnostics", "parentTopic": "/diagnostics/node-timeout/", "primaryKeyword": "v2rayN测速超时显示-1怎么办", "intent": "Troubleshooting", "targetUrl": "/articles/v2rayn-timeout-minus-one/", "status": "published" },
+    { "slug": "wifi-vs-5g-timeout", "pillar": "09-diagnostics", "parentTopic": "/diagnostics/all-timeout/", "primaryKeyword": "手机热点可用但家庭WiFi节点全超时怎么办", "intent": "Troubleshooting", "targetUrl": "/articles/wifi-vs-5g-timeout/", "status": "published" },
+    { "slug": "openwrt-openclash-vs-nikki", "pillar": "05-clients", "parentTopic": "/clients/openwrt/", "primaryKeyword": "OpenWrt软路由选OpenClash还是Nikki", "intent": "Comparison", "targetUrl": "/articles/openwrt-openclash-vs-nikki/", "status": "published" },
+    { "slug": "find-official-panel-anti-loss", "pillar": "10-intelligence", "parentTopic": "/intelligence/domain-changes/", "primaryKeyword": "机场官网面板打不开怎么安全找回新域名", "intent": "How-to", "targetUrl": "/articles/find-official-panel-anti-loss/", "status": "published" },
+    { "slug": "annual-plan-refund-rules", "pillar": "02-pricing", "parentTopic": "/pricing/annual/", "primaryKeyword": "年付特价机场为什么不支持优惠码和退款", "intent": "Informational", "targetUrl": "/articles/annual-plan-refund-rules/", "status": "published" },
+    { "slug": "check-native-vs-broadcast-ip", "pillar": "07-network", "parentTopic": "/network/native-ip/", "primaryKeyword": "如何辨别机场节点是原生IP还是广播IP", "intent": "How-to", "targetUrl": "/articles/check-native-vs-broadcast-ip/", "status": "published" },
+    { "slug": "ios-free-client-guide", "pillar": "05-clients", "parentTopic": "/clients/ios/", "primaryKeyword": "苹果iOS没有外区信用卡怎么选免费代理客户端", "intent": "How-to", "targetUrl": "/articles/ios-free-client-guide/", "status": "published" },
+    { "slug": "windows-proxy-reset-emergency", "pillar": "09-diagnostics", "parentTopic": "/diagnostics/connection-failed/", "primaryKeyword": "Windows强退代理软件导致不开机场断网怎么办", "intent": "Troubleshooting", "targetUrl": "/articles/windows-proxy-reset-emergency/", "status": "published" }
+  ]
+}

@@ -1,0 +1,25 @@
+slug,priority,pillar,parentTopic,primaryKeyword,status,conversionIntent
+20-yuan-monthly-guide,P0,02-pricing,/pricing/monthly/,20元以内月付机场怎么选,published,pricing
+clash-verge-timeout-triage,P0,09-diagnostics,/diagnostics/node-timeout/,Clash Verge节点全部超时怎么办,published,diagnostics
+chatgpt-desktop-tun-guide,P0,06-streaming-ai,/streaming-ai/chatgpt/,ChatGPT提示地区不支持与桌面端不通,published,diagnostics
+isp-selection,P0,01-recommend,/recommend/rankings/,电信联通移动机场怎么选,published,decision
+tun-service-mode-fix,P0,09-diagnostics,/diagnostics/tun-error/,Clash服务模式安装失败和TUN断网修复,published,diagnostics
+v2rayn-import-and-core,P0,05-clients,/clients/v2rayn/,v2rayN怎么导入机场订阅,published,guide
+backup-no-expiry-setup,P0,08-guides,/guides/subscription-management/,主力月付搭配不限时备用怎么配置,published,guide
+claude-safety-node-strategy,P0,06-streaming-ai,/streaming-ai/claude/,Claude账号防封号对节点有什么要求,published,guide
+traffic-multiplier-math,P0,02-pricing,/pricing/value/,100GB流量够用多久,published,pricing
+verify-official-panel,P0,03-brands,/brands/official-links/,如何判断机场官网是否真实,published,risk
+android-background-keepalive,P0,05-clients,/clients/clash-meta/,安卓代理客户端锁屏断线怎么办,published,guide
+single-thread-vs-multi-speedtest,P0,07-network,/network/speedtest/,测速900Mbps为什么看YouTube 4K卡顿,published,network
+clash-rule-vs-global,P0,08-guides,/guides/routing-rules/,Clash规则模式Rule和全局Global怎么选,published,guide
+multi-device-quota,P0,01-recommend,/recommend/multi-device/,多设备机场同时在线限制,published,decision
+vpn-vs-proxy-architecture,P0,04-vpn,/vpn/vs-proxy/,VPN和代理软件能同时开启吗,published,guide
+migrate-from-exclusive-client,P0,10-intelligence,/intelligence/alternatives/,专属客户端机场怎么换回Clash和软路由,published,risk
+v2rayn-timeout-minus-one,P0,09-diagnostics,/diagnostics/node-timeout/,v2rayN测速超时显示-1怎么办,published,diagnostics
+wifi-vs-5g-timeout,P0,09-diagnostics,/diagnostics/all-timeout/,手机热点可用但家庭WiFi节点全超时怎么办,published,diagnostics
+openwrt-openclash-vs-nikki,P0,05-clients,/clients/openwrt/,OpenWrt软路由选OpenClash还是Nikki,published,guide
+find-official-panel-anti-loss,P0,10-intelligence,/intelligence/domain-changes/,机场官网面板打不开怎么安全找回新域名,published,risk
+annual-plan-refund-rules,P1,02-pricing,/pricing/annual/,年付特价机场为什么不支持优惠码和退款,published,pricing
+check-native-vs-broadcast-ip,P1,07-network,/network/native-ip/,如何辨别机场节点是原生IP还是广播IP,published,network
+ios-free-client-guide,P1,05-clients,/clients/ios/,苹果iOS没有外区信用卡怎么选免费代理客户端,published,guide
+windows-proxy-reset-emergency,P1,09-diagnostics,/diagnostics/connection-failed/,Windows强退代理软件导致不开机场断网怎么办,published,diagnostics

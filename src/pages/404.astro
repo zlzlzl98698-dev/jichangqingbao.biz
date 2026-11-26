@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="页面未找到 (404) | 机场情报"
+  description="您访问的页面不存在或已迁移至规范 URL，请返回机场情报首页或通过全站搜索查找品牌档案与技术指南。"
+  noindex={true}
+>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-16 text-center space-y-5">
+    <span class="inline-block font-mono text-xs px-3 py-1 rounded bg-slate-100 text-slate-600">HTTP 404 · NOT FOUND</span>
+    <h1 class="text-3xl font-bold text-[#0b192c]">未找到请求的情报页面</h1>
+    <p class="text-sm text-slate-600 leading-relaxed">
+      可能是链接拼写有误或对应专题已整理至规范路由。您可以通过以下核心入口继续浏览：
+    </p>
+    <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+      <a href="/" class="px-4 py-2 rounded-lg bg-[#0b192c] text-white text-xs font-semibold">返回首页</a>
+      <a href="/brands/" class="px-4 py-2 rounded-lg border border-slate-300 text-[#0b192c] text-xs font-semibold">31 品牌数据库</a>
+      <a href="/intelligence/" class="px-4 py-2 rounded-lg border border-slate-300 text-[#0b192c] text-xs font-semibold">机场情报中心</a>
+      <a href="/search/" class="px-4 py-2 rounded-lg border border-teal-300 bg-teal-50 text-teal-900 text-xs font-semibold">全站检索</a>
+    </div>
+  </div>
+</BaseLayout>

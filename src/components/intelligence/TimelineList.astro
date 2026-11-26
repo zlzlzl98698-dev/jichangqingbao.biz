@@ -1,0 +1,52 @@
+---
+import { formatSourceLabel, getStatusBadgeStyle, type IntelEvent } from '../../lib/data';
+
+export interface Props {
+  events: IntelEvent[];
+  limit?: number;
+}
+
+const { events, limit } = Astro.props;
+const sorted = [...events].sort((a, b) => b.observedAt.localeCompare(a.observedAt));
+const displayList = limit ? sorted.slice(0, limit) : sorted;
+---
+
+{displayList.length > 0 ? (
+  <div class="space-y-3">
+    {displayList.map((ev) => {
+      const st = getStatusBadgeStyle(ev.status);
+      return (
+        <article class="editorial-card rounded-xl p-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-mono text-xs font-semibold text-[#0b192c] bg-slate-100 px-2 py-0.5 rounded">
+                {ev.eventDate}
+              </span>
+              <span class="text-xs font-semibold text-teal-800 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded">
+                {ev.eventType}
+              </span>
+              <a href={`/brands/${ev.brandSlug}/`} class="text-sm font-bold text-[#0b192c] hover:underline">
+                {ev.brandName}
+              </a>
+            </div>
+            <span class={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[11px] font-medium ${st.bg} ${st.text}`}>
+              <span class={`status-dot ${st.dot}`}></span>
+              {ev.status}
+            </span>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">{formatSourceLabel(ev.evidence)}</p>
+
+          <div class="mt-2.5 pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+            <span>来源：<span class="font-medium text-slate-700">{formatSourceLabel(ev.source)}</span> · 置信度：{ev.confidence}</span>
+            <span>处理结论：{formatSourceLabel(ev.resolution)}</span>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+) : (
+  <div class="editorial-card rounded-xl p-6 text-center text-sm text-slate-600">
+    当前区间暂无经核实的新情报动态。本站严格遵循实证原则，不虚构实时异常或停运公告。
+  </div>
+)}

@@ -1,0 +1,95 @@
+---
+import TopicPageTemplate, { type TopicTable } from '../../components/seo/TopicPageTemplate.astro';
+import { BRAND_SUBTOPICS } from '../../data/topics-intel-vpn';
+import { BRAND_SUBTOPIC_ENRICHMENTS } from '../../data/secondary/batch1-brands';
+import { mergeTopicEnrichment } from '../../data/secondary/enrich';
+import { getBrandBySlug, getBrandsSortedByPriority, getEntryPlan } from '../../lib/data';
+
+export async function getStaticPaths() {
+  return BRAND_SUBTOPICS.map((t) => ({
+    params: { topic: t.slug },
+    props: { entry: t },
+  }));
+}
+
+const { entry: rawEntry } = Astro.props;
+
+function buildDynamicTables(slug: string): TopicTable[] {
+  const all = getBrandsSortedByPriority();
+  if (slug === 'history') {
+    return [{
+      title: '有明确上线年份记录的机场品牌年代分布表',
+      subtitle: '汇总自机场情报品牌实体库',
+      columns: ['品牌', '上线年份', '当前客户端支持', '运营状态', '资料定性'],
+      rows: all
+        .filter((b) => Boolean(b.foundedYear))
+        .map((b) => [
+          b.brandName,
+          `${b.foundedYear} 年`,
+          b.thirdPartyClientSupport === true ? '支持第三方订阅' : '仅专属端/待核实',
+          b.operatingStatus,
+          b.dataStatus,
+        ]),
+    }];
+  }
+  if (slug === 'deals') {
+    return [{
+      title: '含折扣说明与限时优惠品牌快速索引表',
+      subtitle: '以结账页实时结算为准',
+      columns: ['品牌', '优惠码/方式', '月付入门参考', '年付参考', '适用限制说明'],
+      rows: all
+        .filter((b) => b.couponCode || b.couponRestrictions)
+        .map((b) => {
+          const ep = getEntryPlan(b);
+          return [
+            b.brandName,
+            b.couponCode || '按周期自动折',
+            ep.cheapestMonthly ? `¥${ep.cheapestMonthly.price}` : '—',
+            ep.cheapestAnnual ? `¥${ep.cheapestAnnual.price}/年` : '—',
+            b.couponRestrictions || '见品牌页详情',
+          ];
+        }),
+    }];
+  }
+  if (slug === 'plans') {
+    return [{
+      title: '31 家品牌核心套餐档位数与入门价总览',
+      subtitle: '动态汇总 154 条在库报价',
+      columns: ['品牌', '录入档位数', '最低月付', '年付折算月价', '不限时流量包'],
+      rows: all.map((b) => {
+        const ep = getEntryPlan(b);
+        return [
+          b.brandName,
+          `${b.plans.length} 档`,
+          ep.cheapestMonthly ? `¥${ep.cheapestMonthly.price}` : '无/待核实',
+          ep.cheapestAnnual?.monthlyEquivalent ? `¥${ep.cheapestAnnual.monthlyEquivalent}/月` : '—',
+          ep.hasNoExpiry ? '有不限时包' : '无',
+        ];
+      }),
+    }];
+  }
+  return [];
+}
+
+const entry = mergeTopicEnrichment(rawEntry, BRAND_SUBTOPIC_ENRICHMENTS[rawEntry.slug], buildDynamicTables(rawEntry.slug));
+const relatedBrands = (entry.brandSlugs ?? [])
+  .map((s) => getBrandBySlug(s))
+  .filter((b): b is NonNullable<typeof b> => Boolean(b));
+---
+
+<TopicPageTemplate
+  title={entry.title}
+  description={entry.description}
+  h1={entry.h1}
+  eyebrow={entry.eyebrow}
+  answerFirst={entry.answerFirst}
+  breadcrumbs={[{ label: '机场品牌库', href: '/brands/' }, { label: entry.h1 }]}
+  sections={entry.sections}
+  tables={entry.tables}
+  steps={entry.steps}
+  clusters={entry.clusters}
+  cta={entry.cta}
+  relatedBrands={relatedBrands}
+  faqs={entry.faqs}
+  relatedLinks={entry.relatedLinks}
+/>

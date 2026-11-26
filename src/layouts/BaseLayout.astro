@@ -1,0 +1,39 @@
+---
+import '../styles/global.css';
+import SEOHead from '../components/seo/SEOHead.astro';
+import Header from '../components/navigation/Header.astro';
+import Footer from '../components/navigation/Footer.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogType?: 'website' | 'article';
+  publishedAt?: string;
+  updatedAt?: string;
+  noindex?: boolean;
+  schemas?: Record<string, unknown>[];
+}
+
+const props = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <SEOHead {...props} />
+  </head>
+  <body class="min-h-screen flex flex-col bg-[#f8fafc] text-slate-900">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#0b192c] focus:text-white focus:rounded"
+    >
+      跳至正文内容
+    </a>
+    <Header />
+    <main id="main-content" class="flex-1" data-pagefind-body>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

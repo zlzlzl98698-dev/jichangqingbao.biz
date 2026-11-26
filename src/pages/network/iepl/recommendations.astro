@@ -1,0 +1,34 @@
+---
+import TopicPageTemplate from '../../../components/seo/TopicPageTemplate.astro';
+import { NETWORK_TOPICS } from '../../../data/topics-technical';
+import { NETWORK_ENRICHMENTS } from '../../../data/secondary/batch3-network';
+import { mergeTopicEnrichment } from '../../../data/secondary/enrich';
+import { getBrandBySlug } from '../../../lib/data';
+
+const rawEntry = NETWORK_TOPICS.find((t) => t.slug === 'recommendations')!;
+const entry = mergeTopicEnrichment(rawEntry, NETWORK_ENRICHMENTS['recommendations']);
+const relatedBrands = (entry.brandSlugs ?? [])
+  .map((s) => getBrandBySlug(s))
+  .filter((b): b is NonNullable<typeof b> => Boolean(b));
+---
+
+<TopicPageTemplate
+  title={entry.title}
+  description={entry.description}
+  h1={entry.h1}
+  eyebrow={entry.eyebrow}
+  answerFirst={entry.answerFirst}
+  breadcrumbs={[
+    { label: '线路与节点', href: '/network/' },
+    { label: 'IEPL 专线', href: '/network/iepl/' },
+    { label: 'IEPL 服务选择与比较' },
+  ]}
+  sections={entry.sections}
+  tables={entry.tables}
+  steps={entry.steps}
+  clusters={entry.clusters}
+  cta={entry.cta}
+  relatedBrands={relatedBrands}
+  faqs={entry.faqs}
+  relatedLinks={entry.relatedLinks}
+/>

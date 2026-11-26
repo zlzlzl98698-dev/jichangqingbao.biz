@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/navigation/Breadcrumbs.astro';
+import GeoAnswerBox from '../../components/seo/GeoAnswerBox.astro';
+import FaqSection from '../../components/seo/FaqSection.astro';
+import { SITE_META } from '../../lib/data';
+
+const articles = (await getCollection('articles', (a) => !a.data.draft)).sort((a, b) =>
+  a.data.pillar.localeCompare(b.data.pillar)
+);
+
+const pillars = Array.from(
+  new Map(articles.map((a) => [a.data.pillar, { label: a.data.pillarLabel, href: a.data.pillarHref }])).entries()
+);
+
+const indexFaqs = [
+  { q: '这里的三级长尾文章和首页十大专题、品牌评测有什么分工？', a: '一级专题负责核心全局框架；二级专题统领具体细分选型中心；三级文章则针对某一个具体报错、具体费用核算、客户端实操动作或协议辨析给出完整可执行的独立解答。' },
+  { q: '教程或故障排查文章里会强插不相关的推广链接吗？', a: '不会。教程和故障排查文章仅在确实有助于完成安装、排查或迁移时关联客观工具档案，绝不把本地软件故障强行改写成买新机场广告。' },
+  { q: '发现某篇三级指南里提到的参数过期怎么反馈？', a: '可依据文章底部的来源与核实日期，前往 /corrections/ 提交纠错补充信息。' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: '机场情报三级长尾深度文章知识库',
+  url: `${SITE_META.url}/articles/`,
+  description: `收录覆盖选型、套餐计算、客户端操作、AI 防封、线路测速与风险迁移的 ${articles.length} 篇独立长尾深度指南。`,
+  inLanguage: 'zh-CN',
+  dateModified: SITE_META.lastUpdated,
+};
+---
+
+<BaseLayout
+  title="长尾问题深度攻略与技术排查文章库 | 机场情报"
+  description="机场情报三级长尾深度内容中心：汇聚套餐计算、三网选线、Clash/v2rayN/TUN 实操、AI 风控防封与专属端迁移等独立长文。"
+  updatedAt={SITE_META.lastUpdated}
+  schemas={[collectionSchema]}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <Breadcrumbs items={[{ label: '长尾文章知识库' }]} />
+
+    <header class="pb-5 border-b border-slate-200">
+      <span class="font-mono text-xs uppercase tracking-wider text-teal-700 font-semibold">Tertiary Long-Tail Knowledge Hub</span>
+      <h1 class="text-2xl sm:text-3xl font-bold text-[#0b192c] mt-1">
+        长尾深度指南、排障实操与决策文章库（{articles.length} 篇已上线）
+      </h1>
+      <p class="mt-2 text-sm text-slate-600 max-w-3xl">
+        每篇文章均按独立搜索意图构建，精确归属对应二级专题，并通过静态 HTML、Answer-First 与结构化 FAQ 直接回应特定问题。
+      </p>
+    </header>
+
+    <GeoAnswerBox
+      answer={`当前已上线 ${articles.length} 篇独立长尾深度文章，横跨全部十大核心主题（选型对比、20元月付实算、官网防伪、VPN与代理架构、v2rayN/安卓配置、ChatGPT/Claude风控、单线程测速、双订阅防失联及故障定位）。每篇文章均自动链接回其上级二级专题与关联品牌档案。`}
+      verifiedAt={SITE_META.lastUpdated}
+      source="机场情报三级长尾深度文章库"
+    />
+
+    <div class="space-y-8 my-6">
+      {pillars.map(([pillarKey, meta]) => {
+        const group = articles.filter((a) => a.data.pillar === pillarKey);
+        return (
+          <section class="editorial-card rounded-xl p-5 sm:p-6">
+            <div class="flex flex-wrap items-baseline justify-between gap-2 pb-3 border-b border-slate-100 mb-4">
+              <h2 class="text-lg font-bold text-[#0b192c]">
+                <a href={meta.href} class="hover:underline">{meta.label}</a>（{group.length} 篇）
+              </h2>
+              <span class="font-mono text-[11px] text-slate-400">PILLAR {pillarKey.toUpperCase()}</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {group.map((art) => (
+                <a href={`/articles/${art.id}/`} class="rounded-lg border border-slate-200 p-4 hover:border-teal-600 bg-slate-50/50 transition-colors block">
+                  <div class="flex items-center justify-between gap-2 text-[11px] font-mono text-teal-700">
+                    <span>{art.data.parentTopicLabel}</span>
+                    <span class="px-1.5 py-0.5 rounded bg-white border border-slate-200 text-slate-600">{art.data.searchIntent}</span>
+                  </div>
+                  <h3 class="text-sm sm:text-base font-bold text-[#0b192c] mt-1">{art.data.h1}</h3>
+                  <p class="text-xs text-slate-600 mt-1.5 line-clamp-2 leading-relaxed">{art.data.description}</p>
+                  <span class="inline-block mt-2 text-xs font-semibold text-teal-800">阅读完整长文 →</span>
+                </a>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+
+    <FaqSection title="文章库结构与检索常见问题" items={indexFaqs} includeSchema={true} />
+  </div>
+</BaseLayout>
